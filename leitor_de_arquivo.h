@@ -20,7 +20,6 @@ int main ()
 	ID_do_arquivo[11] = 't';
 	ID_do_arquivo[12] = '\0';
 	
-
 	Ponteiro_Arquivo = fopen(ID_do_arquivo, "r"); //############## ABRE O ARQUIVO ##############
 	
 	if(Ponteiro_Arquivo == NULL) 
