@@ -1,8 +1,10 @@
 Definição de escopo do que iremos fazer
 
 ########### NOME DO ARQUIVO .txt ###########
-data no formato: DDMMAAAA.txt
-exemplos: 08112024.txt
+data no formato: MMAAAA.txt
+exemplos: 112024.txt
+agendamentos de todas as salas em um mês em um mesmo arquivo
+evita várias leituras desnecessárias
 
 ver se em time.h tem como validar data (ver se a data realmente existe)
 se não tiver, dia válido: 1 a 31, mês válido: 1 a 12, ano: <= ano corrente (pelo menos isso)
