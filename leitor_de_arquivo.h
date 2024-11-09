@@ -3,12 +3,12 @@
 #include <gtk/gtk.h>
 
 // Apenas um começo
-//Ainda escrevendo e testando, no momento consegue ler um arquivo e mostrar seu conteúdo
+// Ainda escrevendo e testando, no momento consegue ler um arquivo e mostrar seu conteúdo
 
 int main ()
 {
-	FILE *Ponteiro_Arquivo; //Aponta para um arquivo
-	char ID_do_arquivo[12]; //Array que recebe o nome do Arquivo, formato exemplo: 08112024
+	FILE *Ponteiro_Arquivo; // Aponta para um arquivo
+	char ID_do_arquivo[12]; // Array que recebe o nome do Arquivo, formato exemplo: 08112024
 	
 	printf("Codigo de terminal, insira o ID_do_arquivo teste \n"); //Utilizando antes de implementar o GTK
 	
@@ -21,7 +21,7 @@ int main ()
 	ID_do_arquivo[12] = '\0';
 	
 
-	Ponteiro_Arquivo = fopen(ID_do_arquivo, "r");
+	Ponteiro_Arquivo = fopen(ID_do_arquivo, "r"); //############## ABRE O ARQUIVO ##############
 	
 	if(Ponteiro_Arquivo == NULL) 
 		{
@@ -29,14 +29,14 @@ int main ()
 			exit(1);
 		}
 
-	printf("DEBUG");
+	//printf("DEBUG");
 	char Linha [80];
-	while((fgets(Linha, sizeof(Linha), Ponteiro_Arquivo)) != NULL)
+	while((fgets(Linha, sizeof(Linha), Ponteiro_Arquivo)) != NULL) // Print no terminal o que contém o arquivo linha por linha
 		{
 			printf("%s",Linha);
 		}
 		
-	fclose(Ponteiro_Arquivo);	
+	fclose(Ponteiro_Arquivo); //############## FECHA O ARQUIVO ##############
 	
 	return 0;
 }
