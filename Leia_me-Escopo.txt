@@ -18,8 +18,6 @@ usar como delimitador dos campos o ponto e vírgula, muito usado em arquivos ban
 					
 > status = ativo / cancelado / modificado (linha só será lida se o status != cancelado)
 			- quando for cancelar um agendamento troca o status de ativo para cancelado
-			- quando for alterar um agendamento altera o status de ativo/modificado para modificado 
-					(segurança, saber que alguém alterou o agendamento inicial)
 			- cancelados nunca serão mostrados, fica no arquivo como histórico
 
 > data = formato: DDMMAAAA (por segurança guardar também a data dentro do arquivo, facilita mostrar a data do agendamento)
