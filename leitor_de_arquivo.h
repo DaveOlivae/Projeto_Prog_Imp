@@ -2,23 +2,25 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 
+#define Size_nome 10 // tamanho do nome do arquivo
+
 // Apenas um começo
 // Ainda escrevendo e testando, no momento consegue ler um arquivo e mostrar seu conteúdo
 
 int main ()
 {
 	FILE *Ponteiro_Arquivo; // Aponta para um arquivo
-	char ID_do_arquivo[12]; // Array que recebe o nome do Arquivo, formato exemplo: 08112024
+	char ID_do_arquivo[Size_nome]; // Array que recebe o nome do Arquivo, formato exemplo: 08112024
 	
 	printf("Codigo de terminal, insira o ID_do_arquivo teste \n"); //Utilizando antes de implementar o GTK
 	
 	fgets(ID_do_arquivo, sizeof(ID_do_arquivo), stdin); //Lê input do usuario para ID_do_arquivo
 	
-	ID_do_arquivo[8] = '.';
-	ID_do_arquivo[9] = 't';
-	ID_do_arquivo[10] = 'x';
-	ID_do_arquivo[11] = 't';
-	ID_do_arquivo[12] = '\0';
+	ID_do_arquivo[Size_nome - 4] = '.';
+	ID_do_arquivo[Size_nome - 3] = 't';
+	ID_do_arquivo[Size_nome - 2] = 'x';
+	ID_do_arquivo[Size_nome - 1] = 't';
+	ID_do_arquivo[Size_nome] = '\0';
 	
 	Ponteiro_Arquivo = fopen(ID_do_arquivo, "r"); //############## ABRE O ARQUIVO ##############
 	
