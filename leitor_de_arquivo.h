@@ -10,25 +10,17 @@
 
 struct registro
 {
-     char status[];
-     char data[];
-     char sala[];
-     char hora_inicio[];
-     char hora_fim[];
-	 char monitor_s/n[];
-	 char CPF[];
-	 char nome[];
-	 char celular[];
-	 char prof_responsavel[];
-	 char evento [];
-
-     struct
-     {
-        int dia;
-        int mes;
-        int ano;
-     }data;
-	 
+	char status[]; 
+	char data[];
+	char sala[];
+	char hora_inicio[];
+	char hora_fim[];
+	char monitor_s/n[];
+	char CPF[];
+	char nome[]; 
+	char celular[]; 
+	char prof_responsavel[];
+	char evento [];  
 } reserva_main, reserva_comparar;
 
 int main ()
