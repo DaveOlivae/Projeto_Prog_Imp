@@ -38,7 +38,7 @@ void addAlug(const char *nome_do_csv) {
         printf("Arquivo de registro não encontrado. :C\n");
         return;
     }
-//#region [ rgba(150, 20, 20, 0.5)]
+
     printf("Insira a data (DD-MM-AAAA):\n");
     scanf("%10s", aluguel.data);
     
@@ -56,16 +56,19 @@ void addAlug(const char *nome_do_csv) {
 
     printf("Celular para contato:\n");
     scanf("%19s", aluguel.numero);
+
+    printf("Celular para contato:\n");
+    scanf("%19s", aluguel.prof_responsavel);
+
+    printf("Celular para contato:\n");
+    scanf("%19s", aluguel.monitor_sn);
     
     printf("Insira a ocorrencia:\n");
     scanf(" %49[^\n]", aluguel.evento);
-    
-    
-    
-//#endregion
+
 
     aluguel.modificado = 0;
-//#region [ rgba(0, 205, 30, 0.1)]
+
     //Teste de conflito de agendamentos
     rewind(pont_csv); //Ponteiro de leitura retorna ao comeco
     while (fscanf(pont_csv, "%"  #Size_data  "[^;];%" #Size_sala  "[^;];%" #Size_horario  "[^\n]\n",
@@ -76,17 +79,18 @@ void addAlug(const char *nome_do_csv) {
             return;
         }
     }
-//#endregion
+
     //Se deu certo, adiciona o novo registro
     fprintf(pont_csv, "%s;%s;%s;%s;%s;%s;%s;%d\n", 
             aluguel.data, aluguel.sala, aluguel.horario, aluguel.nome, 
-            aluguel.cpf, aluguel.numero, aluguel.evento, aluguel.modificado);
+            aluguel.cpf, aluguel.numero, aluguel.prof_responsavel, aluguel.monitor_sn, 
+            aluguel.evento, aluguel.modificado);
     
     printf("Aluguel adicionado ! C:\n");
 
     fclose(pont_csv);
 }
-//#region [ rgba(50, 100, 400, 0.1)]
+
 //Funcao para atualizar as informacoes associadas a um registro (nao altera data nem horario. Necessita-se criar outra funcao)
 void attAlugExistente(const char *nome_do_csv, const char *data, const char *sala, int horario) {
     FILE *pont_csv = fopen(nome_do_csv, "r");
@@ -147,7 +151,7 @@ void attAlugExistente(const char *nome_do_csv, const char *data, const char *sal
         printf("Registro não encontrado. :C\n");
         remove("temp.csv");
     }
-}//#endregion
+}
 
 void attAlugExistente(const char *nome_do_csv, const char *data, const char *sala, const char *horario) {
     FILE *pont_csv = fopen(nome_do_csv, "r");
@@ -229,7 +233,7 @@ void attAlugExistente(const char *nome_do_csv, const char *data, const char *sal
 void removAlug(const char *nome_do_csv, const char *sala, const char *data, int horario) {
     FILE *pont_csv = fopen(nome_do_csv, "r");
     FILE *pont_temp = fopen("temp.csv", "w");
-    struct Alug aluguel, aluguel_existente;
+    struct Alug aluguel_existente;
     int encontrou = 0;
 
     if (pont_csv == NULL) {
@@ -240,15 +244,17 @@ void removAlug(const char *nome_do_csv, const char *sala, const char *data, int 
     while (fscanf(pont_csv, "%"  #Size_data  "[^;];%" #Size_sala  "[^;];%" #Size_horario  "[^\n]\n",
                   aluguel_existente.data, aluguel_existente.sala, aluguel_existente.horario) == 3) {
         
-        if (compDataHorSala(aluguel.data, data, aluguel.sala, sala, aluguel.horario, horario)) {
+        if (compDataHorSala(aluguel_existente.data, data, aluguel_existente.sala, sala, aluguel_existente.horario, horario)) {
             encontrou = 1;
             continue; //Nao transcreve o registro escolhido e sinaliza que o achou
         }
 
         //Transcreve os dados para o arquivo temporario
-        fprintf(pont_temp, "%s;%s;%s;%s;%s;%s;%s;%d\n", 
-                aluguel.data, aluguel.sala, aluguel.horario, aluguel.nome, 
-                aluguel.cpf, aluguel.numero, aluguel.evento, aluguel.modificado);
+        fprintf(pont_temp, "%s;%s;%s;%s;%s;%s;%s;%s;%d\n", 
+                aluguel_existente.data, aluguel_existente.sala, aluguel_existente.horario, 
+                aluguel_existente.nome, aluguel_existente.cpf, aluguel_existente.numero, 
+                aluguel_existente.prof_responsavel, aluguel_existente.monitor_sn, aluguel_existente.evento, 
+                aluguel_existente.modificado);
     }
 //limpeza
     fclose(pont_csv);
@@ -277,7 +283,7 @@ int registrador() {
         printf("0 para SAIR do programa.\n");
         printf("Opcao selecionada: ");
         scanf("%d", &opcao);
-//#region [ rgba(0, 0, 90, 0.5)] nao somente esse mas outras partes com scanf preciso implementar o sizeof
+
         switch (opcao) {
             case 1:
                 addAlug("alugueis.csv");
@@ -305,7 +311,7 @@ int registrador() {
                 scanf("%d", &horario);
 
                 removAlug("alugueis.csv", data, sala, horario);
-                break; //#endregion
+                break;
             case 0:
                 printf("Programa encerrado.\n");
                 break;
