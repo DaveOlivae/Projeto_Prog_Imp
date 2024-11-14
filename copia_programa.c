@@ -1,25 +1,27 @@
 #include <stdio.h>
 
 // Struct para um aluguel operante
+#define Size_data 11
+#define Size_sala 5
+#define Size_horario 5
+#define Size_monitor_sn 1
+#define Size_cpf 13
+#define Size_nome 50
+#define Size_celular 20
+#define Size_prof_responsavel 50
+#define Size_evento 1000
+
 struct Alug {
-    char data[11];
-    char sala[4];
-    char evento[50];
-    char nome[50];
-    char cpf[15];
-    char numero[20];
-    int horario;
-    int modificado;
-//
 	char data[11];
 	char sala[5];
-	char horario[4];
-	char monitor_s/n[1];
-	char CPF[13];
+	char horario[5];
+	char monitor_sn[1];
+	char cpf[13];
 	char nome[50];
 	char celular[20]; 
 	char prof_responsavel[50];
 	char evento [1000];
+	int modificado;
 };
 
 // Funcao de comparacao para testar conflitos
@@ -62,9 +64,8 @@ void addAlug(const char *nome_do_csv) {
 
     //Teste de conflito de agendamentos
     rewind(pont_csv); //Ponteiro de leitura retorna ao comeco
-    while (fscanf(pont_csv, "%10[^;];%3[^;];%49[^;];%49[^;];%14[^;];%19[^;];%d;%d\n", 
-                  aluguel_existente.data, aluguel_existente.sala, aluguel_existente.evento, aluguel_existente.nome, 
-                  aluguel_existente.cpf, aluguel_existente.numero, &aluguel_existente.horario, &aluguel_existente.modificado) == 8) {
+    while (fscanf(pont_csv, "%11[^;];%5[^;];%5[^;]\n",
+                  aluguel_existente.data, aluguel_existente.sala, aluguel_existente.horario) == 3) {
         if (compDataHorSala(aluguel.data, aluguel_existente.data, aluguel.sala, aluguel_existente.sala, aluguel.horario, aluguel_existente.horario)) {
             printf("Erro: Esse horario ja foi agendado. :C\n");
             fclose(pont_csv);
@@ -95,7 +96,7 @@ void attAlug(const char *nome_do_csv, const char *sala, const char *data, int ho
     }
 
     //Escaneia linha a linha procurando o registro desejado
-    while (fscanf(pont_csv, "%10[^;];%3[^;];%49[^;];%49[^;];%14[^;];%19[^;];%d;%d\n", 
+    while (fscanf(pont_csv, "%10[^;];%3[^;];%49[^;];%49[^;];%14[^;];%19[^;];%49[^;];%d\n", 
                   aluguel.data, aluguel.sala, aluguel.evento, aluguel.nome, 
                   aluguel.cpf, aluguel.numero, &aluguel.horario, &aluguel.modificado) == 8) {
         //Caso encontre um igual, marca a modificacao e substitui esses dados pelos novos ao inves de copia-los do antigo
