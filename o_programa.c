@@ -172,7 +172,7 @@ void removAlug(const char *nome_do_csv, const char *sala, const char *data, int 
     }
 }
 
-//Feito por Matheus, Usa as funções de adicionar, atualizar e remover 
+//Feito por Matheus, Usa as funções de adicionar, atualizar ou remover um registro
 int registrador() {
     int opcao;
     char sala[4], data[11];
