@@ -13,7 +13,7 @@ struct Alug {
 //
 	char data[11];
 	char sala[5];
-	char bloco_hora[4];
+	char horario[4];
 	char monitor_s/n[1];
 	char CPF[13];
 	char nome[50];
