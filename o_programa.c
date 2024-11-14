@@ -10,6 +10,16 @@ struct Alug {
     char numero[20];
     int horario;
     int modificado;
+//
+	char data[11];
+	char sala[5];
+	char bloco_hora[4];
+	char monitor_s/n[1];
+	char CPF[13];
+	char nome[50];
+	char celular[20]; 
+	char prof_responsavel[50];
+	char evento [1000];
 };
 
 // Funcao de comparacao para testar conflitos
@@ -162,8 +172,8 @@ void removAlug(const char *nome_do_csv, const char *sala, const char *data, int 
     }
 }
 
-//Front-end ou algo assim sei la bleeeh vamos bill vamos descendente primario do bill
-int main() {
+//Feito por Matheus, Usa as funções de adicionar, atualizar e remover 
+int registrador() {
     int opcao;
     char sala[4], data[11];
     int horario;
