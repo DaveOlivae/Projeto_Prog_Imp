@@ -106,7 +106,7 @@ void addAlug(const char *nome_do_csv) {
 }
 
 //Funcao para atualizar as informacoes associadas a um registro (nao altera data nem horario. Necessita-se criar outra funcao)
-void attAlugExistente(const char *nome_do_csv, const char *data, const char *sala, int horario) {
+void attAlugInfos(const char *nome_do_csv, const char *data, const char *sala, int horario) {
     FILE *pont_csv = fopen(nome_do_csv, "r");
     FILE *pont_temp = fopen("temp.csv", "w");
     struct Alug aluguel, aluguel_existente;
@@ -312,7 +312,7 @@ int registrador() {
                 printf("Insira o horario (formato 710 para 7:10):\n");
                 scanf("%d", &horario);
 
-                attAlugExistente("alugueis.csv", data, sala, horario);
+                attAlugInfos("alugueis.csv", data, sala, horario);
                 break;
             case 3:
                 printf("Digite a data (AAAA-MM-DD):\n");
