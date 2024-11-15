@@ -102,7 +102,7 @@ void addAlug(const char *nome_do_csv) {
 }
 
 // Função para atualizar registro existente
-void attAlugExistente(const char *nome_do_csv, const char *data, const char *sala, const char *horario) {
+void attAlugInfos(const char *nome_do_csv, const char *data, const char *sala, const char *horario) {
     FILE *pont_csv = fopen(nome_do_csv, "r");
     FILE *pont_temp = fopen("temp.csv", "w");
     struct Alug aluguel, aluguel_existente;
@@ -166,6 +166,81 @@ void attAlugExistente(const char *nome_do_csv, const char *data, const char *sal
         remove("temp.csv");
     }
 }
+
+void attAlugExistente(const char *nome_do_csv, const char *data, const char *sala, const char *horario) {
+    FILE *pont_csv = fopen(nome_do_csv, "r");
+    FILE *pont_temp = fopen("temp.csv", "w");
+    FILE *pont_verif_new = fopen(nome_do_csv, "r");
+    struct Alug aluguel, aluguel_existente;
+    int encontrou = 0;
+
+    if (pont_csv == NULL || pont_temp == NULL || pont_verif_new == NULL) {
+        printf("Arquivo de registro não encontrado. :C\n");
+        if (pont_csv) fclose(pont_csv);
+        if (pont_temp) fclose(pont_temp);
+        if (pont_verif_new) fclose(pont_verif_new);
+        return;
+    }
+
+    while (fscanf(pont_csv, "%"  #Size_data  "[^;];%" #Size_sala  "[^;];%" #Size_horario  "[^;];%" #Size_nome  "[^;];%" #Size_cpf  "[^;];%" #Size_celular  "[^;];%" #Size_prof_responsavel  "[^;];%" #Size_monitor_sn  "[^;];%" #Size_evento  "[^\n]\n",
+                  aluguel_existente.data, aluguel_existente.sala, aluguel_existente.horario, aluguel_existente.nome, aluguel_existente.cpf, aluguel_existente.celular, aluguel_existente.prof_responsavel, aluguel_existente.monitor_sn, aluguel_existente.evento) == 9) {
+        
+        long posicao_p_csv = ftell(pont_csv);
+
+        if (compDataHorSala(aluguel_existente.data, data, aluguel_existente.sala, sala, aluguel_existente.horario, horario)) {
+            printf("Registro encontrado ! Insira as novas informações:\n");
+
+            printf("Data:\n");
+            scanf(" %49[^\n]", aluguel.data);
+
+            printf("Sala:\n");
+            scanf(" %49[^\n]", aluguel.sala);
+
+            printf("Horario:\n");
+            scanf("%14s", aluguel.horario);
+
+            aluguel.modificado = 1;
+            encontrou = 1;
+
+            rewind(pont_verif_new);
+            while (fscanf(pont_verif_new, "%"  #Size_data  "[^;];%" #Size_sala  "[^;];%" #Size_horario  "[^;]\n",
+                  aluguel_existente.data, aluguel_existente.sala, aluguel_existente.horario) == 3) {
+                
+                if (compDataHorSala(aluguel.data, aluguel_existente.data, aluguel.sala, aluguel_existente.sala, aluguel.horario, aluguel_existente.horario)){
+                    printf("O horario e data correspondentes para essa sala ja foram reservados. :C");
+                    fseek(pont_csv, posicao_p_csv, SEEK_SET);
+                    return;
+
+                } else{
+                    fprintf(pont_temp, "%s;%s;%s;%s;%s;%s;%s;%s;%d\n", 
+                        aluguel.data, aluguel.sala, aluguel.horario, 
+                        aluguel_existente.nome, aluguel_existente.cpf, aluguel_existente.numero, 
+                        aluguel_existente.prof_responsavel, aluguel_existente.monitor_sn, aluguel_existente.evento, 
+                        aluguel.modificado);
+                    return;
+            }
+        }
+        }
+        if (compDataHorSala(aluguel_existente.data, data, aluguel_existente.sala, sala, aluguel_existente.horario, horario) == 0)
+            fprintf(pont_temp, "%s;%s;%s;%s;%s;%s;%s;%s;%d\n", 
+                aluguel_existente.data, aluguel_existente.sala, aluguel_existente.horario, 
+                aluguel_existente.nome, aluguel_existente.cpf, aluguel_existente.numero, 
+                aluguel_existente.prof_responsavel, aluguel_existente.monitor_sn, aluguel_existente.evento, 
+                aluguel_existente.modificado);
+    }
+
+    fclose(pont_csv);
+    fclose(pont_temp);
+    fclose(pont_verif_new);
+
+    if (encontrou == 1) {
+        remove(nome_do_csv);
+        rename("temp.csv", nome_do_csv);
+        printf("Registro atualizado! C:\n");
+    } else {
+        printf("Registro não encontrado. :C\n");
+        remove("temp.csv");
+    }
 
 // Função para remover um registro
 void removAlug(const char *nome_do_csv, const char *data, const char *sala, const char *horario) {
