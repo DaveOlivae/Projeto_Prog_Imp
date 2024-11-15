@@ -13,7 +13,7 @@
 #define Size_evento 1000
 
 // Struct para um aluguel
-struct Alug {
+struct aluguel {
     char data[Size_data];
     char sala[Size_sala];
     char horario[Size_horario];
