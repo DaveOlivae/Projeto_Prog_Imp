@@ -167,7 +167,7 @@ void attAlugInfos(const char *nome_do_csv, const char *data, const char *sala, c
     }
 }
 
-void attAlugExistente(const char *nome_do_csv, const char *data, const char *sala, const char *horario) {
+void attAlugInfo_basico(const char *nome_do_csv, const char *data, const char *sala, const char *horario) {
     FILE *pont_csv = fopen(nome_do_csv, "r");
     FILE *pont_temp = fopen("temp.csv", "w");
     FILE *pont_verif_new = fopen(nome_do_csv, "r");
