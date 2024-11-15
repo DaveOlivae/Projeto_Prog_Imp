@@ -11,18 +11,32 @@
 #define Size_monitor_sn 1
 #define Size_evento 1000
 
+//declarando funções
+int compDataHorSala(const char *data1, const char *data2, const char *sala1, const char *sala2, int horario1, int horario2);
+void addAlug(const char *nome_do_csv);
+void attAlugExistente(const char *nome_do_csv, const char *data, const char *sala, int horario);
+void attAlugExistente(const char *nome_do_csv, const char *data, const char *sala, const char *horario);
+void removAlug(const char *nome_do_csv, const char *sala, const char *data, int horario);
+int registrador();
+
+
 struct Alug {
 	char data[Size_data];
 	char sala[Size_sala];
 	char horario[Size_horario];
-    char nome[Size_nome];
+	char nome[Size_nome];
 	char cpf[Size_cpf];
-    char celular[Size_numero];
-    char prof_responsavel[Size_prof_responsavel];
-    char monitor_sn[Size_monitor_sn];
-    char evento [Size_evento];
+	char celular[Size_numero];
+	char prof_responsavel[Size_prof_responsavel];
+	char monitor_sn[Size_monitor_sn];
+	char evento [Size_evento];
 	int modificado;
 };
+
+int main ()
+{
+
+}
 
 // Funcao de comparacao para testar conflitos
 int compDataHorSala(const char *data1, const char *data2, const char *sala1, const char *sala2, int horario1, int horario2) {
