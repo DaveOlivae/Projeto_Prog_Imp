@@ -90,9 +90,12 @@ int main ()
 	{	  
         	L[i] = (i % 2 == 0) ? 'L' : ';';
         }
-	int size_linhadasala = strlen(nova_sala) + strlen(L);
 	
-	char linhadasala[size_linhadasala] = char strcat(nova_sala, L);
+	int size_linhadasala = strlen(nova_sala) + strlen(L);
+
+	char linhadasala[size_linhadasala];
+	strcpy(linhadasala, nova_sala);
+	strcat(linhadasala, L);
 	
 	if (ja_registrado == 0)
 	{
