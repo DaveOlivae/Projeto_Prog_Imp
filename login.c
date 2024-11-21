@@ -2,12 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_LEN 100
-#define ADMIN_USER "admin"
-#define ADMIN_PASS "admin123"
-#define FILE_NAME "usuarios.csv"
+#define Size_login 50
+#define Size_senha 30
+#define adm_login "adm"
+#define adm_senha "1234
+#define csv_login "login.csv"
 
-// Função para verificar se o arquivo de usuários existe
+//Verificacao de existencia do arquivo
 int arquivoExiste(const char *nomeArquivo) {
     FILE *arquivo = fopen(nomeArquivo, "r");
     if (arquivo) {
@@ -17,55 +18,55 @@ int arquivoExiste(const char *nomeArquivo) {
     return 0;
 }
 
-// Função para fazer login
-int fazerLogin(const char *usuario, const char *senha) {
-    char login[MAX_LEN], senhaArq[MAX_LEN];
-    FILE *arquivo = fopen(FILE_NAME, "r");
+//Login
+int logar(const char *login_inserido, const char *senha_inserida) {
+    char login[Size_login], senha[Size_senha];
+    FILE *arquivo = fopen(csv_login, "r");
 
     if (!arquivo) {
-        printf("Erro ao abrir o arquivo de usuários.\n");
+        printf("Erro ao abrir o arquivo de usuarios.\n");
         return 0;
     }
 
-    while (fscanf(arquivo, "%[^,],%s\n", login, senhaArq) != EOF) {
-        if (strcmp(usuario, login) == 0 && strcmp(senha, senhaArq) == 0) {
+    while (fscanf(arquivo, "%[^,],%s\n", login, senha) != EOF) {
+        if (strcmp(login_inserido, login) == 0 && strcmp(senha_inserida, senha) == 0) {
             fclose(arquivo);
-            return 1;  // Login bem-sucedido
+            return 1;
         }
     }
 
     fclose(arquivo);
-    return 0;  // Login falhou
+    return 0;  //caso o login falhe
 }
 
-// Função para adicionar um novo usuário
+//Adicao de usuarios
 void adicionarUsuario() {
-    char login[MAX_LEN], senha[MAX_LEN];
+    char login[Size_login], senha[Size_senha];
     printf("Digite o nome de usuário: ");
     scanf("%s", login);
     printf("Digite a senha: ");
     scanf("%s", senha);
 
-    FILE *arquivo = fopen(FILE_NAME, "a");
+    FILE *arquivo = fopen(csv_login, "a");
     if (!arquivo) {
-        printf("Erro ao abrir o arquivo para adicionar usuário.\n");
+        printf("Erro ao abrir o arquivo para adicionar usuario. :C\n");
         return;
     }
 
     fprintf(arquivo, "%s,%s\n", login, senha);
     fclose(arquivo);
-    printf("Usuário adicionado com sucesso!\n");
+    printf("Usuario adicionado com sucesso! :D\n");
 }
 
-// Função para alterar a senha de um usuário
+//Alteracao de usuarios
 void alterarSenha() {
-    char login[MAX_LEN], senha[MAX_LEN], novaSenha[MAX_LEN];
+    char login[Size_login], senha[Size_senha], novaSenha[Size_senha];
     printf("Digite o nome de usuário para alterar a senha: ");
     scanf("%s", login);
     printf("Digite a senha atual: ");
     scanf("%s", senha);
 
-    FILE *arquivo = fopen(FILE_NAME, "r+");
+    FILE *arquivo = fopen(csv_login, "r+");
     if (!arquivo) {
         printf("Erro ao abrir o arquivo para alterar senha.\n");
         return;
@@ -104,7 +105,7 @@ void removerUsuario() {
     printf("Digite o nome de usuário para remover: ");
     scanf("%s", login);
 
-    FILE *arquivo = fopen(FILE_NAME, "r");
+    FILE *arquivo = fopen(csv_login, "r");
     if (!arquivo) {
         printf("Erro ao abrir o arquivo para remover usuário.\n");
         return;
@@ -135,8 +136,8 @@ void removerUsuario() {
     fclose(temp);
 
     if (encontrado) {
-        remove(FILE_NAME);
-        rename("temp.csv", FILE_NAME);
+        remove(csv_login);
+        rename("temp.csv", csv_login);
         printf("Usuário removido com sucesso!\n");
     } else {
         remove("temp.csv");
@@ -149,8 +150,8 @@ int main() {
     char usuario[MAX_LEN], senha[MAX_LEN];
     int opcao;
     
-    if (!arquivoExiste(FILE_NAME)) {
-        FILE *arquivo = fopen(FILE_NAME, "w");
+    if (!arquivoExiste(csv_login)) {
+        FILE *arquivo = fopen(csv_login, "w");
         fclose(arquivo);
     }
 
