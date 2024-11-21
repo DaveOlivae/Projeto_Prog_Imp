@@ -86,25 +86,24 @@ int main ()
     }
 	//printf("_%s_\n", nova_sala);
 	char L[36];
-	for (int i = 0; i < 36; i++) 
-	{	  
-        	L[i] = (i % 2 == 0) ? 'L' : ';';
+	for (int i = 0; i < 37; i++)
+	{
+        	L[i] = (i % 2 == 0) ? ';' : 'L';
         }
-	
 	int size_linhadasala = strlen(nova_sala) + strlen(L);
 
 	char linhadasala[size_linhadasala];
 	strcpy(linhadasala, nova_sala);
 	strcat(linhadasala, L);
-	
+
 	if (ja_registrado == 0)
 	{
-		fprintf(Ponteiro_Arquivo, "\n%s;", nova_sala);
+		fprintf(Ponteiro_Arquivo, "\n%s", linhadasala);
 		fflush(Ponteiro_Arquivo);
 		printf("A sala foi registrada\n");
 		fclose(Ponteiro_Arquivo); //############## FECHA O ARQUIVO ##############
 	}
-	
+	printf("_%s_\n", linhadasala); //debug
+
 	return 0;
 }
-
