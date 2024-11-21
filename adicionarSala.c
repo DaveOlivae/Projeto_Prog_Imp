@@ -85,6 +85,14 @@ int main ()
         }
     }
 	//printf("_%s_\n", nova_sala);
+	char L[36];
+	for (int i = 0; i < 36; i++) 
+	{	  
+        	L[i] = (i % 2 == 0) ? 'L' : ';';
+        }
+	int size_linhadasala = strlen(nova_sala) + strlen(L);
+	
+	char linhadasala[size_linhadasala] = char strcat(nova_sala, L);
 	
 	if (ja_registrado == 0)
 	{
