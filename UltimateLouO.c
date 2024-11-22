@@ -43,22 +43,9 @@ int main ()
 
 	Ponteiro_Arquivo = fopen(resultado, "r+"); //############## ABRE O ARQUIVO ##############
 
+////// Parte de modifica horários ###########################################################
 
-////// Parte de modifica horários
-
-	//char linha_sala[Size_nome];
-    //printf("Digite a sala:\n");
-	//fgets(linha_sala, Size_nome, stdin);
-	//for (int i = 0; i < strlen(linha_sala); i++)
-	//{
-    //    if (linha_sala[i] == '\n')
-	//	{
-    //        linha_sala[i] = '\0';
-	//	}
-	//}
-	//printf("_%s_\n", linha_sala); //DEBUG
-
-    char nova_sala[Size_nome];
+    char nova_sala[Size_nome]; // SALA ##############################
     printf("Digite a sala:\n");
 	fgets(nova_sala, Size_nome, stdin);
 	for (int i = 0; i < strlen(nova_sala); i++)
@@ -69,27 +56,27 @@ int main ()
 		}
 	}
 
-	int bloco_horario;
+	int bloco_horario; // HORARIO ##############################
     char buffer[Size_nome];
 	printf("Digite a posicao do horario:\n");
 	if (fgets(buffer, sizeof(buffer), stdin) != NULL)
 	{
         // Converte a string para um int
         bloco_horario = atoi(buffer);
-        //
-        bloco_horario = bloco_horario - 710 + 1;
 	}
-	printf("_1BLOH_%i_\n", bloco_horario);
-	//printf("_%s_\n", nova_sala); //DEBUG
-    //Verificar se a sala já existe
+	// Calcular os intervalos de 50 minutos
+    bloco_horario = ((bloco_horario - 710) / 50) * 2; // Começa a contar a partir do 0, *2 por conta do ';'
+
+	//printf("_1BLOH_%i_\n", bloco_horario);
+
+    //Verificar se a sala já existe ###################################################
     rewind(Ponteiro_Arquivo); //Ponteiro de leitura retorna ao comeco do arquivo
 
 	char sala_presente[Size_nome];
-
 	int ja_registrado = 0;
-	int posicao_horario = 0;
+	int posicao_horario = 1;
 
-    while (fscanf(Ponteiro_Arquivo, "%20[^;]", sala_presente) == 1)
+    while (fscanf(Ponteiro_Arquivo, "%20[^;]", sala_presente) == 1) //#####################################################
 	{
 		size_t len = strcspn(sala_presente, "\n");
 		if (sala_presente[len] == '\n')
@@ -108,52 +95,27 @@ int main ()
 			ja_registrado = 1;
             break;
         }
+    }//####################################################################################################################
 
-    }
-	//printf("_%s_\n", nova_sala);
-	char L[36];
-	for (int i = 0; i < 37; i++)
+	if (ja_registrado == 0) //Verificar se a sala existe
 	{
-        	L[i] = (i % 2 == 0) ? ';' : 'L';
-    }
-	int size_linhadasala = strlen(nova_sala) + strlen(L);
-
-	char linhadasala[size_linhadasala];
-	strcpy(linhadasala, nova_sala);
-	strcat(linhadasala, L);
-
-	if (ja_registrado == 0)
-	{
-		printf("Foi selecionada uma sala não registrada\n");
+		printf("Foi selecionada uma sala nao registrada\n");
 	}
 
-	printf("_%s_\n", linhadasala);
+	//printf("_linhas pular:_%i_\n", posicao_horario); // DEBUG
 
-	printf("_2POSH_%i_\n", posicao_horario);
+    long int Posicao_leitura = ftell(Ponteiro_Arquivo);
 
-    //Verificar se a sala já existe
-    rewind(Ponteiro_Arquivo); //Ponteiro de leitura retorna ao comeco do arquivo
-
-    size_t buffer2_size = 1024 * 1024;  // buffer dew 1MB
+    size_t buffer2_size = 1024 * 1024;  // buffer de 1MB
     char *buffer2 = (char *)malloc(buffer2_size);
-    if (!buffer2) {
+    if (!buffer2)
+    {
         perror("Failed to allocate memory");
         fclose(Ponteiro_Arquivo);
         return 1;
     }
 
-    for (int i = 0; i < posicao_horario; i++)
-    {
-        if (fgets(buffer2, sizeof(buffer2), Ponteiro_Arquivo) == NULL) {
-            break;  // erro, fim do arquivo
-        }
-    }
-
-    printf("_SALAAA:_%s_", sala_presente);//DEBUG
-    bloco_horario = bloco_horario + strlen(sala_presente) + 1; // + o espaço do;
-    posicao_horario = posicao_horario + 1;
-
-	fseek(Ponteiro_Arquivo, bloco_horario, SEEK_SET);
+	fseek(Ponteiro_Arquivo, Posicao_leitura + bloco_horario, SEEK_SET);
 
 	char char_atual = fgetc(Ponteiro_Arquivo);
 
@@ -164,30 +126,18 @@ int main ()
         return 1;  // Exit if position is invalid
     }
 
-    // Check if the character is 'L' or 'O' and change it
+    // Checar de o charactere é 'L' ou 'O' e então mudar ###############################################
     if (char_atual == 'L')
 	{
-	    for (int i = 0; i < posicao_horario; i++)
-        {
-            if (fgets(buffer2, sizeof(buffer2), Ponteiro_Arquivo) == NULL) {
-                break;  // erro, fim do arquivo
-            }
-        }
-        fseek(Ponteiro_Arquivo, bloco_horario, SEEK_SET);  // Seek again to the same position
-        fputc('O', Ponteiro_Arquivo);  // Change 'L' to 'O'
-        printf("Character at position %d changed from 'L' to 'O'.\n", posicao_horario);
+        fseek(Ponteiro_Arquivo, Posicao_leitura + bloco_horario, SEEK_SET);  // Seek a mesma posição
+        fputc('O', Ponteiro_Arquivo);  // 'L' vira 'O'
+        printf("Char na linha %d, Posicao %d, 'L' para 'O'.\n", posicao_horario, bloco_horario);
     }
     else if (char_atual == 'O')
 	{
-	    for (int i = 0; i < posicao_horario; i++)
-        {
-            if (fgets(buffer2, sizeof(buffer2), Ponteiro_Arquivo) == NULL) {
-                break;  // erro, fim do arquivo
-            }
-        }
-        fseek(Ponteiro_Arquivo, bloco_horario, SEEK_SET);  // Seek again to the same position
-        fputc('L', Ponteiro_Arquivo);  // Change 'O' to 'L'
-        printf("Character at position %d changed from 'O' to 'L'.\n", posicao_horario);
+        fseek(Ponteiro_Arquivo, Posicao_leitura + bloco_horario, SEEK_SET);  // Seek a mesma posição
+        fputc('L', Ponteiro_Arquivo);  // 'O' vira 'L'
+        printf("Char na linha %d, Posicao %d, 'O' para 'L'.\n", posicao_horario, bloco_horario);
 		printf("Char atual: _%c_ \n", char_atual);
     }
 	else if (char_atual == ';')
