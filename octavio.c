@@ -193,11 +193,13 @@ void attAlug(const char *nome_do_csv, const char *data, const char *sala, const 
                     fseek(pont_csv, posicao_p_csv, SEEK_SET);
                     return;
 
-            fprintf(pont_temp, "%s;%s;%s;%s;%s;%s;%s;%s;%s;%d\n",
-                    aluguel_novo.data, aluguel_novo.sala, aluguel_novo.horario,
-                    aluguel_novo.nome, aluguel_novo.cpf, aluguel_novo.celular,
-                    aluguel_novo.prof_responsavel, aluguel_novo.monitor_sn,
-                    aluguel_novo.evento, aluguel_novo.modificado);
+            	fprintf(pont_temp, "%s;%s;%s;%s;%s;%s;%s;%s;%s;%d\n",
+                   	aluguel_novo.data, aluguel_novo.sala, aluguel_novo.horario,
+                 	aluguel_novo.nome, aluguel_novo.cpf, aluguel_novo.celular,
+	                aluguel_novo.prof_responsavel, aluguel_novo.monitor_sn,
+                  	aluguel_novo.evento, aluguel_novo.modificado);
+		// XXXXXXXXXXXXX daqui serão pegas as NOVAS informações do registro que foi atualizado, basta aplicar esses aluguel_novo.data, aluguel_novo.sala e aluguel_novo.horario do fprintf (eles estarão corretos tanto pra se mudou data/sala/horario quanto pra se não mudou)
+		// XXXXXXXXXXXX a função das VELHAS informações terá que ser indentada nesse if pra evitar erro, você vai injetar aluguel_existente.data, aluguel_existente.sala e aluguel_existente.horario
         } else {
             fprintf(pont_temp, "%s;%s;%s;%s;%s;%s;%s;%s;%s;%d\n",
                     aluguel_existente.data, aluguel_existente.sala, aluguel_existente.horario,
