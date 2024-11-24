@@ -272,6 +272,7 @@ int registrador() {
         printf("1 - ADICIONAR um registro\n");
         printf("2 - ATUALIZAR um registro\n");
         printf("3 - REMOVER um registro\n");
+		printf("4 - ADICIONAR uma SALA aos horarios\n");
         printf("0 - SAIR\n");
         printf("Opção: ");
         scanf("%d", &opcao);
@@ -301,6 +302,9 @@ int registrador() {
             case 3:
                 removAlug("alugueis.csv", data, sala, horario);
                 break;
+			case 4:
+				AdicionarSala (sala);
+				break;
             case 0:
                 printf("Programa encerrado.\n");
                 break;
@@ -536,8 +540,36 @@ void AdicionarSala (char Sala_T)
 //######################################################################################################################################
 //######################################################################################################################################
 
+void PlanilhaDefaultExistinator()
+{
+	FILE *Pont_Pdefault;
+    const char *NomePdefault = "planilhadefault.csv";
+    const char *PlanilhaDefaultTexto = 
+	
+
+    // Tentar abrir para leitura, testando se ele existe mesmo
+    Pont_Pdefault = fopen(NomePdefault, "r");
+
+    if (Pont_Pdefault == NULL) {
+        // O arquivo não existe, então cria ele
+        Pont_Pdefault = fopen(NomePdefault, "w");
+		
+        // Write the pre-written text to the newly created file
+        fprintf(Pont_Pdefault, "%s", PlanilhaDefaultTexto);
+		fflush(Pont_Pdefault);
+		
+        printf("File created and text written successfully.\n");
+    } else {
+        // Se o arquivo existe, fecha
+        fclose(Pont_Pdefault);
+    }
+    fclose(Pont_Pdefault);
+}
+
 //Execucao (em praca publica)
-int main() {
-    registrador();
+int main() 
+{
+	printf("Seja bem-vindo ao programa de cadastro de salas!\n")
+	registrador()
     return 0;
 }
