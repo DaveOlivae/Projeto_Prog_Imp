@@ -12,7 +12,7 @@
 #define Size_monitor_sn 2
 #define Size_evento 1000
 
-void TrocarLouO (char Data_T, char Sala_T, char Hora_T); // Declarando função
+void TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[]); // Declarando função
 void AdicionarSala (char Sala_T);
 
 // Struct para um aluguel
@@ -320,12 +320,12 @@ int registrador() {
 //######################################################################################################################################
 //######################################################################################################################################
 //######################################################################################################################################
-void TrocarLouO (char Data_T, char Sala_T, char Hora_T)
+void TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[])
 {
 	FILE *Ponteiro_Arquivo; // Aponta para um arquivo
 	char ID_do_arquivo[Size_nome]; // Array que recebe o nome do Arquivo, formato exemplo: 112024
     
-	ID_do_arquivo = Data_T; //input do usuario para ID_do_arquivo
+	ID_do_arquivo = Data_T[]; //input do usuario para ID_do_arquivo
 
 	ID_do_arquivo[Size_nome - 4] = '.';
 	ID_do_arquivo[Size_nome - 3] = 'c';
@@ -359,7 +359,7 @@ void TrocarLouO (char Data_T, char Sala_T, char Hora_T)
 ////// Parte de modifica horários ###########################################################
 
     char nova_sala[Size_nome]; // SALA ##############################
-    nova_sala = Sala_T
+    nova_sala = Sala_T[];
 	for (int i = 0; i < strlen(nova_sala); i++)
 	{
         if (nova_sala[i] == '\n')
@@ -370,7 +370,7 @@ void TrocarLouO (char Data_T, char Sala_T, char Hora_T)
     
 	int bloco_horario; // HORARIO ##############################
     // Converte a string para um int
-    bloco_horario = atoi(Hora_T);
+    bloco_horario = atoi(Hora_T[]);
 	// Calcular os intervalos de 50 minutos
     bloco_horario = ((bloco_horario - 710) / 50) * 2; // Começa a contar a partir do 0, *2 por conta do ';'
 	//printf("_1BLOH_%i_\n", bloco_horario);
@@ -472,14 +472,13 @@ void AdicionarSala (char Sala_T)
 	
 	strcpy(ID_do_arquivo, "planilhadefault.csv"); //Nome para ID_do_arquivo nesse caso é fixo por ser um único arquivo
 	ID_do_arquivo[19] = '\0';
-	//printf("_%s_\n", resultado); //DEBUG
 	
-	Ponteiro_Arquivo = fopen(resultado, "a+"); //############## ABRE O ARQUIVO ##############
+	Ponteiro_Arquivo = fopen(ID_do_arquivo, "a+"); //############## ABRE O ARQUIVO ##############
 	
 ////// Parte de adicionar salas
 
 	char nova_sala[Size_nome]; // SALA ##############################
-	nova_sala = Sala_T
+	nova_sala = Sala_T[];
 	for (int i = 0; i < strlen(nova_sala); i++)
 	{
         	if (nova_sala[i] == '\n')
@@ -609,7 +608,7 @@ void PlanilhaDefaultExistinator() //Necessário para criar a plannilha default s
 //Execucao (em praca publica)
 int main() 
 {
-	PlanilhaDefaultExistinator() //Necessário para criar a plannilha default se ela não existir
+	PlanilhaDefaultExistinator(); //Necessário para criar a plannilha default se ela não existir
 	printf("Seja bem-vindo ao programa de cadastro de salas!\n")
 	registrador()
     return 0;
