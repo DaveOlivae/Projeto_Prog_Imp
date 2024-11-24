@@ -610,6 +610,6 @@ int main()
 {
 	PlanilhaDefaultExistinator(); //Necessário para criar a plannilha default se ela não existir
 	printf("Seja bem-vindo ao programa de cadastro de salas!\n");
-	registrador()
+	registrador();
     return 0;
 }
