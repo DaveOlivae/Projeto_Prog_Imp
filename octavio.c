@@ -12,7 +12,8 @@
 #define Size_monitor_sn 2
 #define Size_evento 1000
 
-int TrocarLouO (char Data_T, char Sala_T, char Hora_T); // Declarando função
+void TrocarLouO (char Data_T, char Sala_T, char Hora_T); // Declarando função
+void AdicionarSala (char Sala_T);
 
 // Struct para um aluguel
 struct aluguel {
@@ -314,7 +315,7 @@ int registrador() {
 //######################################################################################################################################
 //######################################################################################################################################
 //######################################################################################################################################
-int TrocarLouO (char Data_T, char Sala_T, char Hora_T)
+void TrocarLouO (char Data_T, char Sala_T, char Hora_T)
 {
 	FILE *Ponteiro_Arquivo; // Aponta para um arquivo
 	char ID_do_arquivo[Size_nome]; // Array que recebe o nome do Arquivo, formato exemplo: 112024
@@ -453,87 +454,62 @@ int TrocarLouO (char Data_T, char Sala_T, char Hora_T)
 	fflush(Ponteiro_Arquivo);
 	fclose(Ponteiro_Arquivo); //############## FECHA O ARQUIVO ##############
 
-	return 0;
+	return;
 }
 //######################################################################################################################################
 //######################################################################################################################################
 //######################################################################################################################################
 
-void AdicionarSala ()
+void AdicionarSala (char Sala_T)
 {
 	FILE *Ponteiro_Arquivo; // Aponta para um arquivo
-	char ID_do_arquivo[Size_nome]; // Array que recebe o nome do Arquivo, formato exemplo: 112024
+	char ID_do_arquivo[19]; // Array que recebe o nome do Arquivo, formato exemplo: 112024
 	
-	strcpy(ID_do_arquivo, "default"); //Lê input do usuario para ID_do_arquivo
-	
-	ID_do_arquivo[Size_nome - 4] = '.';
-	ID_do_arquivo[Size_nome - 3] = 'c';
-	ID_do_arquivo[Size_nome - 2] = 's';
-	ID_do_arquivo[Size_nome - 1] = 'v';
-	ID_do_arquivo[Size_nome] = '\0';
-
-	char comeco_nome[] = "planilha";
-	int lencomeco = strlen(comeco_nome);
-	int lenID = strlen(ID_do_arquivo);
-	
-	// Tamanho do resultado suficiente para caber os dois 
-	char resultado[lencomeco + lenID - 2]; // -2 já que o final das arrays contem \0
-    
-    // Copia a primeira array para a array resultado
-    for (int i = 0; i < lencomeco; i++) {
-        resultado[i] = comeco_nome[i];
-    }
-    
-    // Copia a segunda array para a array resultado, depois da primeira
-    for (int i = 0; i < lenID; i++) {
-        resultado[lencomeco + i] = ID_do_arquivo[i];
-    }
-    
-    // Adiciona \0 no final das arrays somadas
-    resultado[lencomeco + lenID] = '\0';
+	strcpy(ID_do_arquivo, "planilhadefault.csv"); //Nome para ID_do_arquivo nesse caso é fixo por ser um único arquivo
+	ID_do_arquivo[19] = '\0';
 	//printf("_%s_\n", resultado); //DEBUG
-
+	
 	Ponteiro_Arquivo = fopen(resultado, "a+"); //############## ABRE O ARQUIVO ##############
 	
 ////// Parte de adicionar salas
 
-	char nova_sala[Size_nome];
-    printf("Digite a nova sala:\n");
-	fgets(nova_sala, Size_nome, stdin);
-	for (int i = 0; i < strlen(nova_sala); i++) 
+	char nova_sala[Size_nome]; // SALA ##############################
+	nova_sala = Sala_T
+	for (int i = 0; i < strlen(nova_sala); i++)
 	{
-        if (nova_sala[i] == '\n') 
+        	if (nova_sala[i] == '\n')
 		{
-            nova_sala[i] = '\0';
-		}		
+            		nova_sala[i] = '\0';
+		}
 	}
+	
 	//printf("_%s_\n", nova_sala); //DEBUG
-    //Verificar se a sala já existe
-    rewind(Ponteiro_Arquivo); //Ponteiro de leitura retorna ao comeco do arquivo
+    	//Verificar se a sala já existe
+    	rewind(Ponteiro_Arquivo); //Ponteiro de leitura retorna ao comeco do arquivo
 	
 	char sala_presente[Size_nome];
 	
 	int ja_registrado = 0;
-    while (fscanf(Ponteiro_Arquivo, "%20[^;]", sala_presente) == 1) 
+	while (fscanf(Ponteiro_Arquivo, "%20[^;]", sala_presente) == 1) 
 	{
 		size_t len = strcspn(sala_presente, "\n");
 		if (sala_presente[len] == '\n') 
 		{
-		// Move os caracteres uma posição para a esquerda para remover o \n
-		memmove(sala_presente + len, sala_presente + len + 1, strlen(sala_presente) - len);
+			// Move os caracteres uma posição para a esquerda para remover o \n
+			memmove(sala_presente + len, sala_presente + len + 1, strlen(sala_presente) - len);
 		}
 		
 		fscanf(Ponteiro_Arquivo, "%*c");
 		//printf("_%sfim\n", sala_presente);
 		
-        if (strcmp(nova_sala, sala_presente) == 0) 
+        	if (strcmp(nova_sala, sala_presente) == 0) 
 		{
-            printf("Essa sala ja foi registrada\n");
-            fclose(Ponteiro_Arquivo);
+	            	printf("Essa sala ja foi registrada\n");
+	            	fclose(Ponteiro_Arquivo);
 			ja_registrado = 1;
-            break;
-        }
-    }
+            		break;
+        	}
+	}
 	//printf("_%s_\n", nova_sala);
 	char L[36];
 	for (int i = 0; i < 37; i++)
@@ -554,8 +530,7 @@ void AdicionarSala ()
 		fclose(Ponteiro_Arquivo); //############## FECHA O ARQUIVO ##############
 	}
 	printf("_%s_\n", linhadasala); //debug
-
-	return 0;
+	return;
 }
 //######################################################################################################################################
 //######################################################################################################################################
