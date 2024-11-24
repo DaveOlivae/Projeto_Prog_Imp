@@ -99,7 +99,7 @@ void addAlug(const char *nome_do_csv) {
             aluguel.cpf, aluguel.celular, aluguel.prof_responsavel, aluguel.monitor_sn, 
             aluguel.evento, aluguel.modificado);
 	
-    int TrocarLouO (aluguel.data, aluguel.sala, aluguel.sala); // Usa essas informações para usar na função que modifica o quadro de horário L ou O
+    int TrocarLouO (aluguel.data, aluguel.sala, aluguel.horario); // Usa essas informações para usar na função que modifica o quadro de horário L ou O
 	
     printf("Aluguel adicionado! :)\n");
 
@@ -133,7 +133,8 @@ void attAlug(const char *nome_do_csv, const char *data, const char *sala, const 
 
         if (compDataHorSala(aluguel_existente.data, data, aluguel_existente.sala, sala, aluguel_existente.horario, horario)) {
             printf(":D Registro encontrado ! Insira as novas informaçoes ou pressione ENTER para manter os valores atuais:\n");
-
+			int TrocarLouO (aluguel_existente.data, aluguel_existente.sala, aluguel_existente.horario); // Modifica o quadro de horário L ou O, já que é O, muda pra L antes de modificar
+			
             printf("Data [%s]: ", aluguel_existente.data);
             fgets(aluguel_novo.data, Size_data, stdin);
             aluguel_novo.data[strcspn(aluguel_novo.data, "\n")] = '\0';
