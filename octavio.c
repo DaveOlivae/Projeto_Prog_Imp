@@ -609,7 +609,7 @@ void PlanilhaDefaultExistinator() //Necessário para criar a plannilha default s
 int main() 
 {
 	PlanilhaDefaultExistinator(); //Necessário para criar a plannilha default se ela não existir
-	printf("Seja bem-vindo ao programa de cadastro de salas!\n")
+	printf("Seja bem-vindo ao programa de cadastro de salas!\n");
 	registrador()
     return 0;
 }
