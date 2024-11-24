@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 
-#define Size_nome 12 //tamanho do nome do arquivo
+#define Size_nome 12
+//tamanho do nome do arquivo
 
 // status;data;sala;hora_inicio;hora_fim;monitor_s/n;CPF;nome;celular;prof_responsavel;evento
 
