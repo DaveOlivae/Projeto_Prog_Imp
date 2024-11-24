@@ -541,7 +541,7 @@ void AdicionarSala (char Sala_T)
 //######################################################################################################################################
 //######################################################################################################################################
 
-void PlanilhaDefaultExistinator()
+void PlanilhaDefaultExistinator() //Necessário para criar a plannilha default se ela não existir
 {
 	FILE *Pont_Pdefault;
     const char *NomePdefault = "planilhadefault.csv";
@@ -591,7 +591,7 @@ void PlanilhaDefaultExistinator()
         // O arquivo não existe, então cria ele
         Pont_Pdefault = fopen(NomePdefault, "w");
 		
-        // Write the pre-written text to the newly created file
+        // Coloca o texto da planilha no arquivo
         fprintf(Pont_Pdefault, "%s", PlanilhaDefaultTexto);
 	fflush(Pont_Pdefault);
 		
@@ -609,7 +609,7 @@ void PlanilhaDefaultExistinator()
 //Execucao (em praca publica)
 int main() 
 {
-	PlanilhaDefaultExistinator() //Necessário criar a plannilha default se ela não existir
+	PlanilhaDefaultExistinator() //Necessário para criar a plannilha default se ela não existir
 	printf("Seja bem-vindo ao programa de cadastro de salas!\n")
 	registrador()
     return 0;
