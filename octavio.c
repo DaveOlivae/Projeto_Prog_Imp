@@ -608,6 +608,7 @@ void PlanilhaDefaultExistinator()
 //Execucao (em praca publica)
 int main() 
 {
+	PlanilhaDefaultExistinator() //Necessário criar a plannilha default se ela não existir
 	printf("Seja bem-vindo ao programa de cadastro de salas!\n")
 	registrador()
     return 0;
