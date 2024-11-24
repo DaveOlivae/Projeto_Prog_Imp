@@ -12,7 +12,7 @@
 #define Size_monitor_sn 2
 #define Size_evento 1000
 
-int TrocarLouO ();
+int TrocarLouO (char Data_T, char Sala_T, char Hora_T); // Declarando função
 
 // Struct para um aluguel
 struct aluguel {
@@ -97,7 +97,9 @@ void addAlug(const char *nome_do_csv) {
             aluguel.data, aluguel.sala, aluguel.horario, aluguel.nome, 
             aluguel.cpf, aluguel.celular, aluguel.prof_responsavel, aluguel.monitor_sn, 
             aluguel.evento, aluguel.modificado);
-    
+	
+    int TrocarLouO (aluguel.data, aluguel.sala, aluguel.sala); // Usa essas informações para usar na função que modifica o quadro de horário L ou O
+	
     printf("Aluguel adicionado! :)\n");
 
     fclose(pont_csv);
