@@ -585,16 +585,20 @@ void PlanilhaDefaultExistinator()
     // Tentar abrir para leitura, testando se ele existe mesmo
     Pont_Pdefault = fopen(NomePdefault, "r");
 
-    if (Pont_Pdefault == NULL) {
+    if (Pont_Pdefault == NULL) 
+    {
         // O arquivo não existe, então cria ele
         Pont_Pdefault = fopen(NomePdefault, "w");
 		
         // Write the pre-written text to the newly created file
         fprintf(Pont_Pdefault, "%s", PlanilhaDefaultTexto);
-		fflush(Pont_Pdefault);
+	fflush(Pont_Pdefault);
 		
-        printf("File created and text written successfully.\n");
-    } else {
+        printf("Arquivo de planilha default foi criado.\n");
+    }
+	    
+    else 
+    {
         // Se o arquivo existe, fecha
         fclose(Pont_Pdefault);
     }
