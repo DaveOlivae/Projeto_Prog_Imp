@@ -411,18 +411,7 @@ void TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[])
 		printf("Foi selecionada uma sala nao registrada\n");
 	}
 
-	//printf("_linhas pular:_%i_\n", posicao_horario); // DEBUG
-
     long int Posicao_leitura = ftell(Ponteiro_Arquivo);
-
-    size_t buffer2_size = 1024 * 1024;  // buffer de 1MB
-    char *buffer2 = (char *)malloc(buffer2_size);
-    if (!buffer2)
-    {
-        perror("Failed to allocate memory");
-        fclose(Ponteiro_Arquivo);
-        return;
-    }
 
 	fseek(Ponteiro_Arquivo, Posicao_leitura + bloco_horario, SEEK_SET);
 
