@@ -358,7 +358,17 @@ void TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[])
 	//printf("_%s_\n", resultado); //DEBUG
 
 	Ponteiro_Arquivo = fopen(resultado, "r+"); //############## ABRE O ARQUIVO ##############
-
+	if (Ponteiro_Arquivo == NULL) 
+	{
+        Ponteiro_Arquivo = fopen(resultado, "w");
+		FILE *Ler_default = fopen("planilhadefault.csv", "r");
+		
+		if (Pont_Pdefault == NULL) 
+		{
+	        	perror("Erro ao abrir o arquivo");
+	        	return;
+		}
+	}
 ////// Parte de modifica horários ###########################################################
 
     char nova_sala[Size_nome]; // SALA ##############################
@@ -466,7 +476,11 @@ void AdicionarSala (char Sala_T[])
 	ID_do_arquivo[19] = '\0';
 	
 	Ponteiro_Arquivo = fopen(ID_do_arquivo, "a+"); //############## ABRE O ARQUIVO ##############
-	
+	if (Ponteiro_Arquivo == NULL) 
+	{
+	        perror("Erro ao abrir o arquivo");
+	        return;
+	}
 ////// Parte de adicionar salas
 
 	char nova_sala[Size_nome]; // SALA ##############################
@@ -576,12 +590,18 @@ void PlanilhaDefaultExistinator() //Necessário para criar a plannilha default s
 	
     // Tentar abrir para leitura, testando se ele existe mesmo
     Pont_Pdefault = fopen(NomePdefault, "r");
-
+	
     if (Pont_Pdefault == NULL) 
     {
         // O arquivo não existe, então cria ele
         Pont_Pdefault = fopen(NomePdefault, "w");
-		
+	
+	if (Pont_Pdefault == NULL) 
+	{
+        	perror("Erro ao abrir o arquivo");
+        	return;
+	}
+	    
         // Coloca o texto da planilha no arquivo
         fprintf(Pont_Pdefault, "%s", PlanilhaDefaultTexto);
 	fflush(Pont_Pdefault);
