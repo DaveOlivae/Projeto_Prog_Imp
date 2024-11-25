@@ -13,8 +13,10 @@
 #define Size_monitor_sn 2
 #define Size_evento 1000
 
-void TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[]); // Declarando função
+ // Declarando funções
+void TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[]);
 void AdicionarSala (char Sala_T[]);
+void PlanilhaDefaultExistinator ();
 
 // Struct para um aluguel
 struct aluguel {
