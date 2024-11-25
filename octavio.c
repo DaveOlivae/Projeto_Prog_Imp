@@ -14,6 +14,11 @@
 #define Size_evento 1000
 
  // Declarando funções
+int compDataHorSala(const char *data1, const char *data2, const char *sala1, const char *sala2, const char *horario1, const char *horario2);
+void addAlug(const char *nome_do_csv);
+void attAlug(const char *nome_do_csv, const char *data, const char *sala, const char *horario);
+void removAlug(const char *nome_do_csv, const char *data, const char *sala, const char *horario);
+int registrador();
 void TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[]);
 void AdicionarSala (char Sala_T[]);
 void PlanilhaDefaultExistinator ();
