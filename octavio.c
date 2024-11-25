@@ -623,12 +623,12 @@ void RemoverSala ()
 		fscanf(Ponteiro_Arquivo, "%*c");
 		//printf("_%sfim\n", sala_presente);
 
-        	if (strcmp(sala_para_remover, sala_presente) == 0)
+        if (strcmp(sala_para_remover, sala_presente) == 0)
 		{
-	            	printf("Sala encontrada\n");
-	            	fclose(Ponteiro_Arquivo);
+	        printf("Sala encontrada\n");
+	        fclose(Ponteiro_Arquivo);
 			ja_registrado = 1;
-            		break;
+            break;
         }
         qual_linha_remover++;
 	}
