@@ -20,8 +20,8 @@ void attAlug(const char *nome_do_csv, const char *data, const char *sala, const 
 void removAlug(const char *nome_do_csv, const char *data, const char *sala, const char *horario);
 int registrador();
 void TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[]);
-void AdicionarSala (char Sala_T[]);
-void RemoverSala (char Sala_T[]);
+void AdicionarSala ();
+void RemoverSala ();
 void PlanilhaDefaultExistinator ();
 
 // Struct para um aluguel
@@ -288,6 +288,7 @@ int registrador() {
         printf("2 - ATUALIZAR um registro\n");
         printf("3 - REMOVER um registro\n");
 		printf("4 - ADICIONAR uma SALA aos horarios\n");
+		printf("5 - REMOVER uma SALA dos horarios\n");
         printf("0 - SAIR\n");
         printf("Opção: ");
         scanf("%d", &opcao);
@@ -318,7 +319,10 @@ int registrador() {
                 removAlug("alugueis.csv", data, sala, horario);
                 break;
 			case 4:
-				AdicionarSala (sala);
+				AdicionarSala ();
+				break;
+			case 5:
+				RemoverSala ();
 				break;
             case 0:
                 printf("Programa encerrado.\n");
@@ -492,7 +496,7 @@ void TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[])
 //######################################################################################################################################
 //######################################################################################################################################
 
-void AdicionarSala (char Sala_T[])
+void AdicionarSala ()
 {
 	FILE *Ponteiro_Arquivo; // Aponta para um arquivo
 	char ID_do_arquivo[19]; // Array que recebe o nome do Arquivo, formato exemplo: 112024
@@ -509,7 +513,7 @@ void AdicionarSala (char Sala_T[])
 ////// Parte de adicionar salas
 
 	char nova_sala[Size_nome]; // SALA ##############################
-	strcpy(nova_sala, Sala_T);
+	fgets(nova_sala, Size_nome, stdin);
 	for (int i = 0; i < strlen(nova_sala); i++)
 	{
         	if (nova_sala[i] == '\n')
@@ -570,7 +574,7 @@ void AdicionarSala (char Sala_T[])
 //######################################################################################################################################
 //######################################################################################################################################
 //######################################################################################################################################
-void RemoverSala (char Sala_T[])
+void RemoverSala ()
 {
 	FILE *Ponteiro_Arquivo; // Aponta para um arquivo
 	char ID_do_arquivo[20]; // Array que recebe o nome do Arquivo, formato exemplo: 112024
@@ -587,16 +591,17 @@ void RemoverSala (char Sala_T[])
         return;
     }
 ////// Parte de encontrar e remover a sala
-
+	
 	char sala_para_remover[Size_nome]; // SALA ##############################
-	strcpy(sala_para_remover, Sala_T);
-	for (int i = 0; i < strlen(sala_para_remover); i++)
+    printf("Digite a sala a ser removida:\n");
+	fgets(sala_para_remover, Size_nome, stdin);
+	for (int i = 0; i < strlen(sala_para_remover); i++) 
 	{
-        	if (sala_para_remover[i] == '\n')
+        if (sala_para_remover[i] == '\n') 
 		{
-            		sala_para_remover[i] = '\0';
-		}
-	}
+            sala_para_remover[i] = '\0';
+		}		
+	} 
 	//printf("_%s_\n", sala_para_remover); //DEBUG
 
     //Verificar se a sala já existe
