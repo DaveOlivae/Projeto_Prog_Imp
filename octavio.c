@@ -580,7 +580,7 @@ void RemoverSala (char Sala_T[])
 
 	Ponteiro_Arquivo = fopen(ID_do_arquivo, "r+"); //############## ABRE O ARQUIVO ##############
 
-	FILE *Pont_ArquivoTemp = fopen("ArquivoTemporario", "w");
+	FILE *Pont_ArquivoTemp = fopen("ArquivoTemporario.csv", "w");
 	if (Pont_ArquivoTemp == NULL)
     {
         perror("Error opening file");
@@ -651,6 +651,22 @@ void RemoverSala (char Sala_T[])
         fclose(Ponteiro_Arquivo);
         fclose(Pont_ArquivoTemp);
     }
+	// Remove the original file
+	if (remove("planilhadefault.csv") != 0)
+	{
+	    perror("Erro ao deletar o Arquivo original");
+	    return;
+	}
+	    // Renomear o arquivo temporário com o nome do arquivo original, é o novo arquivo default
+	    if (rename("ArquivoTemporario.csv", "planilhadefault.csv") != 0)
+		{
+	        perror("Erro renaming temporary file");
+	    } 
+		else
+		{
+	        printf("Sala na linha %d foi removida.\n", lineToRemove);
+	    }
+	}
 	return;
 }
 //######################################################################################################################################
