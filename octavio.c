@@ -664,7 +664,7 @@ void RemoverSala (char Sala_T[])
 	    } 
 		else
 		{
-	        printf("Sala na linha %d foi removida.\n", lineToRemove);
+	        printf("Sala na linha %d foi removida.\n", qual_linha_remover);
 	    }
 	}
 	return;
