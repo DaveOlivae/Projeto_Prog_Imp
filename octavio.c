@@ -21,6 +21,7 @@ void removAlug(const char *nome_do_csv, const char *data, const char *sala, cons
 int registrador();
 void TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[]);
 void AdicionarSala (char Sala_T[]);
+void RemoverSala (char Sala_T[]);
 void PlanilhaDefaultExistinator ();
 
 // Struct para um aluguel
@@ -569,7 +570,92 @@ void AdicionarSala (char Sala_T[])
 //######################################################################################################################################
 //######################################################################################################################################
 //######################################################################################################################################
+void RemoverSala (char Sala_T[])
+{
+	FILE *Ponteiro_Arquivo; // Aponta para um arquivo
+	char ID_do_arquivo[20]; // Array que recebe o nome do Arquivo, formato exemplo: 112024
 
+	strcpy(ID_do_arquivo, "planilhadefault.csv"); //Nome para ID_do_arquivo nesse caso é fixo por ser um único arquivo
+	ID_do_arquivo[20] = '\0';
+
+	Ponteiro_Arquivo = fopen(ID_do_arquivo, "r+"); //############## ABRE O ARQUIVO ##############
+
+	FILE *Pont_ArquivoTemp = fopen("ArquivoTemporario", "w");
+	if (Pont_ArquivoTemp == NULL)
+    {
+        perror("Error opening file");
+        return;
+    }
+////// Parte de encontrar e remover a sala
+
+	char sala_para_remover[Size_nome]; // SALA ##############################
+	strcpy(sala_para_remover, Sala_T);
+	for (int i = 0; i < strlen(sala_para_remover); i++)
+	{
+        	if (sala_para_remover[i] == '\n')
+		{
+            		sala_para_remover[i] = '\0';
+		}
+	}
+	//printf("_%s_\n", sala_para_remover); //DEBUG
+
+    //Verificar se a sala já existe
+    rewind(Ponteiro_Arquivo); //Ponteiro de leitura retorna ao comeco do arquivo
+
+	char sala_presente[Size_nome];
+
+	int ja_registrado = 0;
+    int qual_linha_remover = 1;
+	while (fscanf(Ponteiro_Arquivo, "%20[^;]", sala_presente) == 1)
+	{
+		size_t len = strcspn(sala_presente, "\n");
+		if (sala_presente[len] == '\n')
+		{
+			// Move os caracteres uma posição para a esquerda para remover o \n
+			memmove(sala_presente + len, sala_presente + len + 1, strlen(sala_presente) - len);
+		}
+
+		fscanf(Ponteiro_Arquivo, "%*c");
+		//printf("_%sfim\n", sala_presente);
+
+        	if (strcmp(sala_para_remover, sala_presente) == 0)
+		{
+	            	printf("Sala encontrada\n");
+	            	fclose(Ponteiro_Arquivo);
+			ja_registrado = 1;
+            		break;
+        }
+        qual_linha_remover++;
+	}
+	//printf("_%s_\n", sala_para_remover);
+
+	if (ja_registrado == 0)
+    {
+        rewind(Ponteiro_Arquivo);
+		printf("A sala foi registrada\n");
+		char buffer[4096];
+
+        int Linha_atual = 1;
+        // Lê linha por linha do arquivo original
+        while (fgets(buffer, sizeof(buffer), Ponteiro_Arquivo) != NULL)
+        {
+        // Escreve a linha no arquivo temporário se não for a linha que quer remover
+            if (Linha_atual != qual_linha_remover)
+            {
+                fputs(buffer, Pont_ArquivoTemp);
+            }
+        Linha_atual++;
+        }
+
+        // Fecha os dois arquivos
+        fclose(Ponteiro_Arquivo);
+        fclose(Pont_ArquivoTemp);
+    }
+	return;
+}
+//######################################################################################################################################
+//######################################################################################################################################
+//######################################################################################################################################
 void PlanilhaDefaultExistinator() //Necessário para criar a plannilha default se ela não existir
 {
 	FILE *Pont_Pdefault;
