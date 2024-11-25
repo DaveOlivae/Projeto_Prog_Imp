@@ -108,7 +108,7 @@ void addAlug(const char *nome_do_csv) {
             aluguel.cpf, aluguel.celular, aluguel.prof_responsavel, aluguel.monitor_sn, 
             aluguel.evento, aluguel.modificado);
 	
-    int TrocarLouO (aluguel.data, aluguel.sala, aluguel.horario); // Usa essas informações para usar na função que modifica o quadro de horário L ou O
+    TrocarLouO (aluguel.data, aluguel.sala, aluguel.horario); // Usa essas informações para usar na função que modifica o quadro de horário L ou O
 	
     printf("Aluguel adicionado! :)\n");
 
@@ -143,7 +143,7 @@ void attAlug(const char *nome_do_csv, const char *data, const char *sala, const 
         if (compDataHorSala(aluguel_existente.data, data, aluguel_existente.sala, sala, aluguel_existente.horario, horario)) {
             printf(":D Registro encontrado ! Insira as novas informaçoes ou pressione ENTER para manter os valores atuais:\n");
 			// Precisa estar aqui para modificar o quadro de horário L ou O, já que é O, muda pra L antes de modificar
-			void TrocarLouO (aluguel_existente.data, aluguel_existente.sala, aluguel_existente.horario);
+			TrocarLouO (aluguel_existente.data, aluguel_existente.sala, aluguel_existente.horario);
 			
             printf("Data [%s]: ", aluguel_existente.data);
             fgets(aluguel_novo.data, Size_data, stdin);
@@ -210,7 +210,7 @@ void attAlug(const char *nome_do_csv, const char *data, const char *sala, const 
                   	aluguel_novo.evento, aluguel_novo.modificado);
 		// XXXXXXXXXXXXX daqui serão pegas as NOVAS informações do registro que foi atualizado, basta aplicar esses aluguel_novo.data, aluguel_novo.sala e aluguel_novo.horario do fprintf (eles estarão corretos tanto pra se mudou data/sala/horario quanto pra se não mudou)
 				// A nova coordenada é alterada de L para O e mesmo se nao tiver mudado, a coordenada antiga volta a ser O	- Joao R.
-					void TrocarLouO (aluguel_novo.data, aluguel_novo.sala, aluguel_novo.horario);	
+					TrocarLouO (aluguel_novo.data, aluguel_novo.sala, aluguel_novo.horario);	
 		// XXXXXXXXXXXX a função das VELHAS informações terá que ser indentada nesse if pra evitar erro, você vai injetar aluguel_existente.data, aluguel_existente.sala e aluguel_existente.horario
         } else {
             fprintf(pont_temp, "%s;%s;%s;%s;%s;%s;%s;%s;%s;%d\n",
