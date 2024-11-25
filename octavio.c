@@ -360,13 +360,27 @@ void TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[])
 	Ponteiro_Arquivo = fopen(resultado, "r+"); //############## ABRE O ARQUIVO ##############
 	if (Ponteiro_Arquivo == NULL) 
 	{
-        Ponteiro_Arquivo = fopen(resultado, "w");
+        	Ponteiro_Arquivo = fopen(resultado, "w");
 		FILE *Ler_default = fopen("planilhadefault.csv", "r");
 		
-		if (Pont_Pdefault == NULL) 
+		if (Ler_default == NULL) 
 		{
-	        	perror("Erro ao abrir o arquivo");
-	        	return;
+	        	PlanilhaDefaultExistinator();
+		}
+		
+		char buffer[1024];  // Buffer temporario
+    		size_t bytes_lidos;
+		while ((bytes_lidos = fread(buffer, 1, sizeof(buffer), Ler_default)) > 0) 
+		{
+        		fwrite(buffer, 1, bytes_lidos, Ponteiro_Arquivo);
+    		}
+
+		fclose(Ler_default);
+		Ponteiro_Arquivo = fopen(resultado, "r+");
+		if (Ponteiro_Arquivo == NULL)
+		{
+			perror("Erro ao abrir o arquivo, verifique o local do arquivo");
+	       		return;
 		}
 	}
 ////// Parte de modifica horários ###########################################################
