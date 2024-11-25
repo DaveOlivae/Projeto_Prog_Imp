@@ -443,9 +443,9 @@ void TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[])
 
     if (char_atual == EOF)
 	{
-        printf("Error: Reached end of file or invalid position.\n");
+        printf("Erro: Chegou ao EOF (final do arquivo) ou a uma posicao invalida.\n");
         fclose(Ponteiro_Arquivo);
-        return;  // Exit if position is invalid
+        return;  // Retorna se a posicao for invalida
     }
 
     // Checar de o charactere é 'L' ou 'O' e então mudar ###############################################
@@ -462,14 +462,14 @@ void TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[])
         printf("Char na linha %d, Posicao %d, 'O' para 'L'.\n", posicao_horario, bloco_horario);
 		printf("Char atual: _%c_ \n", char_atual);
     }
-	else if (char_atual == ';')
+	else if (char_atual == ';') //DEBUG ou se algo de muito errado tiver acontecido
 	{
-        printf("Error: Character at position %d is a ';' \n", posicao_horario);
+        printf("Erro: Caractere na posicao %d eh um ';' \n", posicao_horario);
     }
-    else
+    else //DEBUG ou se algo de muito errado tiver acontecido parte 2
 	{
-        printf("Error: Character at position %d is neither 'L' nor 'O'.\n", posicao_horario);
-		printf("Char atual: _%c_ \n", char_atual);
+        printf("Erro: Caractere na posicao %d nao eh uma 'L' ou 'O' ou ';'.\n", posicao_horario);
+		printf("Char atual: _%c_ \n", char_atual); //DEBUG
     }
 
 	fflush(Ponteiro_Arquivo);
