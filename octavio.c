@@ -14,7 +14,7 @@
 #define Size_evento 1000
 
 void TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[]); // Declarando função
-void AdicionarSala (char Sala_T);
+void AdicionarSala (char Sala_T[]);
 
 // Struct para um aluguel
 struct aluguel {
@@ -421,7 +421,7 @@ void TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[])
     {
         perror("Failed to allocate memory");
         fclose(Ponteiro_Arquivo);
-        return 1;
+        return;
     }
 
 	fseek(Ponteiro_Arquivo, Posicao_leitura + bloco_horario, SEEK_SET);
@@ -432,7 +432,7 @@ void TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[])
 	{
         printf("Error: Reached end of file or invalid position.\n");
         fclose(Ponteiro_Arquivo);
-        return 1;  // Exit if position is invalid
+        return;  // Exit if position is invalid
     }
 
     // Checar de o charactere é 'L' ou 'O' e então mudar ###############################################
@@ -468,7 +468,7 @@ void TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[])
 //######################################################################################################################################
 //######################################################################################################################################
 
-void AdicionarSala (char Sala_T)
+void AdicionarSala (char Sala_T[])
 {
 	FILE *Ponteiro_Arquivo; // Aponta para um arquivo
 	char ID_do_arquivo[19]; // Array que recebe o nome do Arquivo, formato exemplo: 112024
