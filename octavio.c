@@ -186,7 +186,7 @@ void attAlug(const char *nome_do_csv, const char *data, const char *sala, const 
 
             //teste de conflito
             rewind(pont_verif_new);
-            while (fscanf(pont_verif_new, "%"  #Size_data  "[^;];%" #Size_sala  "[^;];%" #Size_horario  "[^;]\n",
+            while (fscanf(pont_verif_new, "%"  Size_data  "[^;];%" Size_sala  "[^;];%" Size_horario  "[^;]\n",
                   aluguel_existente.data, aluguel_existente.sala, aluguel_existente.horario) == 3) {
                 
                 if (compDataHorSala(aluguel_novo.data, aluguel_existente.data, aluguel_novo.sala, aluguel_existente.sala, aluguel_novo.horario, aluguel_existente.horario)){
