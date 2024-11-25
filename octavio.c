@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 // Definindo os tamanhos para cada campo
@@ -370,9 +371,9 @@ void TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[])
 		}
 	}
     
-	int bloco_horario; // HORARIO ##############################
+	// HORARIO ##############################
     // Converte a string para um int
-	strcpy(bloco_horario, atoi(Hora_T));
+	int bloco_horario = atoi(Hora_T);
 	// Calcular os intervalos de 50 minutos
     bloco_horario = ((bloco_horario - 710) / 50) * 2; // Começa a contar a partir do 0, *2 por conta do ';'
 	//printf("_1BLOH_%i_\n", bloco_horario);
