@@ -162,7 +162,7 @@ void addAlug(const char *nome_do_csv) {
             while (getchar() != '\n');
         }
 
-    printf("Insira a ocorrência: ");
+    printf("Insira a ocorrencia: ");
     fgets(aluguel.evento, Size_evento, stdin);
     aluguel.evento[strcspn(aluguel.evento, "\n")] = '\0';
 
@@ -370,14 +370,14 @@ int registrador() {
     char data[Size_data], sala[Size_sala], horario[Size_horario];
 
     do {
-        printf("Selecione uma opção:\n");
+        printf("Selecione uma opcao:\n");
         printf("1 - ADICIONAR um registro\n");
         printf("2 - ATUALIZAR um registro\n");
         printf("3 - REMOVER um registro\n");
 		printf("4 - ADICIONAR uma SALA aos horarios\n");
 		printf("5 - REMOVER uma SALA dos horarios\n");
         printf("0 - SAIR\n");
-        printf("Opção: ");
+        printf("Opcao: ");
         scanf("%d", &opcao);
         getchar(); //Limpeza do buffer apos o scanf
 
@@ -390,7 +390,7 @@ int registrador() {
             fgets(sala, Size_sala, stdin);
             sala[strcspn(sala, "\n")] = '\0';
 
-            printf("Horário (formato 710 para 7:10): ");
+            printf("Horario (formato 710 para 7:10): ");
             fgets(horario, Size_horario, stdin);
             horario[strcspn(horario, "\n")] = '\0';
         }
@@ -415,7 +415,7 @@ int registrador() {
                 printf("Programa encerrado.\n");
                 break;
             default:
-                printf("Opção inválida.\n");
+                printf("Opcao invalida.\n");
         }
     } while (opcao != 0);
 
@@ -427,15 +427,16 @@ int registrador() {
 void TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[])
 {
 	FILE *Ponteiro_Arquivo; // Aponta para um arquivo
-	char ID_do_arquivo[Size_nome]; // Array que recebe o nome do Arquivo, formato exemplo: 112024
+	int Size_ID_planilha = 20;
+	char ID_do_arquivo[Size_ID_planilha]; // Array que recebe o nome do Arquivo, formato exemplo: 112024
     
 	strcpy(ID_do_arquivo, Data_T); //input do usuario para ID_do_arquivo
 
-	ID_do_arquivo[Size_nome - 4] = '.';
-	ID_do_arquivo[Size_nome - 3] = 'c';
-	ID_do_arquivo[Size_nome - 2] = 's';
-	ID_do_arquivo[Size_nome - 1] = 'v';
-	ID_do_arquivo[Size_nome] = '\0';
+	ID_do_arquivo[Size_ID_planilha - 4] = '.';
+	ID_do_arquivo[Size_ID_planilha - 3] = 'c';
+	ID_do_arquivo[Size_ID_planilha - 2] = 's';
+	ID_do_arquivo[Size_ID_planilha - 1] = 'v';
+	ID_do_arquivo[Size_ID_planilha] = '\0';
 
 	char comeco_nome[] = "planilha";
 	int lencomeco = strlen(comeco_nome);
