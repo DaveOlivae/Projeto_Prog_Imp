@@ -145,7 +145,7 @@ void addAlug(const char *nome_do_csv) {
             while (getchar() != '\n');
         }
 
-    printf("Professor responsável: ");
+    printf("Professor responsavel: ");
     fgets(aluguel.prof_responsavel, Size_prof_responsavel, stdin);
     aluguel.prof_responsavel[strcspn(aluguel.prof_responsavel, "\n")] = '\0';
 
