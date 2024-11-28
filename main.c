@@ -5,7 +5,14 @@ static void registro (GtkWidget *widget, gpointer data) {
 }
 
 static void modificar (GtkWidget *widget, gpointer data) {
+    GtkWidget *window_modificar;
 
+    // setup da janela de modificar
+    window_modificar = gtk_window_new ();
+    gtk_window_set_title (GTK_WINDOW (window_modificar), "Modificar");
+    gtk_window_set_default_size(GTK_WINDOW(window_modificar), 400, 300);
+
+    gtk_window_present (GTK_WINDOW (window_modificar));
 }
 
 static void activate (GtkApplication *app, gpointer user_data) {
@@ -17,6 +24,7 @@ static void activate (GtkApplication *app, gpointer user_data) {
     GtkWidget *horario[18];
     GtkWidget *labels_vazias[3];
     GtkWidget *botoes[630];
+    GtkWidget *scr;
 
     char *salas[] = {"A03", "B01", "B02", "B03", "B04", "B09", "I04", "I06", "I08", "I09", "I10", "I11", "I12", "I13", "I14", "I15", "K03", "K04", "K05", "K09", "K10", "K11", "K12", "K13", "K14", "K15", "K16", "LIP01", "LIP02", "LIP03", "LIP07", "J01", "J08", "LMC", "LMS"};
 
@@ -25,10 +33,15 @@ static void activate (GtkApplication *app, gpointer user_data) {
     // setup da janela
     window = gtk_application_window_new (app);
     gtk_window_set_title (GTK_WINDOW (window), "Window");
+    gtk_window_set_default_size(GTK_WINDOW(window), 1000, 1000);
+
+    // setup do scroll
+    scr = gtk_scrolled_window_new();
+    gtk_window_set_child(GTK_WINDOW(window), scr);
 
     // setup do grid
     grid = gtk_grid_new();
-    gtk_window_set_child(GTK_WINDOW(window), grid);
+    gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(scr), grid);
 
     // label vazia
     labels_vazias[0] = gtk_label_new(" ");
@@ -61,7 +74,7 @@ static void activate (GtkApplication *app, gpointer user_data) {
     g_signal_connect(botao_modificar, "clicked", G_CALLBACK(modificar), NULL);
     gtk_grid_attach(GTK_GRID(grid), botao_modificar, 5, 1, 2, 1);
 
-    // setup dos botoes de livre e ocupado
+    // setup dos botoes
     for (int i = 0; i < 35; i++) {
         for (int j = 0; j < 18; j++) {
             botoes[j] = gtk_link_button_new_with_label("livre", NULL);
@@ -84,3 +97,4 @@ int main(int argc, char **argv) {
 
     return status;
 }
+
