@@ -39,7 +39,7 @@ int verifCriaArquivo;
 void attAlug(const char *nome_do_csv, const char *data, const char *sala, const char *horario);
 void removAlug(const char *nome_do_csv, const char *data, const char *sala, const char *horario);
 int registrador();
-void TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[]);
+int TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[]);
 void AdicionarSala ();
 void RemoverSala ();
 void PlanilhaDefaultExistinator ();
@@ -112,7 +112,7 @@ void addAlug(const char *nome_do_csv) {
             while (getchar() != '\n');
         }
 
-    printf("Insira o horário (formato 710 para 7:10): ");
+    printf("Insira o horario (formato 710 para 7:10): ");
     fgets(aluguel.horario, Size_horario, stdin);
     aluguel.horario[strcspn(aluguel.horario, "\n")] = '\0';
 
@@ -177,7 +177,7 @@ void addAlug(const char *nome_do_csv) {
     while (fscanf(pont_csv, fscanfDSH,
                   aluguel_existente.data, aluguel_existente.sala, aluguel_existente.horario) == 3) {
         if (compDataHorSala(aluguel.data, aluguel_existente.data, aluguel.sala, aluguel_existente.sala, aluguel.horario, aluguel_existente.horario)) {
-            printf("Erro: Esse horário já foi agendado. :C\n");
+            printf("Erro: Esse horario já foi agendado. :C\n");
             fclose(pont_csv);
             return;
         }
@@ -185,14 +185,20 @@ void addAlug(const char *nome_do_csv) {
 
     fseek(pont_csv, 0, SEEK_END);
 
-    fprintf(pont_csv, fprintfTudo,
-            aluguel.data, aluguel.sala, aluguel.horario, aluguel.nome,
-            aluguel.cpf, aluguel.celular, aluguel.prof_responsavel, aluguel.monitor_sn,
-            aluguel.evento, aluguel.modificado);
+  int check_de_erro = TrocarLouO (aluguel.data, aluguel.sala, aluguel.horario); // Usa essas informações para usar na função que modifica o quadro de horário L ou O
+    if (check_de_erro == 0) // se não ocorreu nenhum erro, pode registrar
+    {
+        fprintf(pont_csv, fprintfTudo,
+        aluguel.data, aluguel.sala, aluguel.horario, aluguel.nome,
+        aluguel.cpf, aluguel.celular, aluguel.prof_responsavel, aluguel.monitor_sn,
+        aluguel.evento, aluguel.modificado);
 
-    TrocarLouO (aluguel.data, aluguel.sala, aluguel.horario); // Usa essas informações para usar na função que modifica o quadro de horário L ou O
-
-    printf("Aluguel adicionado! :)\n");
+        printf("Aluguel adicionado! :)\n");
+    }
+    else
+    {
+        printf("Aluguel nao adicionado. Ocorreu um erro :( tente novamente\n");
+    }
 
     fclose(pont_csv);
 }
@@ -424,23 +430,23 @@ int registrador() {
 //######################################################################################################################################
 //######################################################################################################################################
 //######################################################################################################################################
-void TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[])
+int TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[])
 {
+    int pode_registrar = 0; // Se der um erro não deixa registrar
 	FILE *Ponteiro_Arquivo; // Aponta para um arquivo
 	int Size_ID_planilha = 13;
 	char ID_do_arquivo[Size_ID_planilha]; // Array que recebe o nome do Arquivo, formato exemplo: 112024.csv
 
 	strcpy(ID_do_arquivo, Data_T); //input do usuario para ID_do_arquivo
 
-    strcat(ID_do_arquivo, ".csv");
-    printf("_%s_\n",ID_do_arquivo); //DEBUG
+    //printf("_%s_\n",ID_do_arquivo); //DEBUG
 
 	char comeco_nome[] = "planilha";
 	int lencomeco = strlen(comeco_nome);
 	int lenID = strlen(ID_do_arquivo);
 
 	// Tamanho do resultado suficiente para caber os dois
-	char resultado[lencomeco + lenID + 1]; // -2 já que o final das arrays contem \0
+	char resultado[lencomeco + lenID + 1]; //
 
     // Copia a primeira array para a array resultado
     for (int i = 0; i < lencomeco; i++)
@@ -456,34 +462,39 @@ void TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[])
 
     // Adiciona \0 no final das arrays somadas
     resultado[lencomeco + lenID] = '\0';
-	printf("_%s_\n", resultado); //DEBUG
+    strcat(resultado, ".csv");
+	//printf("_%s_\n", resultado); //DEBUG
 
 	Ponteiro_Arquivo = fopen(resultado, "r+"); //############## ABRE O ARQUIVO ##############
 	if (Ponteiro_Arquivo == NULL)
 	{
-        	Ponteiro_Arquivo = fopen(resultado, "w");
+        Ponteiro_Arquivo = fopen(resultado, "w");
 		FILE *Ler_default = fopen("planilhadefault.csv", "r");
 
 		if (Ler_default == NULL)
 		{
-	        	PlanilhaDefaultExistinator();
+            PlanilhaDefaultExistinator();
 		}
 
 		char buffer[1024];  // Buffer temporario
     		size_t bytes_lidos;
 		while ((bytes_lidos = fread(buffer, 1, sizeof(buffer), Ler_default)) > 0)
 		{
-        		fwrite(buffer, 1, bytes_lidos, Ponteiro_Arquivo);
-    		}
+            fwrite(buffer, 1, bytes_lidos, Ponteiro_Arquivo);
+        }
 
-		fclose(Ler_default);
+		fclose(Ler_default); //fechar os arquivos
+		fclose(Ponteiro_Arquivo); //fechar por garantia, só para ter certeza que vai funcionar
+
 		Ponteiro_Arquivo = fopen(resultado, "r+");
+		rewind(Ponteiro_Arquivo);
 		if (Ponteiro_Arquivo == NULL)
 		{
 			perror("Erro ao abrir o arquivo, verifique o local do arquivo");
 	       		return;
 		}
 	}
+
 ////// Parte de modifica horários ###########################################################
 
     char nova_sala[Size_nome]; // SALA ##############################
@@ -534,6 +545,8 @@ void TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[])
 	if (ja_registrado == 0) //Verificar se a sala existe
 	{
 		printf("Foi selecionada uma sala nao registrada\n");
+		pode_registrar = 1;
+		return pode_registrar;
 	}
 
     long int Posicao_leitura = ftell(Ponteiro_Arquivo);
@@ -546,7 +559,9 @@ void TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[])
 	{
         printf("Erro: Chegou ao EOF (final do arquivo) ou a uma posicao invalida.\n");
         fclose(Ponteiro_Arquivo);
-        return;  // Retorna se a posicao for invalida
+        pode_registrar = 1;
+		fclose(Ponteiro_Arquivo);
+		return pode_registrar; // Retorna se a posicao for invalida
     }
 
     // Checar de o charactere é 'L' ou 'O' e então mudar ###############################################
@@ -565,18 +580,24 @@ void TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[])
     }
 	else if (char_atual == ';') //DEBUG ou se algo de muito errado tiver acontecido
 	{
-        printf("Erro: Caractere na posicao %d eh um ';' \n", posicao_horario);
+    	printf("Erro: Caractere na posicao %d eh um ';' \n", posicao_horario);
+		fclose(Ponteiro_Arquivo);
+    	pode_registrar = 1;
+		return pode_registrar;
     }
     else //DEBUG ou se algo de muito errado tiver acontecido parte 2
 	{
         printf("Erro: Caractere na posicao %d nao eh uma 'L' ou 'O' ou ';'.\n", posicao_horario);
 		printf("Char atual: _%c_ \n", char_atual); //DEBUG
+		fclose(Ponteiro_Arquivo);
+		pode_registrar = 1;
+		return pode_registrar;
     }
 
 	fflush(Ponteiro_Arquivo);
 	fclose(Ponteiro_Arquivo); //############## FECHA O ARQUIVO ##############
 
-	return;
+	return pode_registrar;
 }
 //######################################################################################################################################
 //######################################################################################################################################
