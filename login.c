@@ -190,7 +190,7 @@ int main() {
             }
         } while (opcao != 4);
     } else {
-        if (fazerLogin(login, senha)) {
+        if (logar(login, senha)) {
             printf("Login realizado ! :D\n");
         } else {
             printf("Usuario ou senha invalidos. :/\n");
