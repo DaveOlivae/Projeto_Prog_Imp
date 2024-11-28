@@ -383,6 +383,7 @@ int registrador() {
         printf("3 - REMOVER um registro\n");
 		printf("4 - ADICIONAR uma SALA aos horarios\n");
 		printf("5 - REMOVER uma SALA dos horarios\n");
+		printf("6 - MOSTRAR planilha de uma data\n");
         printf("0 - SAIR\n");
         printf("Opcao: ");
         scanf("%d", &opcao);
