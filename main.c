@@ -16,6 +16,7 @@ static void activate (GtkApplication *app, gpointer user_data) {
     GtkWidget *sala[35];
     GtkWidget *horario[18];
     GtkWidget *labels_vazias[3];
+    GtkWidget *botoes[630];
 
     char *salas[] = {"A03", "B01", "B02", "B03", "B04", "B09", "I04", "I06", "I08", "I09", "I10", "I11", "I12", "I13", "I14", "I15", "K03", "K04", "K05", "K09", "K10", "K11", "K12", "K13", "K14", "K15", "K16", "LIP01", "LIP02", "LIP03", "LIP07", "J01", "J08", "LMC", "LMS"};
 
@@ -28,7 +29,7 @@ static void activate (GtkApplication *app, gpointer user_data) {
     // setup do grid
     grid = gtk_grid_new();
     gtk_window_set_child(GTK_WINDOW(window), grid);
-    
+
     // label vazia
     labels_vazias[0] = gtk_label_new(" ");
     gtk_grid_attach(GTK_GRID(grid), labels_vazias[0], 0, 0, 1, 1);
@@ -59,7 +60,15 @@ static void activate (GtkApplication *app, gpointer user_data) {
     botao_modificar = gtk_button_new_with_label("Modificar");
     g_signal_connect(botao_modificar, "clicked", G_CALLBACK(modificar), NULL);
     gtk_grid_attach(GTK_GRID(grid), botao_modificar, 5, 1, 2, 1);
-    
+
+    // setup dos botoes de livre e ocupado
+    for (int i = 0; i < 35; i++) {
+        for (int j = 0; j < 18; j++) {
+            botoes[j] = gtk_link_button_new_with_label("livre", NULL);
+            gtk_grid_attach(GTK_GRID(grid), botoes[j], j+2, i+4, 1, 1);
+        }
+    }
+
     gtk_window_present (GTK_WINDOW (window));
 
 }
@@ -72,7 +81,6 @@ int main(int argc, char **argv) {
     g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
     status = g_application_run (G_APPLICATION (app), argc, argv);
     g_object_unref (app);
-    
+
     return status;
 }
-
