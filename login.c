@@ -5,8 +5,13 @@
 #define Size_login 50
 #define Size_senha 30
 #define adm_login "adm"
-#define adm_senha "1234
+#define adm_senha "1234"
 #define csv_login "login.csv"
+
+void limparBuffer() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
 
 //Verificacao de existencia do arquivo
 int arquivoExiste(const char *nomeArquivo) {
@@ -36,7 +41,7 @@ int logar(const char *loginInserido, const char *senha_inserida) {
     }
 
     fclose(arquivo);
-    return 0;  //caso o login falhe
+    return 0;  // Caso o login falhe
 }
 
 //Adicao de usuarios
@@ -44,8 +49,10 @@ void adicionarUsuario() {
     char login[Size_login], senha[Size_senha];
     printf("Digite o nome de usuário: ");
     scanf("%s", login);
+    limparBuffer();
     printf("Digite a senha: ");
     scanf("%s", senha);
+    limparBuffer();
 
     FILE *arquivo = fopen(csv_login, "a");
     if (!arquivo) {
@@ -63,8 +70,10 @@ void alterarSenha() {
     char login[Size_login], senha[Size_senha], senhaNova[Size_senha];
     printf("Insira o nome de usuario cuja senha deseja alterar: ");
     scanf("%s", login);
+    limparBuffer();
     printf("Insira a senha atual: ");
     scanf("%s", senha);
+    limparBuffer();
 
     FILE *arquivo = fopen(csv_login, "r+");
     if (!arquivo) {
@@ -83,7 +92,8 @@ void alterarSenha() {
         if (strcmp(loginAnt, login) == 0 && strcmp(senhaAnt, senha) == 0) {
             printf("Insira a nova senha: ");
             scanf("%s", senhaNova);
-            
+            limparBuffer();
+
             fseek(arquivo, pos, SEEK_SET);
             fprintf(arquivo, "%s,%s\n", loginAnt, senhaNova);
             encontrado = 1;
@@ -104,6 +114,7 @@ void removerUsuario() {
     char login[Size_login];
     printf("Insira o login a ser removido: ");
     scanf("%s", login);
+    limparBuffer();
 
     FILE *arquivo = fopen(csv_login, "r");
     if (!arquivo) {
@@ -149,7 +160,7 @@ void removerUsuario() {
 int main() {
     char login[Size_login], senha[Size_senha];
     int opcao;
-    
+
     if (!arquivoExiste(csv_login)) {
         FILE *arquivo = fopen(csv_login, "w");
         fclose(arquivo);
@@ -157,11 +168,13 @@ int main() {
 
     printf("Insira seu login: ");
     scanf("%s", login);
+    limparBuffer();
     printf("Insira sua senha: ");
     scanf("%s", senha);
+    limparBuffer();
 
-    if (strcmp(login, adm_login) == 0 && strcmp(senha, adm_senha) == 0) {
-        printf("Logado como administrador.\n");
+    if (logar(login, senha) || (strcmp(login, adm_login) == 0 && strcmp(senha, adm_senha) == 0)) {
+            printf("Login realizado ! :D\n");
 
         do {
             printf("\nMenu:\n");
@@ -171,6 +184,7 @@ int main() {
             printf("(4) Sair\n");
             printf("Insira a opção: ");
             scanf("%d", &opcao);
+            limparBuffer();
 
             switch (opcao) {
                 case 1:
@@ -190,12 +204,8 @@ int main() {
             }
         } while (opcao != 4);
     } else {
-        if (logar(login, senha)) {
-            printf("Login realizado ! :D\n");
-        } else {
-            printf("Usuario ou senha invalidos. :/\n");
+        printf("Usuario ou senha invalidos. :/\n");
         }
-    }
 
     return 0;
 }
