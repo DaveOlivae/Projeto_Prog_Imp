@@ -93,7 +93,7 @@ void addAlug(const char *nome_do_csv) {
 
     FILE *pont_csv = fopen(nome_do_csv, "r+"); // Use apenas r+ para leitura e escrita
     if (pont_csv == NULL) {
-        printf("Arquivo de registro não encontrado. :C\n");
+        printf("Arquivo de registro não encontrado. :(\n");
         return;
     }
 
@@ -178,7 +178,7 @@ void addAlug(const char *nome_do_csv) {
     while (fscanf(pont_csv, fscanfDSH,
                   aluguel_existente.data, aluguel_existente.sala, aluguel_existente.horario) == 3) {
         if (compDataHorSala(aluguel.data, aluguel_existente.data, aluguel.sala, aluguel_existente.sala, aluguel.horario, aluguel_existente.horario)) {
-            printf("Erro: Esse horario já foi agendado. :C\n");
+            printf("Erro: Esse horario já foi agendado. :(\n");
             fclose(pont_csv);
             return;
         }
@@ -186,8 +186,8 @@ void addAlug(const char *nome_do_csv) {
 
     fseek(pont_csv, 0, SEEK_END);
 
-  int check_de_erro = TrocarLouO (aluguel.data, aluguel.sala, aluguel.horario); // Usa essas informações para usar na função que modifica o quadro de horário L ou O
-    if (check_de_erro == 0) // se não ocorreu nenhum erro, pode registrar
+    int check_de_erro = TrocarLouO (aluguel.data, aluguel.sala, aluguel.horario); // Usa essas informações para usar na função que modifica o quadro de horário L ou O
+    if (check_de_erro == 0)
     {
         fprintf(pont_csv, fprintfTudo,
         aluguel.data, aluguel.sala, aluguel.horario, aluguel.nome,
@@ -301,7 +301,7 @@ void attAlug(const char *nome_do_csv, const char *data, const char *sala, const 
                 }
 		// XXXXXXXXXXXXX daqui serão pegas as NOVAS informações do registro que foi atualizado, basta aplicar esses aluguel_novo.data, aluguel_novo.sala e aluguel_novo.horario do fprintf (eles estarão corretos tanto pra se mudou data/sala/horario quanto pra se não mudou)
 				// A nova coordenada é alterada de L para O e mesmo se nao tiver mudado, a coordenada antiga volta a ser O	- Joao R.
-					TrocarLouO (aluguel_novo.data, aluguel_novo.sala, aluguel_novo.horario);
+                    TrocarLouO (aluguel_novo.data, aluguel_novo.sala, aluguel_novo.horario);
 		// XXXXXXXXXXXX a função das VELHAS informações terá que ser indentada nesse if pra evitar erro, você vai injetar aluguel_existente.data, aluguel_existente.sala e aluguel_existente.horario
             }
 
@@ -419,7 +419,7 @@ int registrador() {
 			case 5:
 				RemoverSala ();
 				break;
-			case 6:
+            case 6:
                 printPlanilha();
                 break;
             case 0:
@@ -565,7 +565,7 @@ int TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[])
         printf("Erro: Chegou ao EOF (final do arquivo) ou a uma posicao invalida.\n");
         fclose(Ponteiro_Arquivo);
         pode_registrar = 1;
-		fclose(Ponteiro_Arquivo);
+        fclose(Ponteiro_Arquivo);
 		return pode_registrar; // Retorna se a posicao for invalida
     }
 
@@ -585,9 +585,9 @@ int TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[])
     }
 	else if (char_atual == ';') //DEBUG ou se algo de muito errado tiver acontecido
 	{
-    	printf("Erro: Caractere na posicao %d eh um ';' \n", posicao_horario);
-		fclose(Ponteiro_Arquivo);
-    	pode_registrar = 1;
+        printf("Erro: Caractere na posicao %d eh um ';' \n", posicao_horario);
+        fclose(Ponteiro_Arquivo);
+        pode_registrar = 1;
 		return pode_registrar;
     }
     else //DEBUG ou se algo de muito errado tiver acontecido parte 2
@@ -602,7 +602,7 @@ int TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[])
 	fflush(Ponteiro_Arquivo);
 	fclose(Ponteiro_Arquivo); //############## FECHA O ARQUIVO ##############
 
-	return pode_registrar;
+	return;
 }
 //######################################################################################################################################
 //######################################################################################################################################
@@ -625,6 +625,7 @@ void AdicionarSala ()
 ////// Parte de adicionar salas
 
 	char nova_sala[Size_nome]; // SALA ##############################
+	printf("Digite a sala: ");
 	fgets(nova_sala, Size_nome, stdin);
 	for (int i = 0; i < strlen(nova_sala); i++)
 	{
@@ -680,7 +681,7 @@ void AdicionarSala ()
 		printf("A sala foi registrada\n");
 		fclose(Ponteiro_Arquivo); //############## FECHA O ARQUIVO ##############
 	}
-	printf("_%s_\n", linhadasala); //debug
+	//printf("_%s_\n", linhadasala); //debug
 	return;
 }
 //######################################################################################################################################
@@ -696,7 +697,7 @@ void RemoverSala ()
 
 	Ponteiro_Arquivo = fopen(ID_do_arquivo, "r+"); //############## ABRE O ARQUIVO ##############
 
-	FILE *Pont_ArquivoTemp = fopen("ArquivoTemporario.csv", "w");
+	FILE *Pont_ArquivoTemp = fopen("ArquivoTemporario.csv", "r+");
 	if (Pont_ArquivoTemp == NULL)
     {
         perror("Error opening file");
@@ -754,35 +755,48 @@ void RemoverSala ()
 
         int Linha_atual = 1;
         // Lê linha por linha do arquivo original
-        while (fgets(buffer, sizeof(buffer), Ponteiro_Arquivo) != NULL)
-        {
+        //while (fgets(buffer, sizeof(buffer), Ponteiro_Arquivo) != NULL)
+        //{
         // Escreve a linha no arquivo temporário se não for a linha que quer remover
-            if (Linha_atual != qual_linha_remover)
+        //    if (Linha_atual != qual_linha_remover)
+        //    {
+        //        fputs(buffer, Pont_ArquivoTemp);
+        //    }
+        //   Linha_atual++;
+        //}
+        char Linha [80];
+        while((fgets(Linha, sizeof(Linha), Ponteiro_Arquivo)) != NULL) // Print no terminal o que contém o arquivo linha por linha
+		{
+			if (Linha_atual != qual_linha_remover)
             {
-                fputs(buffer, Pont_ArquivoTemp);
+                fputs(Linha, Pont_ArquivoTemp);
             }
-        Linha_atual++;
-        }
+            Linha_atual++;
+		}
 
         // Fecha os dois arquivos
         fclose(Ponteiro_Arquivo);
         fclose(Pont_ArquivoTemp);
     }
 	// Remove the original file
-	if (remove("planilhadefault.csv") != 0)
+	if (rename("planilhadefault.csv", "apagar") != 0)
+	{
+	    perror("Erro ao renomear o arquivo default");
+	}
+    // Renomear o arquivo temporário com o nome do arquivo original, é o novo arquivo default
+    if (rename("ArquivoTemporario.csv", "planilhadefault.csv") != 0)
+    {
+        perror("Erro ao renomear o arquivo default");
+    }
+    if (remove("apagar") != 0)
 	{
 	    perror("Erro ao deletar o Arquivo original");
 	    return;
 	}
-	    // Renomear o arquivo temporário com o nome do arquivo original, é o novo arquivo default
-	        if (rename("ArquivoTemporario.csv", "planilhadefault.csv") != 0)
-            {
-                perror("Erro renaming temporary file");
-            }
-            else
-            {
-                printf("Sala na linha %d foi removida.\n", qual_linha_remover);
-            }
+    else
+    {
+        printf("Sala na linha %d foi removida.\n", qual_linha_remover);
+    }
     // Fecha a função
     return;
 }
@@ -796,7 +810,7 @@ void printPlanilha()
 	char ID_do_arquivo[Size_ID_planilha]; // Array que recebe o nome do Arquivo, formato exemplo: 112024.csv
 
     char Data_ID[Size_data];
-    printf("Digite a data (DD-MM-AAAA): "); //Input do usuario
+    printf("Digite a data (DD-MM-AAAA): ");
     fgets(Data_ID, Size_data, stdin);
     Data_ID[strcspn(Data_ID, "\n")] = '\0';
 
@@ -945,7 +959,7 @@ void PlanilhaDefaultExistinator() //Necessário para criar a plannilha default s
 int main()
 {
 	PlanilhaDefaultExistinator(); //Necessário para criar a plannilha default se ela não existir
-	printf("\n	Seja bem-vindo ao programa de cadastro de salas!\n\n");
+	printf("\n  Seja bem-vindo ao programa de cadastro de salas!\n\n");
 	registrador();
     return 0;
 }
