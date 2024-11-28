@@ -178,7 +178,7 @@ void addAlug(const char *nome_do_csv) {
     while (fscanf(pont_csv, fscanfDSH,
                   aluguel_existente.data, aluguel_existente.sala, aluguel_existente.horario) == 3) {
         if (compDataHorSala(aluguel.data, aluguel_existente.data, aluguel.sala, aluguel_existente.sala, aluguel.horario, aluguel_existente.horario)) {
-            printf("Erro: Esse horario já foi agendado. :(\n");
+            printf("Erro: Esse horario ja foi agendado. :(\n");
             fclose(pont_csv);
             return;
         }
