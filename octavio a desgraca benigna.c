@@ -376,7 +376,7 @@ int registrador() {
     char data[Size_data], sala[Size_sala], horario[Size_horario];
 
     do {
-        printf("Selecione uma opcao:\n");
+        printf("\nSelecione uma opcao:\n");
         printf("1 - ADICIONAR um registro\n");
         printf("2 - ATUALIZAR um registro\n");
         printf("3 - REMOVER um registro\n");
@@ -860,7 +860,7 @@ void PlanilhaDefaultExistinator() //Necessário para criar a plannilha default s
 int main()
 {
 	PlanilhaDefaultExistinator(); //Necessário para criar a plannilha default se ela não existir
-	printf("Seja bem-vindo ao programa de cadastro de salas!\n\n");
+	printf("\n	Seja bem-vindo ao programa de cadastro de salas!\n\n");
 	registrador();
     return 0;
 }
