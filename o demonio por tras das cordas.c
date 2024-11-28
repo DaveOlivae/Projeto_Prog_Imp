@@ -27,7 +27,7 @@ int verifCriaArquivo;
 void attAlug(const char *nome_do_csv, const char *data, const char *sala, const char *horario);
 void removAlug(const char *nome_do_csv, const char *data, const char *sala, const char *horario);
 int registrador();
-void TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[]);
+int TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[]);
 void AdicionarSala ();
 void RemoverSala ();
 void PlanilhaDefaultExistinator ();
@@ -172,16 +172,23 @@ if (strlen(aluguel.evento) == Size_evento - 1 && aluguel.evento[Size_evento - 2]
 
     fseek(pont_csv, 0, SEEK_END);
     
-    fprintf(pont_csv, "%s;%s;%s;%s;%s;%s;%s;%s;%s;%d\n", 
-            aluguel.data, aluguel.sala, aluguel.horario, aluguel.nome, 
-            aluguel.cpf, aluguel.celular, aluguel.prof_responsavel, aluguel.monitor_sn, 
-            aluguel.evento, aluguel.modificado);
-	
-    TrocarLouO (aluguel.data, aluguel.sala, aluguel.horario); // Usa essas informações para usar na função que modifica o quadro de horário L ou O
-	
-    printf("Aluguel adicionado! :)\n");
+    int check_de_erro = TrocarLouO (aluguel.data, aluguel.sala, aluguel.horario); // Usa essas informações para usar na função que modifica o quadro de horário L ou O
+    if (check_de_erro == 0)
+    {
+        fprintf(pont_csv, fprintfTudo,
+        aluguel.data, aluguel.sala, aluguel.horario, aluguel.nome,
+        aluguel.cpf, aluguel.celular, aluguel.prof_responsavel, aluguel.monitor_sn,
+        aluguel.evento, aluguel.modificado);
+
+        printf("Aluguel adicionado! :)\n");
+    }
+    else
+    {
+        printf("Aluguel nao adicionado. Ocorreu um erro :( tente novamente\n");
+    }
 
     fclose(pont_csv);
+	//return; coma em caso de emergência
 }
 
 //Atualizacao de registro
@@ -211,7 +218,7 @@ void attAlug(const char *nome_do_csv, const char *data, const char *sala, const 
             aluguel_conflito = aluguel_existente;
             printf(":D Registro encontrado! Insira as novas informações ou pressione ENTER para manter os valores atuais:\n");
 
-            // Troca de L para O, se necessário
+            // Troca logo de O pra L 
             TrocarLouO(aluguel_existente.data, aluguel_existente.sala, aluguel_existente.horario);
 
             // Atualização dos campos com entradas do usuário
@@ -330,6 +337,7 @@ void attAlug(const char *nome_do_csv, const char *data, const char *sala, const 
                     fclose(pont_csv);
                     fclose(pont_temp);
                     remove("temp.csv");
+					TrocarLouO(aluguel_novo.data, aluguel_novo.sala, aluguel_novo.horario); // função de trocar na planilha no caso de um erro
                     return;
                 }
             }
@@ -440,6 +448,7 @@ int registrador() {
         printf("3 - REMOVER um registro\n");
 		printf("4 - ADICIONAR uma SALA aos horarios\n");
 		printf("5 - REMOVER uma SALA dos horarios\n");
+		printf("6 - MOSTRAR planilha de uma data\n");
         printf("0 - SAIR\n");
         printf("Opção: ");
         scanf("%d", &opcao);
@@ -524,6 +533,9 @@ int registrador() {
 			case 5:
 				RemoverSala ();
 				break;
+			case 6:
+                printPlanilha();
+                break;
             case 0:
                 printf("Programa encerrado.\n");
                 break;
