@@ -43,6 +43,7 @@ int TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[]);
 void AdicionarSala ();
 void RemoverSala ();
 void PlanilhaDefaultExistinator ();
+void printPlanilha();
 
 // Struct para um aluguel
 struct aluguel {
@@ -417,6 +418,9 @@ int registrador() {
 			case 5:
 				RemoverSala ();
 				break;
+			case 6:
+                printPlanilha();
+                break;
             case 0:
                 printf("Programa encerrado.\n");
                 break;
@@ -781,7 +785,93 @@ void RemoverSala ()
     // Fecha a função
     return;
 }
+//######################################################################################################################################
+//######################################################################################################################################
+//######################################################################################################################################
+void printPlanilha()
+{
+	FILE *Ponteiro_Arquivo; // Aponta para um arquivo
+	int Size_ID_planilha = 13;
+	char ID_do_arquivo[Size_ID_planilha]; // Array que recebe o nome do Arquivo, formato exemplo: 112024.csv
 
+    char Data_ID[Size_data];
+    printf("Digite a data (DD-MM-AAAA): ");
+    fgets(Data_ID, Size_data, stdin);
+    for (int i = 0; i < strlen(Size_data); i++)
+	{
+        if (Data_ID[i] == '\n')
+		{
+            Data_ID[i] = '\0';
+		}
+	}
+
+	strcpy(ID_do_arquivo, Data_ID); //input do usuario para ID_do_arquivo
+
+    //printf("_%s_\n",ID_do_arquivo); //DEBUG
+
+	char comeco_nome[] = "planilha";
+	int lencomeco = strlen(comeco_nome);
+	int lenID = strlen(ID_do_arquivo);
+
+	// Tamanho do resultado suficiente para caber os dois
+	char resultado[lencomeco + lenID + 1]; //
+
+    // Copia a primeira array para a array resultado
+    for (int i = 0; i < lencomeco; i++)
+    {
+        resultado[i] = comeco_nome[i];
+    }
+
+    // Copia a segunda array para a array resultado, depois da primeira
+    for (int i = 0; i < lenID; i++)
+    {
+        resultado[lencomeco + i] = ID_do_arquivo[i];
+    }
+
+    // Adiciona \0 no final das arrays somadas
+    resultado[lencomeco + lenID] = '\0';
+    strcat(resultado, ".csv");
+	//printf("_%s_\n", resultado); //DEBUG
+
+	Ponteiro_Arquivo = fopen(resultado, "r+"); //############## ABRE O ARQUIVO ##############
+	if (Ponteiro_Arquivo == NULL)
+	{
+        Ponteiro_Arquivo = fopen(resultado, "w");
+		FILE *Ler_default = fopen("planilhadefault.csv", "r");
+
+		if (Ler_default == NULL)
+		{
+            PlanilhaDefaultExistinator();
+		}
+
+		char buffer[1024];  // Buffer temporario
+    		size_t bytes_lidos;
+		while ((bytes_lidos = fread(buffer, 1, sizeof(buffer), Ler_default)) > 0)
+		{
+            fwrite(buffer, 1, bytes_lidos, Ponteiro_Arquivo);
+        }
+
+		fclose(Ler_default); //fechar os arquivos
+		fclose(Ponteiro_Arquivo); //fechar por garantia, só para ter certeza que vai funcionar
+
+		Ponteiro_Arquivo = fopen(resultado, "r+");
+		rewind(Ponteiro_Arquivo);
+		if (Ponteiro_Arquivo == NULL)
+		{
+			perror("Erro ao abrir o arquivo, verifique o local do arquivo");
+	       		return;
+		}
+	}
+	char Linha [80];
+	while((fgets(Linha, sizeof(Linha), Ponteiro_Arquivo)) != NULL) // Print no terminal o que contém o arquivo linha por linha
+		{
+			printf("%s",Linha);
+		}
+
+	fclose(Ponteiro_Arquivo); //############## FECHA O ARQUIVO ##############
+
+	return 0;
+}
 //######################################################################################################################################
 //######################################################################################################################################
 //######################################################################################################################################
