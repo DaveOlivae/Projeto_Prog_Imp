@@ -796,15 +796,9 @@ void printPlanilha()
 	char ID_do_arquivo[Size_ID_planilha]; // Array que recebe o nome do Arquivo, formato exemplo: 112024.csv
 
     char Data_ID[Size_data];
-    printf("Digite a data (DD-MM-AAAA): ");
+    printf("Digite a data (DD-MM-AAAA): "); //Input do usuario
     fgets(Data_ID, Size_data, stdin);
-    for (int i = 0; i < strlen(Size_data); i++)
-	{
-        if (Data_ID[i] == '\n')
-		{
-            Data_ID[i] = '\0';
-		}
-	}
+    Data_ID[strcspn(Data_ID, "\n")] = '\0';
 
 	strcpy(ID_do_arquivo, Data_ID); //input do usuario para ID_do_arquivo
 
