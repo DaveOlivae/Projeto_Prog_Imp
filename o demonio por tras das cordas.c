@@ -3,7 +3,7 @@
 #include <string.h>
 #include <windows.h>
 
-// Definindo os tamanhos para cada campo
+//tamanhos
 #define Size_data 11
 #define Size_sala 5
 #define Size_horario 5
@@ -13,25 +13,12 @@
 #define Size_prof_responsavel 50
 #define Size_monitor_sn 2
 #define Size_evento 1000
-//fscanf e fprintf
-#define tam_data "%11[^;]"
-#define tam_sala "%5[^;]"
-#define tam_horario "%5[^;]"
-#define tam_nome "%50[^;]"
-#define tam_cpf "%13[^;]"
-#define tam_numero "%20[^;]"
-#define tam_prof_responsavel "%50[^;]"
-#define tam_monitor_sn "%2[^;]"
-#define tam_evento "%1000[^;]"
-
-#define fscanfDSH tam_data ";" tam_sala ";" tam_horario ";" \
-
-#define fscanfTudo tam_data ";" tam_sala ";" tam_horario ";" \
-                 tam_nome ";" tam_cpf ";" tam_numero ";" \
-                 tam_prof_responsavel ";" tam_monitor_sn ";" \
-                 tam_evento "\n"
-
-#define fprintfTudo "%s,%s,%s,%s,%s,%s,%s,%s,%s,%d\n"
+//login
+#define Size_login 50
+#define Size_senha 30
+#define adm_login "adm"
+#define adm_senha "1234"
+#define csv_login "login.csv"
 
  // Declarando funções
 int compDataHorSala(const char *data1, const char *data2, const char *sala1, const char *sala2, const char *horario1, const char *horario2);
