@@ -705,7 +705,7 @@ void RemoverSala ()
 ////// Parte de encontrar e remover a sala
 
 	char sala_para_remover[Size_nome]; // SALA ##############################
-    printf("Digite a sala a ser removida:\n");
+    printf("Digite a sala a ser removida: ");
 	fgets(sala_para_remover, Size_nome, stdin);
 	for (int i = 0; i < strlen(sala_para_remover); i++)
 	{
