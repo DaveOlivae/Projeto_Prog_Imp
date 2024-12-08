@@ -10,7 +10,7 @@ static void modificar (GtkWidget *widget, gpointer data) {
     GtkWidget *Mod[4];
     GtkWidget *botao_modificar2;
 
-    char *Mod[] = {"Sala:","Data:","Inicio:","Fim:"};
+    char *Mods[] = {"Sala:","Data:","Inicio:","Fim:"};
 
     // setup da janela de modificar
     window_modificar = gtk_window_new ();
@@ -24,7 +24,7 @@ static void modificar (GtkWidget *widget, gpointer data) {
 
     // setup dos labels
     for (int i = 0; i < 4; i++){
-        Mod[i] = gtk_label_new(Mod[i]);
+        Mod[i] = gtk_label_new(Mods[i]);
         gtk_grid_attach(GTK_GRID(grid_modificar), Mod[i], 0, i, 1, 1);
     }
 
