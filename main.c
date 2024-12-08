@@ -10,7 +10,7 @@ static void modificar (GtkWidget *widget, gpointer data) {
     GtkWidget *Mod[4];
     GtkWidget *botao_modificar2;
 
-    char *Mods[] = {"Sala:","Data:","Inicio:","Fim:"};
+    char *Mods[] = {"Data:","Sala:","Inicio:","Fim:"};
 
     // setup da janela de modificar
     window_modificar = gtk_window_new ();
@@ -28,9 +28,9 @@ static void modificar (GtkWidget *widget, gpointer data) {
         gtk_grid_attach(GTK_GRID(grid_modificar), Mod[i], 0, i, 1, 1);
     }
 
-    // setup dos dropdown
-
     // setup do calendario
+
+    // setup dos dropdown
 
     // setup do botao
     botao_modificar2 = gtk_button_new_with_label("Verificar Evento");
