@@ -6,13 +6,39 @@ static void registro (GtkWidget *widget, gpointer data) {
 
 static void modificar (GtkWidget *widget, gpointer data) {
     GtkWidget *window_modificar;
+    GtkWidget *grid_modificar;
+    GtkWidget *Mod[4];
+    GtkWidget *botao_modificar2;
+
+    char *Mod[] = {"Sala:","Data:","Inicio:","Fim:"};
 
     // setup da janela de modificar
     window_modificar = gtk_window_new ();
     gtk_window_set_title (GTK_WINDOW (window_modificar), "Modificar");
     gtk_window_set_default_size(GTK_WINDOW(window_modificar), 400, 300);
 
+
+    // setup da grid
+    grid_modificar = gtk_grid_new();
+    gtk_window_set_child(GTK_WINDOW(window_modificar), grid_modificar);
+
+    // setup dos labels
+    for (int i = 0; i < 4; i++){
+        Mod[i] = gtk_label_new(Mod[i]);
+        gtk_grid_attach(GTK_GRID(grid_modificar), Mod[i], 0, i, 1, 1);
+    }
+
+    // setup dos dropdown
+
+    // setup do calendario
+
+    // setup do botao
+    botao_modificar2 = gtk_button_new_with_label("Verificar Evento");
+    //g_signal_connect(botao_modificar2, "clicked", G_CALLBACK(), NULL); <-- completar com a função dps -M
+    gtk_grid_attach(GTK_GRID(grid_modificar), botao_modificar2, 0, 5, 1, 2);
+
     gtk_window_present (GTK_WINDOW (window_modificar));
+
 }
 
 static void activate (GtkApplication *app, gpointer user_data) {
