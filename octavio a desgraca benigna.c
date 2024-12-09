@@ -496,7 +496,7 @@ int TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[])
 		if (Ponteiro_Arquivo == NULL)
 		{
 			perror("Erro ao abrir o arquivo, verifique o local do arquivo");
-	       		return;
+	       		return 0;
 		}
 	}
 
@@ -602,7 +602,7 @@ int TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[])
 	fflush(Ponteiro_Arquivo);
 	fclose(Ponteiro_Arquivo); //############## FECHA O ARQUIVO ##############
 
-	return;
+	return 0;
 }
 //######################################################################################################################################
 //######################################################################################################################################
