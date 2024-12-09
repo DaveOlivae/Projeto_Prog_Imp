@@ -761,6 +761,7 @@ void RemoverSala ()
             if (Linha_atual != qual_linha_remover)
             {
                 fputs(buffer, Pont_ArquivoTemp);
+				printf("%s",buffer); //debug
             }
 			Linha_atual++;
         }
@@ -768,7 +769,7 @@ void RemoverSala ()
         // Fecha os dois arquivos
         fclose(Ponteiro_Arquivo);
         fclose(Pont_ArquivoTemp);
-		
+
 		// Agora essa parte copia o conteudo que foi mandado para o arquivo temporario para o default que foi limpo
 		Ponteiro_Arquivo = fopen(ID_do_arquivo, "w+"); //############## ABRE O ARQUIVO ##############
 
@@ -778,12 +779,29 @@ void RemoverSala ()
 			perror("Error opening file");
 			return;
 		}
-		
+
+		char ultima_Linha[1024]; // Guardar a ultima linha do arquivo
+		// Ler todas as linhas no buffer de ultima linha
+		while (fgets(buffer, sizeof(buffer), Pont_ArquivoTemp) != NULL)
+		{
+			strcpy(ultima_Linha, buffer); // Guarda a ultima linha
+		}
+
+		rewind(Pont_ArquivoTemp);
         // Lê linha por linha do arquivo temporario
-        while (fgets(buffer, sizeof(buffer), Ponteiro_Arquivo) != NULL)
+        while (fgets(buffer, sizeof(buffer), Pont_ArquivoTemp) != NULL)
         {
-        // Escreve a linha no arquivo original
-			fputs(buffer, Pont_ArquivoTemp);
+			if (strcmp(buffer, ultima_Linha) == 0)
+			{
+            // Remove a nova linha da ultima posicao se ela estiver lá
+            size_t buffer_len = strlen(buffer);
+				if (buffer_len > 0 && buffer[buffer_len - 1] == '\n')
+				{
+                buffer[buffer_len - 1] = '\0'; // Remove a nova linha
+				}
+			}
+			// Escreve a linha no arquivo original
+			fputs(buffer, Ponteiro_Arquivo);
         }
 		fclose(Ponteiro_Arquivo);
         fclose(Pont_ArquivoTemp);
