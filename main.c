@@ -10,10 +10,11 @@ static void registro (GtkWidget *widget, gpointer data){
 
 static void modificar (GtkWidget *widget, gpointer data) {
     GtkWidget *window_modificar;
-    GtkWidget *grid_modificar;
+    GtkWidget *grid;
     GtkWidget *Mod[4];
     GtkWidget *botao_modificar;
     GtkWidget *dropdown;
+    GtkWidget *calendario;
 
     char *Mods[] = {"Data:","Sala:","Inicio:","Fim:"};
 
@@ -24,32 +25,34 @@ static void modificar (GtkWidget *widget, gpointer data) {
 
 
     // setup da grid
-    grid_modificar = gtk_grid_new();
-    gtk_window_set_child(GTK_WINDOW(window_modificar), grid_modificar);
-    gtk_widget_set_halign (grid_modificar, GTK_ALIGN_CENTER);
-    gtk_widget_set_valign (grid_modificar, GTK_ALIGN_CENTER);
+    grid = gtk_grid_new();
+    gtk_window_set_child(GTK_WINDOW(window_modificar), grid);
+    gtk_widget_set_halign (grid, GTK_ALIGN_CENTER);
+    gtk_widget_set_valign (grid, GTK_ALIGN_CENTER);
 
     // setup dos labels
     for (int i = 0; i < 4; i++){
         Mod[i] = gtk_label_new(Mods[i]);
-        gtk_grid_attach(GTK_GRID(grid_modificar), Mod[i], 0, i, 1, 1);
+        gtk_grid_attach(GTK_GRID(grid), Mod[i], 0, i, 1, 1);
     }
 
     // setup do calendario
+    calendario = gtk_calendar_new();
+    gtk_grid_attach(GTK_GRID(grid), calendario, 1, 0, 1, 1);
 
     // setup dos dropdown
     dropdown = gtk_drop_down_new_from_strings(*salas);
-    gtk_grid_attach(GTK_GRID(grid_modificar), dropdown, 1, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), dropdown, 1, 1, 1, 1);
 
     dropdown = gtk_drop_down_new_from_strings(*horarios);
     for (int i = 0; i < 2; i++){
-        gtk_grid_attach(GTK_GRID(grid_modificar), dropdown, 1, 2+i, 1, 1);
+        gtk_grid_attach(GTK_GRID(grid), dropdown, 1, 2+i, 1, 1);
     }
 
     // setup do botao
     botao_modificar = gtk_button_new_with_label("Verificar Evento");
     //g_signal_connect(botao_modificar, "clicked", G_CALLBACK(), NULL); <-- completar com a função dps -M
-    gtk_grid_attach(GTK_GRID(grid_modificar), botao_modificar, 0, 5, 1, 2);
+    gtk_grid_attach(GTK_GRID(grid), botao_modificar, 0, 5, 1, 2);
 
     gtk_window_present (GTK_WINDOW (window_modificar));
 
