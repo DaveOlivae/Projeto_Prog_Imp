@@ -14,7 +14,6 @@ static void modificar (GtkWidget *widget, gpointer data) {
     GtkWidget *Mod[4];
     GtkWidget *botao_modificar;
     GtkWidget *dropdown;
-    GtkStringList *lista;
 
     char *Mods[] = {"Data:","Sala:","Inicio:","Fim:"};
 
@@ -39,21 +38,12 @@ static void modificar (GtkWidget *widget, gpointer data) {
     // setup do calendario
 
     // setup dos dropdown
-    
-    lista = gtk_string_list_new();
-    for (int i = 0; i < 35; i++){
-        gtk_string_list_append(lista, salas[i]);
-    }
-    dropdown = gtk_drop_down_new_from_string_list(lista);
-    gtk_grid_attach(GTK_GRID(grid_modificar), dropdown, 1, 0, 1, 1);
+    dropdown = gtk_drop_down_new_from_strings(salas);
+    gtk_grid_attach(GTK_GRID(grid_modificar), dropdown, 1, 1, 1, 1);
 
-    lista = gtk_string_list_new();
-    for (int i = 0; i < 18; i++){
-        gtk_string_list_append(lista, horarios[i]);
-    }
-    dropdown = gtk_drop_down_new_from_string_list(lista);
+    dropdown = gtk_drop_down_new_from_strings(horarios);
     for (int i = 0; i < 2; i++){
-        gtk_grid_attach(GTK_GRID(grid_modificar), dropdown, 1, 1+i, 1, 1);
+        gtk_grid_attach(GTK_GRID(grid_modificar), dropdown, 1, 2+i, 1, 1);
     }
 
     // setup do botao
