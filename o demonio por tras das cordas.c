@@ -13,6 +13,7 @@
 #define Size_prof_responsavel 50
 #define Size_monitor_sn 2
 #define Size_evento 1000
+#define Size_nomeArquivo 12
 //login
 #define Size_login 50
 #define Size_senha 30
@@ -552,15 +553,15 @@ int registrador() {
 void TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[])
 {
 	FILE *Ponteiro_Arquivo; // Aponta para um arquivo
-	char ID_do_arquivo[Size_nome]; // Array que recebe o nome do Arquivo, formato exemplo: 112024
+	char ID_do_arquivo[Size_nomeArquivo]; // Array que recebe o nome do Arquivo, formato exemplo: 112024
     
 	strcpy(ID_do_arquivo, Data_T); //input do usuario para ID_do_arquivo
 
-	ID_do_arquivo[Size_nome - 4] = '.';
-	ID_do_arquivo[Size_nome - 3] = 'c';
-	ID_do_arquivo[Size_nome - 2] = 's';
-	ID_do_arquivo[Size_nome - 1] = 'v';
-	ID_do_arquivo[Size_nome] = '\0';
+	ID_do_arquivo[Size_nomeArquivo - 4] = '.';
+	ID_do_arquivo[Size_nomeArquivo - 3] = 'c';
+	ID_do_arquivo[Size_nomeArquivo - 2] = 's';
+	ID_do_arquivo[Size_nomeArquivo - 1] = 'v';
+	ID_do_arquivo[Size_nomeArquivo] = '\0';
 
 	char comeco_nome[] = "planilha";
 	int lencomeco = strlen(comeco_nome);
