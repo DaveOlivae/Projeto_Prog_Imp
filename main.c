@@ -4,7 +4,7 @@ char *salas[] = {"A03", "B01", "B02", "B03", "B04", "B09", "I04", "I06", "I08", 
 
 char *horarios[] = {" 07:10 - 08:00 ", " 08:00 - 08:50 ", " 08:50 - 09:40 ", " 09:40 - 10:30 ", " 10:30 - 11:20 ", " 11:20 - 12:10 ", " 12:10 - 13:00 ", " 13:00 - 13:50 ", " 13:50 - 14:40 ", " 14:40 - 15:30 ", " 15:30 - 16:20 ", " 16:20 - 17:10 ", " 17:10 - 18:00 ", " 18:00 - 18:50 ", " 18:50 - 19:40 ", " 19:40 - 20:30 ", " 20:30 - 21:20 ", " 21:20 - 22:10 "};
 
-static void registro (GtkWidget *widget, gpointer data) {
+static void registro (GtkWidget *widget, gpointer data){
 
 }
 
@@ -12,9 +12,9 @@ static void modificar (GtkWidget *widget, gpointer data) {
     GtkWidget *window_modificar;
     GtkWidget *grid_modificar;
     GtkWidget *Mod[4];
-    GtkWidget *botao_modificar2;
-    GtkWidget *combo_hora;
-    GtkWidget *combo_sala;
+    GtkWidget *botao_modificar;
+    GtkWidget *dropdown;
+    GtkStringList *lista;
 
     char *Mods[] = {"Data:","Sala:","Inicio:","Fim:"};
 
@@ -27,6 +27,8 @@ static void modificar (GtkWidget *widget, gpointer data) {
     // setup da grid
     grid_modificar = gtk_grid_new();
     gtk_window_set_child(GTK_WINDOW(window_modificar), grid_modificar);
+    gtk_widget_set_halign (grid_modificar, GTK_ALIGN_CENTER);
+    gtk_widgrt_set_valign (grid_modificar, GTK_ALIGN_CENTER);
 
     // setup dos labels
     for (int i = 0; i < 4; i++){
@@ -37,25 +39,27 @@ static void modificar (GtkWidget *widget, gpointer data) {
     // setup do calendario
 
     // setup dos dropdown
-    combo_sala = gtk_combo_box_text_new();
+    
+    lista = gtk_string_list_new();
     for (int i = 0; i < 35; i++){
-        gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo_sala), salas[i]);
+        gtk_string_list_append(lista, salas[i]);
     }
-    gtk_grid_attach(GTK_GRID(grid_modificar), combo_sala, 1, 0, 1, 1);
+    dropdown = gtk_drop_down_new_from_string_list(lista);
+    gtk_grid_attach(GTK_GRID(grid_modificar), dropdown, 1, 0, 1, 1);
 
-    combo_hora = gtk_combo_box_text_new();
+    lista = gtk_string_list_new();
     for (int i = 0; i < 18; i++){
-        gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo_hora), horarios[i]);
+        gtk_string_list_append(lista, horarios[i]);
     }
+    dropdown = gtk_drop_down_new_from_string_list(lista);
     for (int i = 0; i < 2; i++){
-        gtk_grid_attach(GTK_GRID(grid_modificar), combo_hora, 1, i+1, 1, 1);
+        gtk_grid_attach(GTK_GRID(grid_modificar), dropdown, 1, 1+i, 1, 1);
     }
-
 
     // setup do botao
-    botao_modificar2 = gtk_button_new_with_label("Verificar Evento");
-    //g_signal_connect(botao_modificar2, "clicked", G_CALLBACK(), NULL); <-- completar com a função dps -M
-    gtk_grid_attach(GTK_GRID(grid_modificar), botao_modificar2, 0, 5, 1, 2);
+    botao_modificar = gtk_button_new_with_label("Verificar Evento");
+    //g_signal_connect(botao_modificar, "clicked", G_CALLBACK(), NULL); <-- completar com a função dps -M
+    gtk_grid_attach(GTK_GRID(grid_modificar), botao_modificar, 0, 5, 1, 2);
 
     gtk_window_present (GTK_WINDOW (window_modificar));
 
@@ -64,8 +68,7 @@ static void modificar (GtkWidget *widget, gpointer data) {
 static void activate (GtkApplication *app, gpointer user_data) {
     GtkWidget *window;
     GtkWidget *grid;
-    GtkWidget *botao_registro;
-    GtkWidget *botao_modificar;
+    GtkWidget *botao;
     GtkWidget *sala[35];
     GtkWidget *horario[18];
     GtkWidget *labels_vazias[3];
@@ -107,14 +110,14 @@ static void activate (GtkApplication *app, gpointer user_data) {
         gtk_grid_attach(GTK_GRID(grid), horario[i], i+2, 3, 1, 1);
     }
     // setup do botao de registro
-    botao_registro = gtk_button_new_with_label("Registrar");
-    g_signal_connect(botao_registro, "clicked", G_CALLBACK(registro), NULL);
-    gtk_grid_attach(GTK_GRID(grid), botao_registro, 2, 1, 2, 1);
+    botao = gtk_button_new_with_label("Registrar");
+    g_signal_connect(botao, "clicked", G_CALLBACK(registro), NULL);
+    gtk_grid_attach(GTK_GRID(grid), botao, 2, 1, 2, 1);
 
     // setup do botao de modificar
-    botao_modificar = gtk_button_new_with_label("Modificar");
-    g_signal_connect(botao_modificar, "clicked", G_CALLBACK(modificar), NULL);
-    gtk_grid_attach(GTK_GRID(grid), botao_modificar, 5, 1, 2, 1);
+    botao = gtk_button_new_with_label("Modificar");
+    g_signal_connect(botao, "clicked", G_CALLBACK(modificar), NULL);
+    gtk_grid_attach(GTK_GRID(grid), botao, 5, 1, 2, 1);
 
     // setup dos botoes
     for (int i = 0; i < 35; i++) {
