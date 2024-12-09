@@ -1,5 +1,9 @@
 #include <gtk/gtk.h>
 
+char *salas[] = {"A03", "B01", "B02", "B03", "B04", "B09", "I04", "I06", "I08", "I09", "I10", "I11", "I12", "I13", "I14", "I15", "K03", "K04", "K05", "K09", "K10", "K11", "K12", "K13", "K14", "K15", "K16", "LIP01", "LIP02", "LIP03", "LIP07", "J01", "J08", "LMC", "LMS"};
+
+char *horarios[] = {" 07:10 - 08:00 ", " 08:00 - 08:50 ", " 08:50 - 09:40 ", " 09:40 - 10:30 ", " 10:30 - 11:20 ", " 11:20 - 12:10 ", " 12:10 - 13:00 ", " 13:00 - 13:50 ", " 13:50 - 14:40 ", " 14:40 - 15:30 ", " 15:30 - 16:20 ", " 16:20 - 17:10 ", " 17:10 - 18:00 ", " 18:00 - 18:50 ", " 18:50 - 19:40 ", " 19:40 - 20:30 ", " 20:30 - 21:20 ", " 21:20 - 22:10 "};
+
 static void registro (GtkWidget *widget, gpointer data) {
 
 }
@@ -9,6 +13,8 @@ static void modificar (GtkWidget *widget, gpointer data) {
     GtkWidget *grid_modificar;
     GtkWidget *Mod[4];
     GtkWidget *botao_modificar2;
+    GtkWidget *combo_hora;
+    GtkWidget *combo_sala;
 
     char *Mods[] = {"Data:","Sala:","Inicio:","Fim:"};
 
@@ -31,6 +37,20 @@ static void modificar (GtkWidget *widget, gpointer data) {
     // setup do calendario
 
     // setup dos dropdown
+    combo_sala = gtk_combo_box_text_new();
+    for (int i = 0; i < 35; i++){
+        gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo_sala), salas[i]);
+    }
+    gtk_grid_attach(GTK_GRID(grid_modificar), combo_sala, 1, 0, 1, 1);
+
+    combo_hora = gtk_combo_box_text_new();
+    for (int i = 0; i < 18; i++){
+        gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo_hora), horarios[i]);
+    }
+    for (int i = 0; i < 2; i++){
+        gtk_grid_attach(GTK_GRID(grid_modificar), combo_hora, 1, i+1, 1, 1);
+    }
+
 
     // setup do botao
     botao_modificar2 = gtk_button_new_with_label("Verificar Evento");
@@ -51,10 +71,6 @@ static void activate (GtkApplication *app, gpointer user_data) {
     GtkWidget *labels_vazias[3];
     GtkWidget *botoes[630];
     GtkWidget *scr;
-
-    char *salas[] = {"A03", "B01", "B02", "B03", "B04", "B09", "I04", "I06", "I08", "I09", "I10", "I11", "I12", "I13", "I14", "I15", "K03", "K04", "K05", "K09", "K10", "K11", "K12", "K13", "K14", "K15", "K16", "LIP01", "LIP02", "LIP03", "LIP07", "J01", "J08", "LMC", "LMS"};
-
-    char *horarios[] = {" 07:10 - 08:00 ", " 08:00 - 08:50 ", " 08:50 - 09:40 ", " 09:40 - 10:30 ", " 10:30 - 11:20 ", " 11:20 - 12:10 ", " 12:10 - 13:00 ", " 13:00 - 13:50 ", " 13:50 - 14:40 ", " 14:40 - 15:30 ", " 15:30 - 16:20 ", " 16:20 - 17:10 ", " 17:10 - 18:00 ", " 18:00 - 18:50 ", " 18:50 - 19:40 ", " 19:40 - 20:30 ", " 20:30 - 21:20 ", " 21:20 - 22:10 "};
 
     // setup da janela
     window = gtk_application_window_new (app);
@@ -123,4 +139,3 @@ int main(int argc, char **argv) {
 
     return status;
 }
-
