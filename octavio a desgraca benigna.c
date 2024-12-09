@@ -739,65 +739,63 @@ void RemoverSala ()
         if (strcmp(sala_para_remover, sala_presente) == 0)
 		{
 	        printf("Sala encontrada\n");
-	        fclose(Ponteiro_Arquivo);
 			ja_registrado = 1;
             break;
         }
         qual_linha_remover++;
 	}
 	//printf("_%s_\n", sala_para_remover);
-
-	if (ja_registrado == 0)
+	
+//####################################################
+	
+	if (ja_registrado == 1)
     {
         rewind(Ponteiro_Arquivo);
-		printf("A sala foi registrada\n");
 		char buffer[4096];
 
         int Linha_atual = 1;
         // Lê linha por linha do arquivo original
-        //while (fgets(buffer, sizeof(buffer), Ponteiro_Arquivo) != NULL)
-        //{
+        while (fgets(buffer, sizeof(buffer), Ponteiro_Arquivo) != NULL)
+        {
         // Escreve a linha no arquivo temporário se não for a linha que quer remover
-        //    if (Linha_atual != qual_linha_remover)
-        //    {
-        //        fputs(buffer, Pont_ArquivoTemp);
-        //    }
-        //   Linha_atual++;
-        //}
-        char Linha [80];
-        while((fgets(Linha, sizeof(Linha), Ponteiro_Arquivo)) != NULL) // Print no terminal o que contém o arquivo linha por linha
-		{
-			if (Linha_atual != qual_linha_remover)
+            if (Linha_atual != qual_linha_remover)
             {
-                fputs(Linha, Pont_ArquivoTemp);
+                fputs(buffer, Pont_ArquivoTemp);
             }
-            Linha_atual++;
-		}
+			Linha_atual++;
+        }
 
         // Fecha os dois arquivos
         fclose(Ponteiro_Arquivo);
         fclose(Pont_ArquivoTemp);
+		
+		// Agora essa parte copia o conteudo que foi mandado para o arquivo temporario para o default que foi limpo
+		Ponteiro_Arquivo = fopen(ID_do_arquivo, "w+"); //############## ABRE O ARQUIVO ##############
+
+		FILE *Pont_ArquivoTemp = fopen("ArquivoTemporario.csv", "r");
+		if (Pont_ArquivoTemp == NULL)
+		{
+			perror("Error opening file");
+			return;
+		}
+		
+        // Lê linha por linha do arquivo temporario
+        while (fgets(buffer, sizeof(buffer), Ponteiro_Arquivo) != NULL)
+        {
+        // Escreve a linha no arquivo original
+			fputs(buffer, Pont_ArquivoTemp);
+        }
+		fclose(Ponteiro_Arquivo);
+        fclose(Pont_ArquivoTemp);
+		printf("Sala na linha %d foi removida.\n", qual_linha_remover);
     }
-	// Remove the original file
-	if (rename("planilhadefault.csv", "apagar") != 0)
+	
+	if (ja_registrado == 0)
 	{
-	    perror("Erro ao renomear o arquivo default");
-	}
-    // Renomear o arquivo temporário com o nome do arquivo original, é o novo arquivo default
-    if (rename("ArquivoTemporario.csv", "planilhadefault.csv") != 0)
-    {
-        perror("Erro ao renomear o arquivo default");
+		printf("Sala nao foi encontrada, digite uma sala valida.\n");
     }
-    if (remove("apagar") != 0)
-	{
-	    perror("Erro ao deletar o Arquivo original");
-	    return;
-	}
-    else
-    {
-        printf("Sala na linha %d foi removida.\n", qual_linha_remover);
-    }
-    // Fecha a função
+	
+    // Fim da função
     return;
 }
 //######################################################################################################################################
