@@ -97,21 +97,18 @@ void addAlug(const char *nome_do_csv) {
     struct aluguel aluguel, aluguel_existente;
 
     if (!verificarCriarArquivo(nome_do_csv)) {
-        return;
+        break;
     }
 
     FILE *pont_csv = fopen(nome_do_csv, "r+"); // Use apenas r+ para leitura e escrita
-    if (pont_csv == NULL) {
-        printf("Arquivo de registro nao encontrado. :C\n");
-        return;
-    }
-
-    printf("Insira a data (DD-MM-AAAA): ");
-fgets(aluguel.data, Size_data, stdin);
-aluguel.data[strcspn(aluguel.data, "\n")] = '\0';
-if (strlen(aluguel.data) == Size_data - 1 && aluguel.data[Size_data - 2] != '\n') {
+	
+	printf("Insira a data (DD-MM-AAAA): ");
+	fgets(aluguel.data, Size_data, stdin);
+	aluguel.data[strcspn(aluguel.data, "\n")] = '\0';
+	if (strlen(aluguel.data) == Size_data - 1 && aluguel.data[Size_data - 2] != '\n') {
     limparBuffer();
-}
+	}
+	// Deixar como obrigatório preencher aqui, != de \n ou apenas \0 ou != de 8 characteres
 
 printf("Insira a sala (B02, I15, ...): ");
 fgets(aluguel.sala, Size_sala, stdin);
@@ -119,13 +116,15 @@ aluguel.sala[strcspn(aluguel.sala, "\n")] = '\0';
 if (strlen(aluguel.sala) == Size_sala - 1 && aluguel.sala[Size_sala - 2] != '\n') {
     limparBuffer();
 }
-
+// Deixar como obrigatório preencher aqui, != de \n ou apenas \0
+	
 printf("Insira o horario (formato 710 para 7:10): ");
 fgets(aluguel.horario, Size_horario, stdin);
 aluguel.horario[strcspn(aluguel.horario, "\n")] = '\0';
 if (strlen(aluguel.horario) == Size_horario - 1 && aluguel.horario[Size_horario - 2] != '\n') {
     limparBuffer();
 }
+// Deixar como obrigatório preencher aqui, != de \n ou apenas \0
 
 printf("Nome do solicitante: ");
 fgets(aluguel.nome, Size_nome, stdin);
