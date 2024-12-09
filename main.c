@@ -27,7 +27,7 @@ static void modificar (GtkWidget *widget, gpointer data) {
     grid_modificar = gtk_grid_new();
     gtk_window_set_child(GTK_WINDOW(window_modificar), grid_modificar);
     gtk_widget_set_halign (grid_modificar, GTK_ALIGN_CENTER);
-    gtk_widgrt_set_valign (grid_modificar, GTK_ALIGN_CENTER);
+    gtk_widget_set_valign (grid_modificar, GTK_ALIGN_CENTER);
 
     // setup dos labels
     for (int i = 0; i < 4; i++){
