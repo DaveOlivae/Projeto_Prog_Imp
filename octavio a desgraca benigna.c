@@ -611,7 +611,7 @@ int TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[])
 void AdicionarSala ()
 {
 	FILE *Ponteiro_Arquivo; // Aponta para um arquivo
-	char ID_do_arquivo[19]; // Array que recebe o nome do Arquivo, formato exemplo: 112024
+	char ID_do_arquivo[20]; // Array que recebe o nome do Arquivo, formato exemplo: 112024
 
 	strcpy(ID_do_arquivo, "planilhadefault.csv"); //Nome para ID_do_arquivo nesse caso é fixo por ser um único arquivo
 	ID_do_arquivo[19] = '\0';
