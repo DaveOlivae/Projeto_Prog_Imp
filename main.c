@@ -38,10 +38,10 @@ static void modificar (GtkWidget *widget, gpointer data) {
     // setup do calendario
 
     // setup dos dropdown
-    dropdown = gtk_drop_down_new_from_strings(salas);
+    dropdown = gtk_drop_down_new_from_strings(*salas);
     gtk_grid_attach(GTK_GRID(grid_modificar), dropdown, 1, 1, 1, 1);
 
-    dropdown = gtk_drop_down_new_from_strings(horarios);
+    dropdown = gtk_drop_down_new_from_strings(*horarios);
     for (int i = 0; i < 2; i++){
         gtk_grid_attach(GTK_GRID(grid_modificar), dropdown, 1, 2+i, 1, 1);
     }
