@@ -154,48 +154,78 @@ int main() {
         FILE *arquivo = fopen(csv_login, "w");
         fclose(arquivo);
     }
-
-    printf("Insira seu login: ");
-    scanf("%s", login);
-    printf("Insira sua senha: ");
-    scanf("%s", senha);
-
-    if (strcmp(login, adm_login) == 0 && strcmp(senha, adm_senha) == 0) {
-        printf("Logado como administrador.\n");
-
-        do {
-            printf("\nMenu:\n");
-            printf("(1) Adicionar Usuário\n");
-            printf("(2) Alterar Senha de Usuário\n");
-            printf("(3) Remover Usuário\n");
-            printf("(4) Sair\n");
-            printf("Insira a opção: ");
-            scanf("%d", &opcao);
-
-            switch (opcao) {
-                case 1:
-                    adicionarUsuario();
-                    break;
-                case 2:
-                    alterarSenha();
-                    break;
-                case 3:
-                    removerUsuario();
-                    break;
-                case 4:
-                    printf("Seção encerrada.\n");
-                    break;
-                default:
-                    printf("Opção invalida. Insira inteiros de 1 a 4.\n");
-            }
-        } while (opcao != 4);
-    } else {
-        if (logar(login, senha)) {
+    while (1 == 1)
+    {
+        printf("Insira seu login: ");
+        scanf("%s", login);
+        printf("Insira sua senha: ");
+        scanf("%s", senha);
+        
+        if (strcmp(login, adm_login) == 0 && strcmp(senha, adm_senha) == 0) 
+        {
+            printf("Logado como administrador.\n");
+    
+            do {
+                printf("\nMenu:\n");
+                printf("(1) Adicionar Usuário\n");
+                printf("(2) Alterar Senha de Usuário\n");
+                printf("(3) Remover Usuário\n");
+                printf("(4) Sair\n");
+                printf("Insira a opção: ");
+                scanf("%d", &opcao);
+    
+                switch (opcao) {
+                    case 1:
+                        adicionarUsuario();
+                        break;
+                    case 2:
+                        alterarSenha();
+                        break;
+                    case 3:
+                        removerUsuario();
+                        break;
+                    case 4:
+                        printf("Seção encerrada.\n");
+                        return 0;
+                    default:
+                        printf("Opção invalida. Insira inteiros de 1 a 4.\n");
+                }
+            } while (opcao != 4);
+        }
+            
+        else if (logar(login, senha)) 
+        {
             printf("Login realizado ! :D\n");
-        } else {
+            do {
+                printf("\nMenu:\n");
+                printf("(1) Adicionar Usuário\n");
+                printf("(2) Alterar Senha de Usuário\n");
+                printf("(3) Remover Usuário\n");
+                printf("(4) Sair\n");
+                printf("Insira a opção: ");
+                scanf("%d", &opcao);
+    
+                switch (opcao) {
+                    case 1:
+                        adicionarUsuario();
+                        break;
+                    case 2:
+                        alterarSenha();
+                        break;
+                    case 3:
+                        removerUsuario();
+                        break;
+                    case 4:
+                        printf("Seção encerrada.\n");
+                        return 0;
+                    default:
+                        printf("Opção invalida. Insira inteiros de 1 a 4.\n");
+                }
+            } while (opcao != 4);
+        } 
+        else 
+        {
             printf("Usuario ou senha invalidos. :/\n");
         }
     }
-
-    return 0;
 }
