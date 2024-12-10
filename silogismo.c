@@ -805,7 +805,7 @@ void RemoverSala ()
 
 	Ponteiro_Arquivo = fopen(ID_do_arquivo, "r+"); //############## ABRE O ARQUIVO ##############
 
-	FILE *Pont_ArquivoTemp = fopen("ArquivoTemporario.csv", "r+");
+	FILE *Pont_ArquivoTemp = fopen("ArquivoTemporario.csv", "w+");
 	if (Pont_ArquivoTemp == NULL)
     {
         perror("Error opening file");
@@ -839,6 +839,7 @@ void RemoverSala ()
 		{
 			// Move os caracteres uma posição para a esquerda para remover o \n
 			memmove(sala_presente + len, sala_presente + len + 1, strlen(sala_presente) - len);
+			qual_linha_remover++;
 		}
 
 		fscanf(Ponteiro_Arquivo, "%*c");
@@ -850,12 +851,11 @@ void RemoverSala ()
 			ja_registrado = 1;
             break;
         }
-        qual_linha_remover++;
 	}
 	//printf("_%s_\n", sala_para_remover);
-	
+
 //####################################################
-	
+
 	if (ja_registrado == 1)
     {
         rewind(Ponteiro_Arquivo);
@@ -915,12 +915,12 @@ void RemoverSala ()
         fclose(Pont_ArquivoTemp);
 		printf("Sala na linha %d foi removida.\n", qual_linha_remover);
     }
-	
+
 	if (ja_registrado == 0)
 	{
 		printf("Sala nao foi encontrada, digite uma sala valida.\n");
     }
-	
+
     // Fim da função
     return;
 }
@@ -992,7 +992,7 @@ void printPlanilha()
 		if (Ponteiro_Arquivo == NULL)
 		{
 			perror("Erro ao abrir o arquivo, verifique o local do arquivo");
-	       		return;
+	       	return;
 		}
 	}
 	char Linha [80];
