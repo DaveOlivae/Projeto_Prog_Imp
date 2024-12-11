@@ -64,7 +64,7 @@ int verifica_disponibilidade(const char *data, const char *sala, char hora_inici
     struct aluguel aluguel_existente; // corrigido por john, não tenho ctz se era essa a intenção, verficar dps com matheus
 
     // Montar o nome do arquivo
-    snprintf(nome_arquivo, sizeof(nome_arquivo), "%s.csv", data);
+    snprintf(nome_arquivo, sizeof(nome_arquivo), "%s.txt", data);
 
     // Abrir o arquivo
     arquivo = fopen(nome_arquivo, "r");
@@ -255,7 +255,7 @@ void addAlug(const char *data_do_csv, const char *data) {
 //Atualizacao de Sala Data e Hora e um registro
     void attDSH(const char *data_do_csv, const char *data, const char *sala, const char *horario){
     FILE *pont_csv_old = fopen(data_do_csv, "r");
-    FILE *pont_temp_old = fopen("temp_old.csv", "w");
+    FILE *pont_temp_old = fopen("temp_old.txt", "w");
     struct aluguel aluguel_novo, aluguel_existente_old, aluguel_existente_new;
 //se a data for a mesma, entra no mesmo arquivo. Se modificar a data, modifica o arquivo de data nova
     int encontrou = 0;
@@ -322,7 +322,7 @@ void addAlug(const char *data_do_csv, const char *data) {
                 limparAluguel(&aluguel_novo);
                 fclose(pont_csv_old);
                 fclose(pont_temp_old);
-                remove("temp_old.csv");
+                remove("temp_old.txt");
                 return;
             }
 
@@ -342,24 +342,24 @@ void addAlug(const char *data_do_csv, const char *data) {
         fclose(pont_csv_old);
         fclose(pont_temp_old);
 
-        FILE *pont_temp_new = fopen("temp_new.csv", "w");
+        FILE *pont_temp_new = fopen("temp_new.txt", "w");
                 if (pont_temp_new == NULL){
                 perror("Erro ao criar o arquivo temporario de nova data. Tente novamente :C");
-                remove("temp_old.csv");
+                remove("temp_old.txt");
                 return;
                 limparAluguel(&aluguel_existente_old);
                 limparAluguel(&aluguel_novo);
                 }
 
         char data_csv_new[Size_data + 5];
-        sprintf(data_csv_new, "%s.csv", aluguel_novo.data);
+        sprintf(data_csv_new, "%s.txt", aluguel_novo.data);
 
         FILE *pont_csv_new = fopen(data_csv_new, "a+");
                 if (pont_csv_new == NULL){
                 perror("Erro ao abrir o arquivo original de nova data. Verifique se as informacoes sao validas :C");
                 fclose(pont_temp_new);
-                remove("temp_old.csv");
-                remove("temp_new.csv");
+                remove("temp_old.txt");
+                remove("temp_new.txt");
                 limparAluguel(&aluguel_existente_old);
                 limparAluguel(&aluguel_novo);
                 return;
@@ -383,8 +383,8 @@ void addAlug(const char *data_do_csv, const char *data) {
                     limparAluguel(&aluguel_existente_new);
                     fclose(pont_csv_new);
                     fclose(pont_temp_new);
-                    remove("temp_old.csv");
-                    remove("temp_new.csv");
+                    remove("temp_old.txt");
+                    remove("temp_new.txt");
                     return;
                 }
 
@@ -416,8 +416,8 @@ void addAlug(const char *data_do_csv, const char *data) {
                 fclose(pont_temp_new);
                 remove(data_do_csv);
                 remove(data_csv_new);
-                rename("temp_old.csv", data_do_csv);
-                rename("temp_new.csv", data_csv_new);
+                rename("temp_old.txt", data_do_csv);
+                rename("temp_new.txt", data_csv_new);
                 limparAluguel(&aluguel_existente_old);
                 limparAluguel(&aluguel_novo);
                 limparAluguel(&aluguel_existente_new);
@@ -429,8 +429,8 @@ void addAlug(const char *data_do_csv, const char *data) {
                 limparAluguel(&aluguel_existente_new);
                 fclose(pont_csv_new);
                 fclose(pont_temp_new);
-                remove("temp_old.csv");
-                remove("temp_new.csv");
+                remove("temp_old.txt");
+                remove("temp_new.txt");
                 printf("Tente novamente. Verifique se as informacoes estao validas.");
                 return;
             }
@@ -445,14 +445,14 @@ void addAlug(const char *data_do_csv, const char *data) {
         limparAluguel(&aluguel_novo);
         fclose(pont_csv_old);
         fclose(pont_temp_old);
-        remove("temp_old.csv");
+        remove("temp_old.txt");
     }
     }
 
 //Atualizacao de informacoes associadas a um registro
 void attInfos(const char *data_do_csv, const char *data, const char *sala, const char *horario) {
     FILE *pont_csv = fopen(data_do_csv, "r");
-    FILE *pont_temp = fopen("temp.csv", "w");
+    FILE *pont_temp = fopen("temp.txt", "w");
 
     struct aluguel aluguel_existente, aluguel_novo, aluguel_conflito;
     int encontrou = 1;
@@ -559,7 +559,7 @@ void attInfos(const char *data_do_csv, const char *data, const char *sala, const
                     limparAluguel(&aluguel_conflito);
                     fclose(pont_csv);
                     fclose(pont_temp);
-                    remove("temp.csv");
+                    remove("temp.txt");
                     return;
                 }
             }
@@ -589,7 +589,7 @@ void attInfos(const char *data_do_csv, const char *data, const char *sala, const
 
     if (encontrou) {
         remove(data_do_csv);
-        rename("temp.csv", data_do_csv);
+        rename("temp.txt", data_do_csv);
         limparAluguel(&aluguel_existente);
         limparAluguel(&aluguel_novo);
         limparAluguel(&aluguel_conflito);
@@ -598,14 +598,14 @@ void attInfos(const char *data_do_csv, const char *data, const char *sala, const
         limparAluguel(&aluguel_existente);
         limparAluguel(&aluguel_novo);
         printf("Registro não encontrado. :C\n");
-        remove("temp.csv");
+        remove("temp.txt");
     }
 }
 
 //Remover registro
 void removAlug(const char *data_do_csv, const char *data, const char *sala, const char *horario) {
     FILE *pont_csv = fopen(data_do_csv, "r");
-    FILE *pont_temp = fopen("temp.csv", "w");
+    FILE *pont_temp = fopen("temp.txt", "w");
 
     struct aluguel aluguel_existente;
     int tudocerto = 0;
@@ -650,7 +650,7 @@ void removAlug(const char *data_do_csv, const char *data, const char *sala, cons
                 printf("Tente novamente. Verifique se as informacoes estao validas.");
                 limparAluguel(&aluguel_existente);
                 fclose(pont_csv);
-                remove("temp.csv");
+                remove("temp.txt");
                 return;
             }
 
@@ -674,11 +674,11 @@ void removAlug(const char *data_do_csv, const char *data, const char *sala, cons
 
     if (tudocerto == 1) {
         remove(data_do_csv);
-        rename("temp.csv", data_do_csv);
+        rename("temp.txt", data_do_csv);
         limparAluguel(&aluguel_existente);
         printf("Registro removido com sucesso! :)\n");
     } else {
-        remove("temp.csv");
+        remove("temp.txt");
         limparAluguel(&aluguel_existente);
         printf("Registro não encontrado. :C\n");
     }
@@ -712,7 +712,7 @@ int registrador() {
                     limparBuffer();
                 }
 
-                sprintf(data_do_csv, "%s.csv", data);
+                sprintf(data_do_csv, "%s.txt", data);
 
                 addAlug(data_do_csv, data);
                 break;
@@ -725,7 +725,7 @@ int registrador() {
                     limparBuffer();
                 }
 
-                sprintf(data_do_csv, "%s.csv", data);
+                sprintf(data_do_csv, "%s.txt", data);
 
                 printf("Sala (B02, I15, ...): ");
                 fgets(sala, Size_sala, stdin);
@@ -752,7 +752,7 @@ int registrador() {
                     limparBuffer();
                 }
 
-                sprintf(data_do_csv, "%s.csv", data);
+                sprintf(data_do_csv, "%s.txt", data);
 
                 printf("Sala (B02, I15, ...): ");
                 fgets(sala, Size_sala, stdin);
@@ -780,7 +780,7 @@ int registrador() {
                     limparBuffer();
                 }
 
-                sprintf(data_do_csv, "%s.csv", data);
+                sprintf(data_do_csv, "%s.txt", data);
 
                 printf("Sala (B02, I15, ...): ");
                 fgets(sala, Size_sala, stdin);
@@ -868,7 +868,7 @@ int TrocarLouO (char Data_T[], char Sala_T[], int Hora_minutos)
     int pode_registrar = 0; // Se der um erro não deixa registrar
 	FILE *Ponteiro_Arquivo; // Aponta para um arquivo
 	int Size_ID_planilha = 13;
-	char ID_do_arquivo[Size_ID_planilha]; // Array que recebe o nome do Arquivo, formato exemplo: 112024.csv
+	char ID_do_arquivo[Size_ID_planilha]; // Array que recebe o nome do Arquivo, formato exemplo: 112024.txt
 
 	strcpy(ID_do_arquivo, Data_T); //input do usuario para ID_do_arquivo
 
@@ -895,14 +895,14 @@ int TrocarLouO (char Data_T[], char Sala_T[], int Hora_minutos)
 
     // Adiciona \0 no final das arrays somadas
     resultado[lencomeco + lenID] = '\0';
-    strcat(resultado, ".csv");
+    strcat(resultado, ".txt");
 	//printf("_%s_\n", resultado); //DEBUG
 
 	Ponteiro_Arquivo = fopen(resultado, "r+"); //############## ABRE O ARQUIVO ##############
 	if (Ponteiro_Arquivo == NULL)
 	{
         Ponteiro_Arquivo = fopen(resultado, "w");
-		FILE *Ler_default = fopen("planilhadefault.csv", "r");
+		FILE *Ler_default = fopen("planilhadefault.txt", "r");
 
 		if (Ler_default == NULL)
 		{
@@ -1040,7 +1040,7 @@ void AdicionarSala ()
 	FILE *Ponteiro_Arquivo; // Aponta para um arquivo
 	char ID_do_arquivo[20]; // Array que recebe o nome do Arquivo, formato exemplo: 112024
 
-	strcpy(ID_do_arquivo, "planilhadefault.csv"); //Nome para ID_do_arquivo nesse caso é fixo por ser um único arquivo
+	strcpy(ID_do_arquivo, "planilhadefault.txt"); //Nome para ID_do_arquivo nesse caso é fixo por ser um único arquivo
 	ID_do_arquivo[19] = '\0';
 
 	Ponteiro_Arquivo = fopen(ID_do_arquivo, "a+"); //############## ABRE O ARQUIVO ##############
@@ -1119,12 +1119,12 @@ void RemoverSala ()
 	FILE *Ponteiro_Arquivo; // Aponta para um arquivo
 	char ID_do_arquivo[20]; // Array que recebe o nome do Arquivo, formato exemplo: 112024
 
-	strcpy(ID_do_arquivo, "planilhadefault.csv"); //Nome para ID_do_arquivo nesse caso é fixo por ser um único arquivo
+	strcpy(ID_do_arquivo, "planilhadefault.txt"); //Nome para ID_do_arquivo nesse caso é fixo por ser um único arquivo
 	ID_do_arquivo[20] = '\0';
 
 	Ponteiro_Arquivo = fopen(ID_do_arquivo, "r+"); //############## ABRE O ARQUIVO ##############
 
-	FILE *Pont_ArquivoTemp = fopen("ArquivoTemporario.csv", "w+");
+	FILE *Pont_ArquivoTemp = fopen("ArquivoTemporario.txt", "w+");
 	if (Pont_ArquivoTemp == NULL)
     {
         perror("Error opening file");
@@ -1200,7 +1200,7 @@ void RemoverSala ()
 		// Agora essa parte copia o conteudo que foi mandado para o arquivo temporario para o default que foi limpo
 		Ponteiro_Arquivo = fopen(ID_do_arquivo, "w+"); //############## ABRE O ARQUIVO ##############
 
-		FILE *Pont_ArquivoTemp = fopen("ArquivoTemporario.csv", "r");
+		FILE *Pont_ArquivoTemp = fopen("ArquivoTemporario.txt", "r");
 		if (Pont_ArquivoTemp == NULL)
 		{
 			perror("Error opening file");
@@ -1250,7 +1250,7 @@ void printPlanilha()
 {
 	FILE *Ponteiro_Arquivo; // Aponta para um arquivo
 	int Size_ID_planilha = 13;
-	char ID_do_arquivo[Size_ID_planilha]; // Array que recebe o nome do Arquivo, formato exemplo: 112024.csv
+	char ID_do_arquivo[Size_ID_planilha]; // Array que recebe o nome do Arquivo, formato exemplo: 112024.txt
 
     char Data_ID[Size_data];
     printf("Digite a data (DD-MM-AAAA): ");
@@ -1282,14 +1282,14 @@ void printPlanilha()
 
     // Adiciona \0 no final das arrays somadas
     resultado[lencomeco + lenID] = '\0';
-    strcat(resultado, ".csv");
+    strcat(resultado, ".txt");
 	//printf("_%s_\n", resultado); //DEBUG
 
 	Ponteiro_Arquivo = fopen(resultado, "r+"); //############## ABRE O ARQUIVO ##############
 	if (Ponteiro_Arquivo == NULL)
 	{
         Ponteiro_Arquivo = fopen(resultado, "w");
-		FILE *Ler_default = fopen("planilhadefault.csv", "r");
+		FILE *Ler_default = fopen("planilhadefault.txt", "r");
 
 		if (Ler_default == NULL)
 		{
@@ -1330,7 +1330,7 @@ void printPlanilha()
 void PlanilhaDefaultExistinator() //Necessário para criar a plannilha default se ela não existir
 {
 	FILE *Pont_Pdefault;
-    const char *NomePdefault = "planilhadefault.csv";
+    const char *NomePdefault = "planilhadefault.txt";
     const char *PlanilhaDefaultTexto =
 	" ;07:10-08:00;08:00-08:50;08:50-09:40;09:40-10:30;10:30-11:20;11:20-12:10;12:10-13:00;13:00-13:50;13:50-14:40;14:40-15:30;15:30-16:20;16:20-17:10;17:10-18:00;18:00-18:50;18:50-19:40;19:40-20:30;20:30-21:20;21:20-22:10;\n"
     "A03;L;L;L;L;L;L;L;L;L;L;L;L;L;L;L;L;L;L;\n"
