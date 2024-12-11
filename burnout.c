@@ -229,7 +229,7 @@ void addAlug(const char *data_do_csv, const char *data) {
     strcpy(dataCheck, data);
     //copiar a const pra mutavel pra conseguir usar no check
 
-    int check_de_erro = TrocarLouO (dataCheck, aluguel.sala, aluguel.horario); //A FAZER, INCLUIR HORARIO FIM NESSA PARADA
+    int check_de_erro = TrocarLouO (dataCheck, aluguel.sala, aluguel.horario); //aluguel.horarioFim
 
     if (check_de_erro==0){ //faz o check de erro, se der tudo certo, retornando 0, printa no final e usa o L ou O dentro do proprio check de erro
         fprintf(pont_csv, "%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;\n", 
@@ -255,6 +255,7 @@ void addAlug(const char *data_do_csv, const char *data) {
     struct aluguel aluguel_novo, aluguel_existente_old, aluguel_existente_new;
 //se a data for a mesma, entra no mesmo arquivo. Se modificar a data, modifica o arquivo de data nova
     int encontrou = 0;
+    char horarioFimCheck[Size_horario];
 
     printf("Tentando abrir o arquivo: %s\n", data_do_csv);
 
@@ -275,6 +276,7 @@ void addAlug(const char *data_do_csv, const char *data) {
         //Verifica se o registro atual corresponde ao que deve ser removido
         if (compDataHorSala(aluguel_existente_old.data, data, aluguel_existente_old.sala, sala, aluguel_existente_old.horario, horario)) {
             printf("Registro encontrado! :D\nData: %s, Sala: %s, Horário: %s\nInsira as novas informacoes.\n",
+                    strcpy(horarioFimCheck, aluguel_existente_old.horarioFim);
                    aluguel_existente_old.data, aluguel_existente_old.sala, aluguel_existente_old.horario);
             //provavelmente nao precisa do .aluguel
             aluguel_novo = aluguel_existente_old;
@@ -401,10 +403,10 @@ void addAlug(const char *data_do_csv, const char *data) {
             strcpy(horarioCheck, horario);
 
             //check de erro na planilha com os novos dados
-            int check_de_erro = TrocarLouO (aluguel_novo.data, aluguel_novo.sala, aluguel_novo.horario); 
+            int check_de_erro = TrocarLouO (aluguel_novo.data, aluguel_novo.sala, aluguel_novo.horario); //aluguel_novo.horarioFim;
 
             if (check_de_erro==0){ //faz o check de erro, se der tudo certo, retornando 0, printa no final e usa o L ou O dentro do proprio check de erro
-                TrocarLouO(dataCheck, salaCheck, horarioCheck);
+                TrocarLouO(dataCheck, salaCheck, horarioCheck); //horarioFimCheck
                 fclose(pont_csv_new);
                 fclose(pont_temp_new);
                 remove(data_do_csv);
@@ -631,7 +633,7 @@ void removAlug(const char *data_do_csv, const char *data, const char *sala, cons
             strcpy(horarioCheck, horario);
             //copiar a const pra mutavel pra conseguir usar no check
 
-            int check_de_erro = TrocarLouO (dataCheck, salaCheck, horarioCheck); 
+            int check_de_erro = TrocarLouO (dataCheck, salaCheck, horarioCheck); //aluguel_existente.horarioFim
 
             if (check_de_erro==0){ //faz o check de erro, se der tudo certo, retornando 0, printa no final e usa o L ou O dentro do proprio check de erro
                 printf("Aluguel removido! :)\n");
