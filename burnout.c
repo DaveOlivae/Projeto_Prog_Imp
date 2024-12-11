@@ -822,7 +822,7 @@ int registrador() {
 int IeFnoLouO (char Data_T[], char Sala_T[], char hora_i[], char hora_f[])
 {
 	int houve_um_erro = 0;
-	
+
 	int num_hora_i = (hora_i[0] - '0') * 10 + (hora_i[1] - '0'); //converte char pra int - horas
 	int num_minuto_i = (hora_i[2] - '0') * 10 + (hora_i[3] - '0'); //converte char pra int - minutos
 	int bloco_horario_i = (num_hora_i * 60) + num_minuto_i;
@@ -831,30 +831,33 @@ int IeFnoLouO (char Data_T[], char Sala_T[], char hora_i[], char hora_f[])
 	int num_minuto_f = (hora_f[2] - '0') * 10 + (hora_f[3] - '0'); //converte char pra int - minutos
 	int bloco_horario_f = (num_hora_f * 60) + num_minuto_f;
 
+    printf("\n_bloco_horario_f:_%i_", bloco_horario_f); //DEBBUG
+    printf("\n_num_hora_f:_%i_", num_hora_f);
+    printf("\n_num_minuto_f", num_minuto_f);
 	// Calcular os intervalos de 50 minutos
-	bloco_horario_i = bloco_horario_i / 50;
-	bloco_horario_f = bloco_horario_f / 50;
+	bloco_horario_i = (bloco_horario_i - 430) / 50; // 430 = 710 em minutos
+	bloco_horario_f = (bloco_horario_f - 430) / 50;
 
-	
+
 	int bloco_while = bloco_horario_i;
 	int hora_atualnoloop = 0;
 	while (bloco_while < bloco_horario_f)
 	{
-		hora_atualnoloop = (bloco_while * 50);
+		hora_atualnoloop = bloco_while * 2;
 		houve_um_erro = TrocarLouO (Data_T, Sala_T, hora_atualnoloop);
 		if (houve_um_erro == 1)
 		{
-			while (bloco_while > bloco_horario_i)
+			while (bloco_while >= bloco_horario_i)
 			{
-				hora_atualnoloop = (bloco_while * 50);
 				TrocarLouO (Data_T, Sala_T, hora_atualnoloop);
 				bloco_while = bloco_while - 1;
+				hora_atualnoloop = bloco_while * 2;
 			}
 			return houve_um_erro;
 		}
 		bloco_while = bloco_while + 1;
 	}
-	
+
 	return houve_um_erro;
 }
 //######################################################################################################################################
@@ -937,11 +940,11 @@ int TrocarLouO (char Data_T[], char Sala_T[], int Hora_minutos)
 		}
 	}
 
-	// HORARIO ##############################
+	// HORARIO ########################################################
 	int bloco_horario = Hora_minutos;
 	// Calcular os intervalos de 50 minutos
-    bloco_horario = ((bloco_horario - 430) / 50) * 2; // Começa a contar a partir do 0, *2 por conta do ';'
-	//printf("_1BLOH_%i_\n", bloco_horario);
+    //bloco_horario = ((bloco_horario - 430) / 50) * 2; // Começa a contar a partir do 0, *2 por conta do ';'
+	printf("_BLOH_%i_\n", bloco_horario);
 
     //Verificar se a sala já existe ###################################################
     rewind(Ponteiro_Arquivo); //Ponteiro de leitura retorna ao comeco do arquivo
