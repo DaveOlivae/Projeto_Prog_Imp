@@ -24,7 +24,7 @@ int arquivoExiste(const char *nomeArquivo) {
 }
 
 //Login
-int logar(const char *loginInserido, const char *senha_inserida) {
+int logar(const char *loginInserido, const char *senhaInserida) {
     char login[Size_login], senha[Size_senha];
     FILE *arquivo = fopen(csv_login, "r");
 
@@ -32,11 +32,14 @@ int logar(const char *loginInserido, const char *senha_inserida) {
         printf("Erro ao abrir o arquivo de usuarios.\n");
         return 0;
     }
+    char linha[Size_login + Size_senha + 3];  // espaço extra para '\n' e ';'
+    while (fgets(linha, sizeof(linha), arquivo)) {
+        char loginExistente[Size_login], senhaExistente[Size_senha];
+        sscanf(linha, "%[^;];%[^;];", loginExistente, senhaExistente);
 
-    while (fscanf(arquivo, "%[^,],%s\n", login, senha) != EOF) {
-        if (strcmp(loginInserido, login) == 0 && strcmp(senha_inserida, senha) == 0) {
+        if (strcmp(loginExistente, loginInserido) == 0 && strcmp(senhaExistente, senhaInserida) == 0) {
             fclose(arquivo);
-            return 1;
+            return 1; 
         }
     }
 
@@ -297,9 +300,7 @@ int main() {
                 }
             } while (opcao != '4');
         }
-        } 
-        else 
-        {
+        else {
             printf("Usuario ou senha invalidos. :/\n");
         }
     }
