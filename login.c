@@ -1,4 +1,28 @@
 #include <gtk/gtk.h>
+#include "principal.c"
+
+static void principal(GtkApplication *app, gpointer user_data);
+
+static void botao_clicado2(GtkWidget *button, gpointer user_data) {
+    GtkGrid *grid = GTK_GRID(user_data);
+
+    GtkApplication *app;
+    GtkWidget *window;
+
+    GtkWidget *parent = gtk_widget_get_parent(GTK_WIDGET(grid));
+    
+    // Itera até encontrar a janela
+    while (parent != NULL && !GTK_IS_WINDOW(parent)) {
+        parent = gtk_widget_get_parent(parent);
+    }
+
+    window = parent;  // Atribui a janela ao ponteiro
+    app = gtk_window_get_application(GTK_WINDOW(window));  // Obtém o GtkApplication a partir da janela
+
+    gtk_window_destroy(GTK_WINDOW(window));
+
+    principal(app, NULL);
+}
 
 static void limpar(GtkWidget *grid) {
     // limpa os widgets do grid
@@ -16,7 +40,7 @@ static void cadastro(GtkWidget *button, gpointer user_data);
 
 static void tela_login(GtkGrid *grid) {
 
-    // cria a tela de login
+     // cria a tela de login
     
     limpar(GTK_WIDGET(grid));
 
@@ -63,6 +87,7 @@ static void tela_login(GtkGrid *grid) {
     // botao de entrar
     botao_entrar = gtk_button_new_with_label("Entrar");
     gtk_grid_attach(GTK_GRID(grid), botao_entrar, 1, 3, 2, 1);
+    g_signal_connect(botao_entrar, "clicked", G_CALLBACK(botao_clicado2), GTK_GRID(grid));
 
     // botao de cadastro
     botao_cadastro = gtk_button_new_with_label("Cadastro");
@@ -110,7 +135,7 @@ static void cadastro(GtkWidget *button, gpointer user_data) {
     g_signal_connect(cancelar, "clicked", G_CALLBACK(botao_clicado), grid);
 }
 
-static void activate(GtkApplication *app, gpointer user_data) {
+static void login(GtkApplication *app, gpointer user_data) {
     GtkWidget *window;
     GtkWidget *grid;
 
@@ -127,14 +152,3 @@ static void activate(GtkApplication *app, gpointer user_data) {
     gtk_window_present (GTK_WINDOW (window));  
 }
 
-int main(int argc, char **argv) {
-    GtkApplication *app;
-    int status;
-
-    app = gtk_application_new ("teste.teste", G_APPLICATION_DEFAULT_FLAGS);
-    g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
-    status = g_application_run (G_APPLICATION (app), argc, argv);
-    g_object_unref (app);
-
-    return status;
-}
