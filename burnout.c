@@ -29,6 +29,8 @@ struct aluguel {
 };
 
 //Decaração de funcoes
+int verifica_horarios(int hora_inicial, int hora_final, int hora_existente_ini, int hora_existente_fim);
+int verifica_disponibilidade(const char *data, const char *sala, int hora_inicial, int hora_final);
 int compDataHorSala(const char *data1, const char *data2, const char *sala1, const char *sala2, const char *horario1, const char *horario2);
 void addAlug(const char *data_do_csv, const char *data);
 int verifCriaArquivo;
@@ -42,6 +44,59 @@ int TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[]);
 void AdicionarSala ();
 void RemoverSala ();
 void PlanilhaDefaultExistinator ();
+
+int verifica_horarios(int hora_inicial, int hora_final, int hora_existente_ini, int hora_existente_fim) {
+    // Verifica se os horários não conflitam
+    if ((hora_inicial < hora_existente_ini && hora_final <= hora_existente_ini) ||
+        (hora_inicial >= hora_existente_fim)) {
+        return 1; // Horários são compatíveis
+    }
+    return 0; // Conflito de horários
+}
+
+// Função principal
+int verifica_disponibilidade(const char *data, const char *sala, int hora_inicial, int hora_final) {
+    char nome_arquivo[Size_data + 5];
+    FILE *arquivo;
+    Aluguel aluguel_existente;
+
+    // Montar o nome do arquivo
+    snprintf(nome_arquivo, sizeof(nome_arquivo), "%s.csv", data);
+
+    // Abrir o arquivo
+    arquivo = fopen(nome_arquivo, "r");
+    if (!arquivo) {
+        printf("Erro ao abrir o arquivo %s.\n", nome_arquivo);
+        return;
+    }
+
+    // Ler o arquivo linha a linha usando fscanf
+    while (fscanf(arquivo,
+                  "%8[^;];%20[^;];%4[^;];%4[^;];%51[^;];%15[^;];%21[^;];%52[^;];%1[^;];%1000[^;];\n",
+                  aluguel_existente.data, aluguel_existente.sala, aluguel_existente.horario,
+                  aluguel_existente.horarioFim, aluguel_existente.nome, aluguel_existente.cpf,
+                  aluguel_existente.celular, aluguel_existente.prof_responsavel,
+                  aluguel_existente.monitor_sn, aluguel_existente.evento) != EOF) {
+
+        // Converter os horários existentes para inteiros
+        int hora_existente_ini = atoi(aluguel_existente.horario);
+        int hora_existente_fim = atoi(aluguel_existente.horarioFim);
+
+        // Comparar a sala e os horários
+        if (strcmp(sala, aluguel_existente.sala) == 0) {
+            if (!verifica_horarios(hora_inicial, hora_final, hora_existente_ini, hora_existente_fim)) {
+                fclose(arquivo);
+                limparAluguel(&aluguel_existente);
+                printf("Conflito encontrado, insira hora inicial e final validas.");
+                return 0; // Conflito encontrado
+            }
+        }
+    }
+    limparAluguel(&aluguel_existente);
+    printf("Sem conflitos sla.");
+    fclose(arquivo);
+    return 1; // Sem conflito
+}
 
 //limpeza dos structs
 void limparAluguel(struct aluguel *aluguelaserlimpo) {
@@ -83,7 +138,7 @@ void limparBuffer() {
 
 //Adicao de registro
 void addAlug(const char *data_do_csv, const char *data) {
-    struct aluguel aluguel, aluguel_existente;
+    struct aluguel aluguel;
 
     if (!verificarCriarArquivo(data_do_csv)) {
         return;
@@ -92,7 +147,7 @@ void addAlug(const char *data_do_csv, const char *data) {
     FILE *pont_csv = fopen(data_do_csv, "r+"); //ponteiro spawna no começo do arquivo
 	
 	strcpy(aluguel.data, data);
-	// Deixar como obrigatório preencher aqui, != de \n ou apenas \0 ou != de 8 characteres
+
 
     printf("Insira a sala (B02, I15, ...): ");
         fgets(aluguel.sala, Size_sala, stdin);
@@ -100,7 +155,7 @@ void addAlug(const char *data_do_csv, const char *data) {
         if (strlen(aluguel.sala) == Size_sala - 1 && aluguel.sala[Size_sala - 2] != '\n') {
         limparBuffer();
         }
-// Deixar como obrigatório preencher aqui, != de \n ou apenas \0
+
 	
     printf("Insira o horario (formato 710 para 7:10): ");
         fgets(aluguel.horario, Size_horario, stdin);
@@ -108,7 +163,7 @@ void addAlug(const char *data_do_csv, const char *data) {
         if (strlen(aluguel.horario) == Size_horario - 1 && aluguel.horario[Size_horario - 2] != '\n') {
         limparBuffer();
         }
-// Deixar como obrigatório preencher aqui, != de \n ou apenas \0
+
     printf("Insira o horario final (formato 710 para 7:10): ");
         fgets(aluguel.horarioFim, Size_horario, stdin);
         aluguel.horarioFim[strcspn(aluguel.horarioFim, "\n")] = '\0';
@@ -159,16 +214,11 @@ void addAlug(const char *data_do_csv, const char *data) {
         }
 
     //teste de conflito
-    rewind(pont_csv);
-    while (fscanf(pont_csv, "%8[^;];%20[^;];%4[^;];%4[^;\n]%*[^\n]",
-              aluguel_existente.data, aluguel_existente.sala, aluguel_existente.horario, aluguel_existente.horarioFim) == 4) {
-        if (compDataHorSala(aluguel.data, aluguel_existente.data, aluguel.sala, aluguel_existente.sala, aluguel.horario, aluguel_existente.horario)) {
-            printf("Erro: Esse horario ja foi agendado. :C\n");
-            fclose(pont_csv);
-            limparAluguel(&aluguel);
-            limparAluguel(&aluguel_existente);
-            return;
-        }
+    if(verifica_disponibilidade(data, aluguel.sala, aluguel.horario, aluguel.horarioFim) == 0){
+        printf("Conflito de horarios.\n");
+        fclose(pont_csv);
+        limparAluguel(&aluguel);
+        return;
     }
 
     fseek(pont_csv, 0, SEEK_END);
@@ -179,7 +229,7 @@ void addAlug(const char *data_do_csv, const char *data) {
     strcpy(dataCheck, data);
     //copiar a const pra mutavel pra conseguir usar no check
 
-    int check_de_erro = TrocarLouO (dataCheck, aluguel.sala, aluguel.horario); 
+    int check_de_erro = TrocarLouO (dataCheck, aluguel.sala, aluguel.horario); //A FAZER, INCLUIR HORARIO FIM NESSA PARADA
 
     if (check_de_erro==0){ //faz o check de erro, se der tudo certo, retornando 0, printa no final e usa o L ou O dentro do proprio check de erro
         fprintf(pont_csv, "%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;\n", 
@@ -187,12 +237,10 @@ void addAlug(const char *data_do_csv, const char *data) {
             aluguel.cpf, aluguel.celular, aluguel.prof_responsavel, aluguel.monitor_sn, 
             aluguel.evento);
         limparAluguel(&aluguel);
-        limparAluguel(&aluguel_existente);
         printf("Aluguel adicionado! :)\n");
     }
     else{
         limparAluguel(&aluguel);
-        limparAluguel(&aluguel_existente);
         printf("Tente novamente. Verifique se as informacoes estao validas.");
         return;
     }
@@ -205,7 +253,7 @@ void addAlug(const char *data_do_csv, const char *data) {
     FILE *pont_csv_old = fopen(data_do_csv, "r");
     FILE *pont_temp_old = fopen("temp_old.csv", "w");
     struct aluguel aluguel_novo, aluguel_existente_old, aluguel_existente_new;
-
+//se a data for a mesma, entra no mesmo arquivo. Se modificar a data, modifica o arquivo de data nova
     int encontrou = 0;
 
     printf("Tentando abrir o arquivo: %s\n", data_do_csv);
@@ -258,9 +306,20 @@ void addAlug(const char *data_do_csv, const char *data) {
             if (strlen(aluguel_novo.horarioFim) == Size_horario - 1 && aluguel_novo.horarioFim[Size_horario - 2] != '\n') {
             limparBuffer();
             }
-//PRECISAMOS DE UMA VERIFICACAO DE HORARIO FIM HORARIO COMECO CONFLITO
+            //PRECISAMOS DE UMA VERIFICACAO DE HORARIO FIM HORARIO COMECO CONFLITO
             encontrou = 1;
-            
+
+            //teste de conflito
+            if(verifica_disponibilidade(aluguel_novo.data, aluguel_novo.sala, aluguel_novo.horario, aluguel_novo.horarioFim) == 0){
+                printf("Conflito de horarios.\n");
+                limparAluguel(&aluguel_existente_old);
+                limparAluguel(&aluguel_novo);
+                fclose(pont_csv_old);
+                fclose(pont_temp_old);
+                remove("temp_old.csv");
+                return;
+            }
+
             continue;//Nao escreve no temporario, alem de pegar as novas informacoes
             }
     
