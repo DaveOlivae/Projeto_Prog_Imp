@@ -846,6 +846,7 @@ int IeFnoLouO (char Data_T[], char Sala_T[], char hora_i[], char hora_f[])
 		{
 			while (bloco_while > bloco_horario_i)
 			{
+				hora_atualnoloop = (bloco_while * 50);
 				TrocarLouO (Data_T, Sala_T, hora_atualnoloop);
 				bloco_while = bloco_while - 1;
 			}
