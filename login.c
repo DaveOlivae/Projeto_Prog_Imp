@@ -5,8 +5,13 @@
 #define Size_login 50
 #define Size_senha 30
 #define adm_login "adm"
-#define adm_senha "1234
+#define adm_senha "1234"
 #define csv_login "login.csv"
+
+void limparBuffer() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
 
 //Verificacao de existencia do arquivo
 int arquivoExiste(const char *nomeArquivo) {
@@ -43,17 +48,47 @@ int logar(const char *loginInserido, const char *senha_inserida) {
 void adicionarUsuario() {
     char login[Size_login], senha[Size_senha];
     printf("Digite o nome de usuário: ");
-    scanf("%s", login);
-    printf("Digite a senha: ");
-    scanf("%s", senha);
+    fgets(login, Size_login, stdin);
+    login[strcspn(login, "\n")] = '\0';
+    if (strlen(login) == Size_login - 1 && login[Size_login - 2] != '\n') {
+        limparBuffer();
+    }
 
-    FILE *arquivo = fopen(csv_login, "a");
+    // Verificar se o login já existe
+    FILE *arquivo = fopen(csv_login, "r");
+    if (!arquivo) {
+        printf("Erro ao abrir o arquivo para verificação. :C\n");
+        return;
+    }
+
+    char linha[Size_login + Size_senha + 3];
+    while (fgets(linha, sizeof(linha), arquivo)) {
+        char loginExistente[Size_login], senhaExistente[Size_senha];
+        sscanf(linha, "%[^;];%[^;];", loginExistente, senhaExistente);
+        if (strcmp(loginExistente, login) == 0) {
+            printf("Erro: o login '%s' já existe. Por favor, escolha outro nome de usuário.\n", login);
+            fclose(arquivo);
+            return;
+        }
+    }
+    fclose(arquivo);
+
+    // Solicitar senha
+    printf("Digite a senha: ");
+    fgets(senha, Size_senha, stdin);
+    senha[strcspn(senha, "\n")] = '\0';
+    if (strlen(senha) == Size_senha - 1 && senha[Size_senha - 2] != '\n') {
+        limparBuffer();
+    }
+
+    // Adicionar novo usuário
+    arquivo = fopen(csv_login, "a");
     if (!arquivo) {
         printf("Erro ao abrir o arquivo para adicionar usuario. :C\n");
         return;
     }
 
-    fprintf(arquivo, "%s,%s\n", login, senha);
+    fprintf(arquivo, "%s;%s;\n", login, senha);
     fclose(arquivo);
     printf("Usuario adicionado com sucesso! :D\n");
 }
@@ -62,39 +97,61 @@ void adicionarUsuario() {
 void alterarSenha() {
     char login[Size_login], senha[Size_senha], senhaNova[Size_senha];
     printf("Insira o nome de usuario cuja senha deseja alterar: ");
-    scanf("%s", login);
-    printf("Insira a senha atual: ");
-    scanf("%s", senha);
+    fgets(login, Size_login, stdin);
+    login[strcspn(login, "\n")] = '\0';
+    if (strlen(login) == Size_login - 1 && login[Size_login - 2] != '\n') {
+        limparBuffer();
+    }
 
-    FILE *arquivo = fopen(csv_login, "r+");
+    printf("Insira a senha atual: ");
+    fgets(senha, Size_senha, stdin);
+    senha[strcspn(senha, "\n")] = '\0';
+    if (strlen(senha) == Size_senha - 1 && senha[Size_senha - 2] != '\n') {
+        limparBuffer();
+    }
+
+    FILE *arquivo = fopen(csv_login, "r");
     if (!arquivo) {
-        printf("Erro ao abrir o arquivo para alterar senha. :C\n");
+        printf("Erro ao abrir o arquivo para leitura. :C\n");
+        return;
+    }
+
+    FILE *temp = fopen("temp.csv", "w");
+    if (!temp) {
+        printf("Erro ao criar arquivo temporário. :C\n");
+        fclose(arquivo);
         return;
     }
 
     int encontrado = 0;
-    char linha[Size_login + Size_senha];
-    long pos;
-
-    while ((pos = ftell(arquivo)) != -1 && fgets(linha, sizeof(linha), arquivo)) {
+    char linha[Size_login + Size_senha + 3];
+    while (fgets(linha, sizeof(linha), arquivo)) {
         char loginAnt[Size_login], senhaAnt[Size_senha];
-        sscanf(linha, "%[^,],%s", loginAnt, senhaAnt);
+        sscanf(linha, "%[^;];%[^;];", loginAnt, senhaAnt);
 
         if (strcmp(loginAnt, login) == 0 && strcmp(senhaAnt, senha) == 0) {
             printf("Insira a nova senha: ");
-            scanf("%s", senhaNova);
-            
-            fseek(arquivo, pos, SEEK_SET);
-            fprintf(arquivo, "%s,%s\n", loginAnt, senhaNova);
+            fgets(senhaNova, Size_senha, stdin);
+            senhaNova[strcspn(senhaNova, "\n")] = '\0';
+            if (strlen(senhaNova) == Size_senha - 1 && senhaNova[Size_senha - 2] != '\n') {
+                limparBuffer();
+            }
+            fprintf(temp, "%s;%s;\n", loginAnt, senhaNova);
             encontrado = 1;
-            break;
+        } else {
+            fputs(linha, temp);
         }
     }
 
     fclose(arquivo);
+    fclose(temp);
+
     if (encontrado) {
-        printf("Senha alterada ! :D\n");
+        remove(csv_login);
+        rename("temp.csv", csv_login);
+        printf("Senha alterada! :D\n");
     } else {
+        remove("temp.csv");
         printf("Usuario ou senha incorretos. :/\n");
     }
 }
@@ -103,7 +160,11 @@ void alterarSenha() {
 void removerUsuario() {
     char login[Size_login];
     printf("Insira o login a ser removido: ");
-    scanf("%s", login);
+    fgets(login, Size_login, stdin);
+    login[strcspn(login, "\n")] = '\0';
+    if (strlen(login) == Size_login - 1 && login[Size_login - 2] != '\n') {
+        limparBuffer();
+    }
 
     FILE *arquivo = fopen(csv_login, "r");
     if (!arquivo) {
@@ -119,11 +180,11 @@ void removerUsuario() {
     }
 
     int encontrado = 0;
-    char linha[Size_login + Size_senha];
+    char linha[Size_login + Size_senha + 3];
 
     while (fgets(linha, sizeof(linha), arquivo)) {
         char loginAnt[Size_login];
-        sscanf(linha, "%[^,],", loginAnt);
+        sscanf(linha, "%[^;];", loginAnt);
 
         if (strcmp(loginAnt, login) != 0) {
             fputs(linha, pont_temp);
@@ -148,7 +209,7 @@ void removerUsuario() {
 //terminal
 int main() {
     char login[Size_login], senha[Size_senha];
-    int opcao;
+    char opcao;
     
     if (!arquivoExiste(csv_login)) {
         FILE *arquivo = fopen(csv_login, "w");
@@ -157,10 +218,19 @@ int main() {
     while (1 == 1)
     {
         printf("Insira seu login: ");
-        scanf("%s", login);
+        fgets(login, Size_login, stdin);
+        login[strcspn(login, "\n")] = '\0';
+        if (strlen(login) == Size_login - 1 && login[Size_login - 2] != '\n') {
+            limparBuffer();
+        }
+
         printf("Insira sua senha: ");
-        scanf("%s", senha);
-        
+        fgets(senha, Size_senha, stdin);
+        senha[strcspn(senha, "\n")] = '\0';
+        if (strlen(senha) == Size_senha - 1 && senha[Size_senha - 2] != '\n') {
+            limparBuffer();
+        }
+
         if (strcmp(login, adm_login) == 0 && strcmp(senha, adm_senha) == 0) 
         {
             printf("Logado como administrador.\n");
@@ -172,25 +242,27 @@ int main() {
                 printf("(3) Remover Usuário\n");
                 printf("(4) Sair\n");
                 printf("Insira a opção: ");
-                scanf("%d", &opcao);
+                opcao = getchar();
+                limparBuffer();
     
                 switch (opcao) {
-                    case 1:
+                    case '1':
                         adicionarUsuario();
+                        return 1;
                         break;
-                    case 2:
+                    case '2':
                         alterarSenha();
                         break;
-                    case 3:
+                    case '3':
                         removerUsuario();
                         break;
-                    case 4:
+                    case '4':
                         printf("Seção encerrada.\n");
                         return 0;
                     default:
                         printf("Opção invalida. Insira inteiros de 1 a 4.\n");
                 }
-            } while (opcao != 4);
+            } while (opcao != '4');
         }
             
         else if (logar(login, senha)) 
@@ -203,7 +275,11 @@ int main() {
                 printf("(3) Remover Usuário\n");
                 printf("(4) Sair\n");
                 printf("Insira a opção: ");
-                scanf("%d", &opcao);
+                if (scanf("%d", &opcao) != 1) {
+                    // Caso a entrada não seja válida
+                    printf("Erro: Entrada inválida. Por favor, insira um número inteiro.\n");
+                    limparBuffer();
+                }
     
                 switch (opcao) {
                     case 1:
