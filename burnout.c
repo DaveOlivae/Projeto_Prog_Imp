@@ -277,9 +277,9 @@ void addAlug(const char *data_do_csv, const char *data) {
 
         //Verifica se o registro atual corresponde ao que deve ser removido
         if (compDataHorSala(aluguel_existente_old.data, data, aluguel_existente_old.sala, sala, aluguel_existente_old.horario, horario)) {
-            printf("Registro encontrado! :D\nData: %s, Sala: %s, Horário: %s\nInsira as novas informacoes.\n";
+            printf("Registro encontrado! :D\nData: %s, Sala: %s, Horário: %s\nInsira as novas informacoes.\n",
+		    aluguel_existente_old.data, aluguel_existente_old.sala, aluguel_existente_old.horario);
                     strcpy(horarioFimCheck, aluguel_existente_old.horarioFim);
-                   aluguel_existente_old.data, aluguel_existente_old.sala, aluguel_existente_old.horario);
             //provavelmente nao precisa do .aluguel
             aluguel_novo = aluguel_existente_old;
 
@@ -827,7 +827,7 @@ int IeFnoLouO (char Data_T[], char Sala_T[], char hora_i[], char hora_f[])
 
 	int num_hora_f = (hora_f[0] - '0') * 10 + (hora_f[1] - '0'); //converte char pra int - horas
 	int num_minuto_f = (hora_f[2] - '0') * 10 + (hora_f[3] - '0'); //converte char pra int - minutos
-	int bloco_horario_f = (hora_f * 60) + num_minuto_f;
+	int bloco_horario_f = (num_hora_f * 60) + num_minuto_f;
 
 	// Calcular os intervalos de 50 minutos
 	bloco_horario_i = bloco_horario_i / 50;
