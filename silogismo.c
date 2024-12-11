@@ -622,9 +622,11 @@ int TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[])
 
 	// HORARIO ##############################
     // Converte a string para um int
-	int bloco_horario = atoi(Hora_T);
+	int hora_b = (Hora_T[0] - '0') * 10 + (Hora_T[1] - '0'); //converte char pra int - horas
+	int minuto_b = (Hora_T[2] - '0') * 10 + (Hora_T[3] - '0'); //converte char pra int - minutos
+	int bloco_horario = (hora_b * 60) + minuto_b;
 	// Calcular os intervalos de 50 minutos
-    bloco_horario = ((bloco_horario - 710) / 50) * 2; // Começa a contar a partir do 0, *2 por conta do ';'
+    bloco_horario = ((bloco_horario - 430) / 50) * 2; // Começa a contar a partir do 0, *2 por conta do ';'
 	//printf("_1BLOH_%i_\n", bloco_horario);
 
     //Verificar se a sala já existe ###################################################
