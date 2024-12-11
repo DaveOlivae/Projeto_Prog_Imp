@@ -29,8 +29,8 @@ struct aluguel {
 };
 
 //Decaração de funcoes
-int verifica_horarios(int hora_inicial, int hora_final, int hora_existente_ini, int hora_existente_fim);
-int verifica_disponibilidade(const char *data, const char *sala, int hora_inicial, int hora_final);
+int verifica_horarios(char hora_inicial[], char hora_final[], int hora_existente_ini, int hora_existente_fim);
+int verifica_disponibilidade(const char *data, const char *sala, char hora_inicial[], char hora_final[]); // corrigido por john, não tenho ctz se era essa a intenção, verficar dps com matheus
 int compDataHorSala(const char *data1, const char *data2, const char *sala1, const char *sala2, const char *horario1, const char *horario2);
 void addAlug(const char *data_do_csv, const char *data);
 int verifCriaArquivo;
@@ -48,18 +48,20 @@ void PlanilhaDefaultExistinator ();
 
 int verifica_horarios(int hora_inicial, int hora_final, int hora_existente_ini, int hora_existente_fim) {
     // Verifica se os horários não conflitam
-    if ((hora_inicial < hora_existente_ini && hora_final <= hora_existente_ini) ||
-        (hora_inicial >= hora_existente_fim)) {
+    int numH_inicial = atoi(hora_inicial);
+    int numH_final = atoi(hora_final);
+    if ((numH_inicial < hora_existente_ini && numH_inicial <= hora_existente_ini) ||
+        (numH_inicial >= hora_existente_fim)) {
         return 1; // Horários são compatíveis
     }
     return 0; // Conflito de horários
 }
 
-// Função principal
-int verifica_disponibilidade(const char *data, const char *sala, int hora_inicial, int hora_final) {
+// Função principal // corrigido por john, não tenho ctz se era essa a intenção, verficar dps com matheus
+int verifica_disponibilidade(const char *data, const char *sala, char hora_inicial[], char hora_final[]) {
     char nome_arquivo[Size_data + 5];
     FILE *arquivo;
-    Aluguel aluguel_existente;
+    struct aluguel aluguel_existente; // corrigido por john, não tenho ctz se era essa a intenção, verficar dps com matheus
 
     // Montar o nome do arquivo
     snprintf(nome_arquivo, sizeof(nome_arquivo), "%s.csv", data);
@@ -68,7 +70,7 @@ int verifica_disponibilidade(const char *data, const char *sala, int hora_inicia
     arquivo = fopen(nome_arquivo, "r");
     if (!arquivo) {
         printf("Erro ao abrir o arquivo %s.\n", nome_arquivo);
-        return;
+        return 0;
     }
 
     // Ler o arquivo linha a linha usando fscanf
