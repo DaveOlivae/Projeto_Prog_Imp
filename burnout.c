@@ -40,7 +40,8 @@ void attDSH(const char *data_do_csv, const char *data, const char *sala, const c
 void attInfos(const char *data_do_csv, const char *data, const char *sala, const char *horario);
 void removAlug(const char *data_do_csv, const char *data, const char *sala, const char *horario);
 int registrador();
-int TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[]);
+int IeFnoLouO (char Data_T[], char Sala_T[], char hora_i[], char hora_f[]);
+int TrocarLouO (char Data_T[], char Sala_T[], int Hora_minutos);
 void AdicionarSala ();
 void RemoverSala ();
 void PlanilhaDefaultExistinator ();
@@ -229,7 +230,8 @@ void addAlug(const char *data_do_csv, const char *data) {
     strcpy(dataCheck, data);
     //copiar a const pra mutavel pra conseguir usar no check
 
-    int check_de_erro = TrocarLouO (dataCheck, aluguel.sala, aluguel.horario); //aluguel.horarioFim
+    //int check_de_erro = TrocarLouO (dataCheck, aluguel.sala, aluguel.horario); //aluguel.horarioFim // obsoleto
+	int check_de_erro = IeFnoLouO (dataCheck, aluguel.sala, aluguel.horario, aluguel.horarioFim);
 
     if (check_de_erro==0){ //faz o check de erro, se der tudo certo, retornando 0, printa no final e usa o L ou O dentro do proprio check de erro
         fprintf(pont_csv, "%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;\n", 
@@ -403,10 +405,11 @@ void addAlug(const char *data_do_csv, const char *data) {
             strcpy(horarioCheck, horario);
 
             //check de erro na planilha com os novos dados
-            int check_de_erro = TrocarLouO (aluguel_novo.data, aluguel_novo.sala, aluguel_novo.horario); //aluguel_novo.horarioFim;
-
+            //int check_de_erro = TrocarLouO (aluguel_novo.data, aluguel_novo.sala, aluguel_novo.horario); //aluguel_novo.horarioFim; // obsoleto
+			int check_de_erro = IeFnoLouO (aluguel_novo.data, aluguel_novo.sala, aluguel_novo.horario, aluguel_novo.horarioFim);
             if (check_de_erro==0){ //faz o check de erro, se der tudo certo, retornando 0, printa no final e usa o L ou O dentro do proprio check de erro
-                TrocarLouO(dataCheck, salaCheck, horarioCheck); //horarioFimCheck
+                //TrocarLouO(dataCheck, salaCheck, horarioCheck); //horarioFimCheck // obsoleto
+				IeFnoLouO (dataCheck, salaCheck, horarioCheck, horarioFimCheck);
                 fclose(pont_csv_new);
                 fclose(pont_temp_new);
                 remove(data_do_csv);
@@ -633,9 +636,10 @@ void removAlug(const char *data_do_csv, const char *data, const char *sala, cons
             strcpy(horarioCheck, horario);
             //copiar a const pra mutavel pra conseguir usar no check
 
-            int check_de_erro = TrocarLouO (dataCheck, salaCheck, horarioCheck); //aluguel_existente.horarioFim
+            //int check_de_erro = TrocarLouO (dataCheck, salaCheck, horarioCheck); //aluguel_existente.horarioFim // obsoleto
+			int check_de_erro = IeFnoLouO (dataCheck, salaCheck, horarioCheck, aluguel_existente.horarioFim);
 
-            if (check_de_erro==0){ //faz o check de erro, se der tudo certo, retornando 0, printa no final e usa o L ou O dentro do proprio check de erro
+            if (check_de_erro == 0){ //faz o check de erro, se der tudo certo, retornando 0, printa no final e usa o L ou O dentro do proprio check de erro
                 printf("Aluguel removido! :)\n");
                 tudocerto = 1;
                 continue; //nao escreve no temporario
@@ -810,11 +814,48 @@ int registrador() {
     } while (opcao != 0);
 
 }
+//######################################################################################################################################
+//######################################################################################################################################
+//######################################################################################################################################
+int IeFnoLouO (char Data_T[], char Sala_T[], char hora_i[], char hora_f[])
+{
+	houve_um_erro = 0;
+	
+	int num_hora_i = (hora_i[0] - '0') * 10 + (hora_i[1] - '0'); //converte char pra int - horas
+	int num_minuto_i = (hora_i[2] - '0') * 10 + (hora_i[3] - '0'); //converte char pra int - minutos
+	int bloco_horario_i = (num_hora_i * 60) + num_minuto_i;
 
+	int hora_f = (hora_f[0] - '0') * 10 + (hora_f[1] - '0'); //converte char pra int - horas
+	int minuto_f = (hora_f[2] - '0') * 10 + (hora_f[3] - '0'); //converte char pra int - minutos
+	int bloco_horario_f = (hora_f * 60) + minuto_f;
+
+	// Calcular os intervalos de 50 minutos
+	bloco_horario_i = bloco_horario_i / 50;
+	bloco_horario_f = bloco_horario_t / 50;
+
+	int bloco_while = bloco_horario_i;
+	while (bloco_while < bloco_horario_f)
+	{
+		hora_atualnoloop = (bloco_while * 50);
+		houve_um_erro = TrocarLouO (data, sala, hora_atualnoloop);
+		if (houve_um_erro == 1)
+		{
+			while (bloco_while > bloco_horario_i)
+			{
+				TrocarLouO (data, sala, hora_atualnoloop);
+				bloco_while = bloco_while - 1;
+			}
+			return houve_um_erro;
+		}
+		bloco_while = bloco_while + 1;
+	}
+	
+	return houve_um_erro;
+}
 //######################################################################################################################################
 //######################################################################################################################################
 //######################################################################################################################################
-int TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[])
+int TrocarLouO (char Data_T[], char Sala_T[], int Hora_minutos)
 {
     int pode_registrar = 0; // Se der um erro não deixa registrar
 	FILE *Ponteiro_Arquivo; // Aponta para um arquivo
@@ -892,10 +933,9 @@ int TrocarLouO (char Data_T[], char Sala_T[], char Hora_T[])
 	}
 
 	// HORARIO ##############################
-    // Converte a string para um int
-	int bloco_horario = atoi(Hora_T);
+	int bloco_horario = Hora_minutos;
 	// Calcular os intervalos de 50 minutos
-    bloco_horario = ((bloco_horario - 710) / 50) * 2; // Começa a contar a partir do 0, *2 por conta do ';'
+    bloco_horario = ((bloco_horario - 430) / 50) * 2; // Começa a contar a partir do 0, *2 por conta do ';'
 	//printf("_1BLOH_%i_\n", bloco_horario);
 
     //Verificar se a sala já existe ###################################################
@@ -1076,7 +1116,7 @@ void RemoverSala ()
 
 	Ponteiro_Arquivo = fopen(ID_do_arquivo, "r+"); //############## ABRE O ARQUIVO ##############
 
-	FILE *Pont_ArquivoTemp = fopen("ArquivoTemporario.csv", "r+");
+	FILE *Pont_ArquivoTemp = fopen("ArquivoTemporario.csv", "w+");
 	if (Pont_ArquivoTemp == NULL)
     {
         perror("Error opening file");
@@ -1110,6 +1150,7 @@ void RemoverSala ()
 		{
 			// Move os caracteres uma posição para a esquerda para remover o \n
 			memmove(sala_presente + len, sala_presente + len + 1, strlen(sala_presente) - len);
+			qual_linha_remover++;
 		}
 
 		fscanf(Ponteiro_Arquivo, "%*c");
@@ -1121,12 +1162,11 @@ void RemoverSala ()
 			ja_registrado = 1;
             break;
         }
-        qual_linha_remover++;
 	}
 	//printf("_%s_\n", sala_para_remover);
-	
+
 //####################################################
-	
+
 	if (ja_registrado == 1)
     {
         rewind(Ponteiro_Arquivo);
@@ -1186,12 +1226,12 @@ void RemoverSala ()
         fclose(Pont_ArquivoTemp);
 		printf("Sala na linha %d foi removida.\n", qual_linha_remover);
     }
-	
+
 	if (ja_registrado == 0)
 	{
 		printf("Sala nao foi encontrada, digite uma sala valida.\n");
     }
-	
+
     // Fim da função
     return;
 }
@@ -1263,7 +1303,7 @@ void printPlanilha()
 		if (Ponteiro_Arquivo == NULL)
 		{
 			perror("Erro ao abrir o arquivo, verifique o local do arquivo");
-	       		return;
+	       	return;
 		}
 	}
 	char Linha [80];
