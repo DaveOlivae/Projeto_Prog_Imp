@@ -275,29 +275,28 @@ int main() {
                 printf("(3) Remover Usuário\n");
                 printf("(4) Sair\n");
                 printf("Insira a opção: ");
-                if (scanf("%d", &opcao) != 1) {
-                    // Caso a entrada não seja válida
-                    printf("Erro: Entrada inválida. Por favor, insira um número inteiro.\n");
-                    limparBuffer();
-                }
+                opcao = getchar();
+                limparBuffer();
     
                 switch (opcao) {
-                    case 1:
+                    case '1':
                         adicionarUsuario();
+                        return 1;
                         break;
-                    case 2:
+                    case '2':
                         alterarSenha();
                         break;
-                    case 3:
+                    case '3':
                         removerUsuario();
                         break;
-                    case 4:
+                    case '4':
                         printf("Seção encerrada.\n");
                         return 0;
                     default:
                         printf("Opção invalida. Insira inteiros de 1 a 4.\n");
                 }
-            } while (opcao != 4);
+            } while (opcao != '4');
+        }
         } 
         else 
         {
