@@ -46,7 +46,7 @@ void AdicionarSala ();
 void RemoverSala ();
 void PlanilhaDefaultExistinator ();
 
-int verifica_horarios(int hora_inicial, int hora_final, int hora_existente_ini, int hora_existente_fim) {
+int verifica_horarios(char hora_inicial[], char hora_final[], int hora_existente_ini, int hora_existente_fim) {
     // Verifica se os horários não conflitam
     int numH_inicial = atoi(hora_inicial);
     int numH_final = atoi(hora_final);
