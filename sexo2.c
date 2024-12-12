@@ -32,7 +32,7 @@ int verifica_horarios(char hora_inicial[], char hora_final[], int hora_existente
 int verifica_disponibilidade(const char *data, const char *sala, char hora_inicial[], char hora_final[]); // corrigido por john, não tenho ctz se era essa a intenção, verficar dps com matheus
 int compDataHorSala(const char *data1, const char *data2, const char *sala1, const char *sala2, const char *horario1, const char *horario2);
 void addAlug(const char *data_do_csv, const char *data);
-int verifCriaArquivo;
+int verificarCriarArquivo(const char *data_do_csv);
 void limparAluguel(struct aluguel *aluguelaserlimpo);
 void limparBuffer();
 void attDSH(const char *data_do_csv, const char *data, const char *sala, const char *horario);
