@@ -690,7 +690,7 @@ int start_temp = 0;
         if (compDataHorSala(aluguel_existente.data, data, aluguel_existente.sala, sala, aluguel_existente.horario, horario) == 1) {
             printf("Registro encontrado! :D\nData: %s, Sala: %s, Horario: %s\n",
                    aluguel_existente.data, aluguel_existente.sala, aluguel_existente.horario);
-            //verificacao de validez pra planilha do cagador de cama
+            //verificacao de validez pra planilha
 
             char dataCheck[Size_data], salaCheck[Size_sala], horarioCheck[Size_horario];
             strcpy(dataCheck, data);
