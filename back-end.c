@@ -761,6 +761,7 @@ int registrador() {
         printf("4 - REMOVER um REGISTRO;\n");
 		printf("5 - ADICIONAR uma SALA aos horarios;\n");
 		printf("6 - REMOVER uma SALA dos horarios;\n");
+	printf("7 - VER PLANILHA DE UMA DATA;\n");
         printf("0 - SAIR.\n");
         printf("Opcao escolhida: ");
         opcao = getchar();
@@ -870,6 +871,9 @@ int registrador() {
 			case '6':
 				RemoverSala ();
 				break;
+			case '7':
+			    printPlanilha();
+			    break;
             case '0':
                 printf("Programa encerrado.\n");
                 //Sleep(1000);
