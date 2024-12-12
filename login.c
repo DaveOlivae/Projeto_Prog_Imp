@@ -47,9 +47,32 @@ int logar(const char *loginInserido, const char *senhaInserida) {
     return 0;  //caso o login falhe
 }
 
+int verificarCriarArquivo() {
+    FILE *pont_csv = fopen(csv_login, "r+");
+
+    if (pont_csv == NULL) {
+        pont_csv = fopen(csv_login, "w");
+        fprintf(pont_csv, "1;2;");
+        if (pont_csv == NULL) {
+            printf("Erro ao tentar criar o arquivo.\n");
+            return 0;
+        }
+
+        fclose(pont_csv);
+    } else {
+        fclose(pont_csv);
+    }
+
+    return 1; //criou um arquivo novo
+}
+
 //Adicao de usuarios
 void adicionarUsuario() {
+
     char login[Size_login], senha[Size_senha];
+
+    verificarCriarArquivo();
+
     printf("Digite o nome de usuário: ");
     fgets(login, Size_login, stdin);
     login[strcspn(login, "\n")] = '\0';
@@ -91,13 +114,14 @@ void adicionarUsuario() {
         return;
     }
 
-    fprintf(arquivo, "%s;%s;\n", login, senha);
+    fprintf(arquivo, "\n%s;%s;", login, senha);
     fclose(arquivo);
     printf("Usuario adicionado com sucesso! :D\n");
 }
 
 //Alteracao de usuarios
 void alterarSenha() {
+    int start_temp = 0;
     char login[Size_login], senha[Size_senha], senhaNova[Size_senha];
     printf("Insira o nome de usuario cuja senha deseja alterar: ");
     fgets(login, Size_login, stdin);
@@ -139,9 +163,12 @@ void alterarSenha() {
             if (strlen(senhaNova) == Size_senha - 1 && senhaNova[Size_senha - 2] != '\n') {
                 limparBuffer();
             }
-            fprintf(temp, "%s;%s;\n", loginAnt, senhaNova);
+            fprintf(temp, "%s;%s;", loginAnt, senhaNova);
             encontrado = 1;
         } else {
+            if (start_temp == 0){
+            fprintf(temp, "1;2;");
+            start_temp = 1;}
             fputs(linha, temp);
         }
     }
@@ -161,7 +188,9 @@ void alterarSenha() {
 
 //Remocao de usuario
 void removerUsuario() {
+    int start_temp = 0;
     char login[Size_login];
+
     printf("Insira o login a ser removido: ");
     fgets(login, Size_login, stdin);
     login[strcspn(login, "\n")] = '\0';
@@ -191,6 +220,9 @@ void removerUsuario() {
 
         if (strcmp(loginAnt, login) != 0) {
             fputs(linha, pont_temp);
+            if (start_temp == 0){
+            fprintf(pont_temp, "1;2;");
+            start_temp = 1;}
         } else {
             encontrado = 1;
         }
@@ -214,10 +246,7 @@ int main() {
     char login[Size_login], senha[Size_senha];
     char opcao;
     
-    if (!arquivoExiste(csv_login)) {
-        FILE *arquivo = fopen(csv_login, "w");
-        fclose(arquivo);
-    }
+    verificarCriarArquivo();
     while (1 == 1)
     {
         printf("Insira seu login: ");
@@ -234,7 +263,10 @@ int main() {
             limparBuffer();
         }
 
-        if (strcmp(login, adm_login) == 0 && strcmp(senha, adm_senha) == 0) 
+        if (strcmp(login, "1") == 0 && strcmp(senha, "2") == 0) {
+        printf("Usuario ou senha invalidos. :/\n");}
+
+        else if (strcmp(login, adm_login) == 0 && strcmp(senha, adm_senha) == 0) 
         {
             printf("Logado como administrador.\n");
     
@@ -251,7 +283,6 @@ int main() {
                 switch (opcao) {
                     case '1':
                         adicionarUsuario();
-                        return 1;
                         break;
                     case '2':
                         alterarSenha();
@@ -284,7 +315,6 @@ int main() {
                 switch (opcao) {
                     case '1':
                         adicionarUsuario();
-                        return 1;
                         break;
                     case '2':
                         alterarSenha();
