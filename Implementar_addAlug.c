@@ -25,11 +25,6 @@ struct aluguel {
     char evento[Size_evento];
 };
 
-void limparBuffer() {
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF);
-}
-
 void limparAluguel(struct aluguel *aluguelaserlimpo) {
     memset(aluguelaserlimpo, 0, sizeof(struct aluguel));  // Limpa toda a struct com zero
 }
