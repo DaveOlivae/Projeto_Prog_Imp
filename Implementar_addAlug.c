@@ -29,6 +29,36 @@ void AdicionarSala ();
 void RemoverSala ();
 void PlanilhaDefaultExistinator ();
 
+int verifica_horarios(char hora_inicial[], char hora_final[], int hora_existente_ini, int hora_existente_fim) {
+    // Verifica se os horários não conflitam
+    int numH_inicial = atoi(hora_inicial);
+    int numH_final = atoi(hora_final);
+    if ((numH_inicial < hora_existente_ini && numH_inicial <= hora_existente_ini) ||
+        (numH_inicial >= hora_existente_fim)) {
+        return 1; // Horários são compatíveis
+    }
+    return 0; // Conflito de horários
+}
+
+int verificarCriarArquivo(const char *data_do_csv) {
+    FILE *pont_csv = fopen(data_do_csv, "r+");
+
+    if (pont_csv == NULL) {
+        pont_csv = fopen(data_do_csv, "a+");
+        fprintf(pont_csv, "1;2;3;4;5;6;7;8;9;10;");
+        if (pont_csv == NULL) {
+            printf("Erro ao tentar criar o arquivo.\n");
+            return 0;
+        }
+
+        fclose(pont_csv);
+    } else {
+        fclose(pont_csv);
+    }
+
+    return 1; //criou um arquivo novo
+}
+
 struct aluguel {
     char data[Size_data];
     char sala[Size_sala];
