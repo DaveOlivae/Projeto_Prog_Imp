@@ -12,6 +12,23 @@
 #define Size_monitor_sn 2
 #define Size_evento 1001
 
+int verifica_horarios(char hora_inicial[], char hora_final[], int hora_existente_ini, int hora_existente_fim);
+int verifica_disponibilidade(const char *data, const char *sala, char hora_inicial[], char hora_final[]); // corrigido por john, não tenho ctz se era essa a intenção, verficar dps com matheus
+int compDataHorSala(const char *data1, const char *data2, const char *sala1, const char *sala2, const char *horario1, const char *horario2);
+void addAlug(const char *data_do_csv, const char *data);
+int verifCriaArquivo;
+void limparAluguel(struct aluguel *aluguelaserlimpo);
+void limparBuffer();
+void attDSH(const char *data_do_csv, const char *data, const char *sala, const char *horario);
+void attInfos(const char *data_do_csv, const char *data, const char *sala, const char *horario);
+void removAlug(const char *data_do_csv, const char *data, const char *sala, const char *horario);
+int registrador();
+int IeFnoLouO (char Data_T[], char Sala_T[], char hora_i[], char hora_f[]);
+int TrocarLouO (char Data_T[], char Sala_T[], int Hora_minutos);
+void AdicionarSala ();
+void RemoverSala ();
+void PlanilhaDefaultExistinator ();
+
 struct aluguel {
     char data[Size_data];
     char sala[Size_sala];
