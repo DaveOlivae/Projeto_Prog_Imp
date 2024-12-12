@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <windows.h>
 
 // Definindo os tamanhos para cada campo
 #define Size_data 13
@@ -95,7 +96,7 @@ int verifica_disponibilidade(const char *data, const char *sala, char hora_inici
         }
     }
     limparAluguel(&aluguel_existente);
-    printf("Sem conflitos sla.");
+    printf("Sem conflitos.");
     fclose(arquivo);
     return 1; // Sem conflito
 }
@@ -119,7 +120,7 @@ int verificarCriarArquivo(const char *data_do_csv) {
 
     if (pont_csv == NULL) {
         pont_csv = fopen(data_do_csv, "a+");
-
+        fprintf(pont_csv, "1;2;3;4;5;6;7;8;9;10;");
         if (pont_csv == NULL) {
             printf("Erro ao tentar criar o arquivo.\n");
             return 0;
@@ -217,7 +218,6 @@ void addAlug(const char *data_do_csv, const char *data) {
 
     //teste de conflito
     if(verifica_disponibilidade(data, aluguel.sala, aluguel.horario, aluguel.horarioFim) == 0){
-        printf("Conflito de horarios.\n");
         fclose(pont_csv);
         limparAluguel(&aluguel);
         return;
@@ -235,7 +235,7 @@ void addAlug(const char *data_do_csv, const char *data) {
 	int check_de_erro = IeFnoLouO (dataCheck, aluguel.sala, aluguel.horario, aluguel.horarioFim);
 
     if (check_de_erro==0){ //faz o check de erro, se der tudo certo, retornando 0, printa no final e usa o L ou O dentro do proprio check de erro
-        fprintf(pont_csv, "%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;\n",
+        fprintf(pont_csv, "\n%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;",
             aluguel.data, aluguel.sala, aluguel.horario, aluguel.horarioFim, aluguel.nome,
             aluguel.cpf, aluguel.celular, aluguel.prof_responsavel, aluguel.monitor_sn,
             aluguel.evento);
@@ -255,9 +255,10 @@ void addAlug(const char *data_do_csv, const char *data) {
     void attDSH(const char *data_do_csv, const char *data, const char *sala, const char *horario){
     FILE *pont_csv_old = fopen(data_do_csv, "r");
     FILE *pont_temp_old = fopen("temp_old.csv", "w");
-    struct aluguel aluguel_novo, aluguel_existente_old, aluguel_existente_new;
-//se a data for a mesma, entra no mesmo arquivo. Se modificar a data, modifica o arquivo de data nova
+    struct aluguel aluguel_novo, aluguel_existente_old, aluguel_existente_remov, aluguel_existente_new;
+//VERIFICAR se a data for a mesma, entra no mesmo arquivo. Se modificar a data, modifica o arquivo de data nova
     int encontrou = 0;
+    int start_temp = 0;
     char horarioFimCheck[Size_horario];
 
     printf("Tentando abrir o arquivo: _%s_\n", data_do_csv);
@@ -266,11 +267,17 @@ void addAlug(const char *data_do_csv, const char *data) {
         printf("Erro ao abrir arquivos de registro antigo, insira uma data valida ou tente novamente. :C\n");
         if (pont_csv_old) fclose(pont_csv_old);
         if (pont_temp_old) fclose(pont_temp_old);
+
+        limparAluguel(&aluguel_novo);
+        limparAluguel(&aluguel_existente_old);
+        limparAluguel(&aluguel_existente_new);
+        limparAluguel(&aluguel_existente_remov);
+
         return;
     }
 
     //Lendo arquivo existente
-    while (fscanf(pont_csv_old, "%8[^;];%20[^;];%4[^;];%4[^;];%51[^;];%15[^;];%21[^;];%52[^;];%1[^;];%1000[^;];",
+    while (fscanf(pont_csv_old, "%8[^;];%20[^;];%4[^;];%4[^;];%51[^;];%15[^;];%21[^;];%52[^;];%1[^;];%1000[^;];\n",
                   aluguel_existente_old.data, aluguel_existente_old.sala, aluguel_existente_old.horario, aluguel_existente_old.horarioFim,
                   aluguel_existente_old.nome, aluguel_existente_old.cpf, aluguel_existente_old.celular,
                   aluguel_existente_old.prof_responsavel, aluguel_existente_old.monitor_sn,
@@ -278,15 +285,19 @@ void addAlug(const char *data_do_csv, const char *data) {
 
         //Verifica se o registro atual corresponde ao que deve ser removido
         if (compDataHorSala(aluguel_existente_old.data, data, aluguel_existente_old.sala, sala, aluguel_existente_old.horario, horario)) {
-            printf("Registro encontrado! :D\nData: %s, Sala: %s, Horário: %s\nInsira as novas informacoes.\n",
-		    aluguel_existente_old.data, aluguel_existente_old.sala, aluguel_existente_old.horario);
-                    strcpy(horarioFimCheck, aluguel_existente_old.horarioFim);
-            //provavelmente nao precisa do .aluguel
+            printf(":D Registro (_%s_ _%s_ _%s_ _%s_) encontrado! Insira as novas informacoes ou pressione ENTER para manter os valores atuais:\n",
+		    aluguel_existente_old.data, aluguel_existente_old.sala, aluguel_existente_old.horario, aluguel_existente_old.horarioFim);
+
+            strcpy(horarioFimCheck, aluguel_existente_old.horarioFim);
             aluguel_novo = aluguel_existente_old;
+            aluguel_existente_remov = aluguel_existente_old;
 
             printf("Nova data: ");
             fgets(aluguel_novo.data, Size_data, stdin);
             aluguel_novo.data[strcspn(aluguel_novo.data, "\n")] = '\0';
+            if (strlen(aluguel_novo.data) == 0) {
+                strcpy(aluguel_novo.data, aluguel_existente_old.data);
+            }
             if (strlen(aluguel_novo.data) == Size_data - 1 && aluguel_novo.data[Size_data - 2] != '\n') {
             limparBuffer();
             }
@@ -294,6 +305,9 @@ void addAlug(const char *data_do_csv, const char *data) {
             printf("Nova sala: ");
             fgets(aluguel_novo.sala, Size_sala, stdin);
             aluguel_novo.sala[strcspn(aluguel_novo.sala, "\n")] = '\0';
+            if (strlen(aluguel_novo.sala) == 0) {
+                strcpy(aluguel_novo.sala, aluguel_existente_old.sala);
+            }
             if (strlen(aluguel_novo.sala) == Size_sala - 1 && aluguel_novo.sala[Size_sala - 2] != '\n') {
             limparBuffer();
             }
@@ -301,6 +315,9 @@ void addAlug(const char *data_do_csv, const char *data) {
             printf("Novo horario de comeco: ");
             fgets(aluguel_novo.horario, Size_horario, stdin);
             aluguel_novo.horario[strcspn(aluguel_novo.horario, "\n")] = '\0';
+            if (strlen(aluguel_novo.horario) == 0) {
+                strcpy(aluguel_novo.horario, aluguel_existente_old.horario);
+            }
             if (strlen(aluguel_novo.horario) == Size_horario - 1 && aluguel_novo.horario[Size_horario - 2] != '\n') {
             limparBuffer();
             }
@@ -308,19 +325,27 @@ void addAlug(const char *data_do_csv, const char *data) {
             printf("Novo horario final: ");
             fgets(aluguel_novo.horarioFim, Size_horario, stdin);
             aluguel_novo.horarioFim[strcspn(aluguel_novo.horarioFim, "\n")] = '\0';
+            if (strlen(aluguel_novo.horarioFim) == 0) {
+            strcpy(aluguel_novo.horarioFim, aluguel_existente_old.horarioFim);
+            }
             if (strlen(aluguel_novo.horarioFim) == Size_horario - 1 && aluguel_novo.horarioFim[Size_horario - 2] != '\n') {
             limparBuffer();
             }
-            //PRECISAMOS DE UMA VERIFICACAO DE HORARIO FIM HORARIO COMECO CONFLITO
+
             encontrou = 1;
 
             //teste de conflito
+            char banana[Size_data + 5]; //banana vai garantir que o arquivo seja criado se não existir
+            sprintf(banana, "%s.csv", aluguel_novo.data);
+            verificarCriarArquivo(banana);
             if(verifica_disponibilidade(aluguel_novo.data, aluguel_novo.sala, aluguel_novo.horario, aluguel_novo.horarioFim) == 0){
-                printf("Conflito de horarios.\n");
                 limparAluguel(&aluguel_existente_old);
                 limparAluguel(&aluguel_novo);
+                limparAluguel(&aluguel_existente_remov);
+
                 fclose(pont_csv_old);
                 fclose(pont_temp_old);
+
                 remove("temp_old.csv");
                 return;
             }
@@ -328,8 +353,12 @@ void addAlug(const char *data_do_csv, const char *data) {
             continue;//Nao escreve no temporario, alem de pegar as novas informacoes
             }
 
+        if (start_temp == 0){
+        fprintf(pont_temp_old, "1;2;3;4;5;6;7;8;9;10;");
+        start_temp = 1;}
+
         //Copia os outros registros existentes para o arquivo temporario
-        fprintf(pont_temp_old, "%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;\n",
+        fprintf(pont_temp_old, "\n%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;",
                 aluguel_existente_old.data, aluguel_existente_old.sala, aluguel_existente_old.horario, aluguel_existente_old.horarioFim,
                 aluguel_existente_old.nome, aluguel_existente_old.cpf, aluguel_existente_old.celular,
                 aluguel_existente_old.prof_responsavel, aluguel_existente_old.monitor_sn,
@@ -338,6 +367,7 @@ void addAlug(const char *data_do_csv, const char *data) {
 
 
     if (encontrou){
+
         fclose(pont_csv_old);
         fclose(pont_temp_old);
 
@@ -345,11 +375,15 @@ void addAlug(const char *data_do_csv, const char *data) {
                 if (pont_temp_new == NULL){
                 perror("Erro ao criar o arquivo temporario de nova data. Tente novamente :C");
                 remove("temp_old.csv");
-                return;
+
+                limparAluguel(&aluguel_existente_remov);
                 limparAluguel(&aluguel_existente_old);
                 limparAluguel(&aluguel_novo);
+
+                return;
                 }
 
+        int start_temp = 0;
         char data_csv_new[Size_data + 5];
         sprintf(data_csv_new, "%s.csv", aluguel_novo.data);
 
@@ -357,15 +391,17 @@ void addAlug(const char *data_do_csv, const char *data) {
                 if (pont_csv_new == NULL){
                 perror("Erro ao abrir o arquivo original de nova data. Verifique se as informacoes sao validas :C");
                 fclose(pont_temp_new);
+                
                 remove("temp_old.csv");
                 remove("temp_new.csv");
+
+                limparAluguel(&aluguel_existente_remov);
                 limparAluguel(&aluguel_existente_old);
                 limparAluguel(&aluguel_novo);
                 return;
                 }
-        rewind(pont_csv_new);
 
-            while (fscanf(pont_csv_new, "%8[^;];%20[^;];%4[^;];%4[^;];%51[^;];%15[^;];%21[^;];%52[^;];%1[^;];%1000[^;];",
+            while (fscanf(pont_csv_new, "%8[^;];%20[^;];%4[^;];%4[^;];%51[^;];%15[^;];%21[^;];%52[^;];%1[^;];%1000[^;];\n",
                   aluguel_existente_new.data, aluguel_existente_new.sala, aluguel_existente_new.horario, aluguel_existente_new.horarioFim,
                   aluguel_existente_new.nome, aluguel_existente_new.cpf, aluguel_existente_new.celular,
                   aluguel_existente_new.prof_responsavel, aluguel_existente_new.monitor_sn,
@@ -373,32 +409,49 @@ void addAlug(const char *data_do_csv, const char *data) {
 
                 //Verifica possivel conflito com aluguel_novo
                 if (compDataHorSala(aluguel_novo.data, aluguel_existente_new.data,
-                        aluguel_novo.sala, aluguel_existente_new.sala,
-                        aluguel_novo.horario, aluguel_existente_new.horario)) {
+                                    aluguel_novo.sala, aluguel_existente_new.sala,
+                                    aluguel_novo.horario, aluguel_existente_new.horario)) {
                     printf("O horário e data correspondentes para o novo registro já foram reservados. :C\n");
-
+                    
+                    limparAluguel(&aluguel_existente_remov);
                     limparAluguel(&aluguel_existente_old);
                     limparAluguel(&aluguel_novo);
                     limparAluguel(&aluguel_existente_new);
+
                     fclose(pont_csv_new);
                     fclose(pont_temp_new);
+
                     remove("temp_old.csv");
                     remove("temp_new.csv");
                     return;
                 }
 
-                fprintf(pont_temp_new, "%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;\n",
-                aluguel_existente_new.data, aluguel_existente_new.sala, aluguel_existente_new.horario, aluguel_existente_new.horarioFim,
-                aluguel_existente_new.nome, aluguel_existente_new.cpf, aluguel_existente_new.celular,
-                aluguel_existente_new.prof_responsavel, aluguel_existente_new.monitor_sn,
-                aluguel_existente_new.evento);
-            }
+                if (start_temp == 0){
+                fprintf(pont_temp_new, "1;2;3;4;5;6;7;8;9;10;");
+                start_temp = 1;}
 
-            fprintf(pont_temp_new, "%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;\n",
-                aluguel_novo.data, aluguel_novo.sala, aluguel_novo.horario, aluguel_novo.horarioFim,
-                aluguel_novo.nome, aluguel_novo.cpf, aluguel_novo.celular,
-                aluguel_novo.prof_responsavel, aluguel_novo.monitor_sn,
-                aluguel_novo.evento);
+                if (compDataHorSala(aluguel_existente_remov.data, aluguel_existente_new.data,
+                                        aluguel_existente_remov.sala, aluguel_existente_new.sala,
+                                        aluguel_existente_remov.horario, aluguel_existente_new.horario)){
+                                        continue;} //nao reescreve o registro se a data for a mesma :P
+
+                //SE EU NAO PUSESSE TODOS ESSES IFS ELE MOSTRARIA O PONTEIRO COMO MORTINHO DA SILVA JR
+
+                if (compDataHorSala(aluguel_novo.data, aluguel_existente_new.data,
+                                    aluguel_novo.sala, aluguel_existente_new.sala,
+                                    aluguel_novo.horario, aluguel_existente_new.horario) == 0){
+                                    fprintf(pont_temp_new, "\n%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;",
+                                    aluguel_existente_new.data, aluguel_existente_new.sala, aluguel_existente_new.horario,
+                                    aluguel_existente_new.horarioFim, aluguel_existente_new.nome, aluguel_existente_new.cpf, 
+                                    aluguel_existente_new.celular, aluguel_existente_new.prof_responsavel, aluguel_existente_new.monitor_sn,
+                                    aluguel_existente_new.evento);
+                                    }
+            }
+                    fprintf(pont_temp_new, "\n%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;",
+                        aluguel_novo.data, aluguel_novo.sala, aluguel_novo.horario, aluguel_novo.horarioFim,
+                        aluguel_novo.nome, aluguel_novo.cpf, aluguel_novo.celular,
+                        aluguel_novo.prof_responsavel, aluguel_novo.monitor_sn,
+                        aluguel_novo.evento);
 
             char dataCheck[Size_data], salaCheck[Size_sala], horarioCheck[Size_horario];
             strcpy(dataCheck, data);
@@ -411,23 +464,46 @@ void addAlug(const char *data_do_csv, const char *data) {
             if (check_de_erro==0){ //faz o check de erro, se der tudo certo, retornando 0, printa no final e usa o L ou O dentro do proprio check de erro
                 //TrocarLouO(dataCheck, salaCheck, horarioCheck); //horarioFimCheck // obsoleto
 				IeFnoLouO (dataCheck, salaCheck, horarioCheck, horarioFimCheck);
+
                 fclose(pont_csv_new);
                 fclose(pont_temp_new);
+
                 remove(data_do_csv);
                 remove(data_csv_new);
-                rename("temp_old.csv", data_do_csv);
-                rename("temp_new.csv", data_csv_new);
-                limparAluguel(&aluguel_existente_old);
-                limparAluguel(&aluguel_novo);
-                limparAluguel(&aluguel_existente_new);
-                printf("Informacoes validadas...");
+
+                if (strcmp(data_do_csv, data_csv_new) == 0){
+                    remove(data_do_csv);
+                    rename("temp_new.csv", data_do_csv);
+                    remove("temp_old.csv");
+
+                    limparAluguel(&aluguel_existente_remov);
+                    limparAluguel(&aluguel_existente_old);
+                    limparAluguel(&aluguel_novo);
+                    limparAluguel(&aluguel_existente_new);
+
+                    printf("Informacoes validadas...\n");
+                }
+                else{
+                    rename("temp_old.csv", data_do_csv);
+                    rename("temp_new.csv", data_csv_new);
+
+                    limparAluguel(&aluguel_existente_remov);
+                    limparAluguel(&aluguel_existente_old);
+                    limparAluguel(&aluguel_novo);
+                    limparAluguel(&aluguel_existente_new);
+
+                    printf("Informacoes validadas...\n");
+                }
             }
             else{
+                limparAluguel(&aluguel_existente_remov);
                 limparAluguel(&aluguel_existente_old);
                 limparAluguel(&aluguel_novo);
                 limparAluguel(&aluguel_existente_new);
+
                 fclose(pont_csv_new);
                 fclose(pont_temp_new);
+
                 remove("temp_old.csv");
                 remove("temp_new.csv");
                 printf("Tente novamente. Verifique se as informacoes estao validas.");
@@ -440,21 +516,23 @@ void addAlug(const char *data_do_csv, const char *data) {
     }
     else{
         printf("Registro nao encontrado, verifique as informacoes. :C");
+        limparAluguel(&aluguel_existente_remov);
         limparAluguel(&aluguel_existente_old);
         limparAluguel(&aluguel_novo);
         fclose(pont_csv_old);
         fclose(pont_temp_old);
         remove("temp_old.csv");
     }
-    }
+}
 
 //Atualizacao de informacoes associadas a um registro
 void attInfos(const char *data_do_csv, const char *data, const char *sala, const char *horario) {
     FILE *pont_csv = fopen(data_do_csv, "r");
     FILE *pont_temp = fopen("temp.csv", "w");
 
-    struct aluguel aluguel_existente, aluguel_novo, aluguel_conflito;
-    int encontrou = 1;
+    struct aluguel aluguel_existente, aluguel_novo;
+    int start_temp = 0;
+    int encontrou = 0;
 
     printf("Tentando abrir o arquivo: %s\n", data_do_csv);
 
@@ -465,138 +543,110 @@ void attInfos(const char *data_do_csv, const char *data, const char *sala, const
         return;
     }
 
-    while (fscanf(pont_csv, "%8[^;];%20[^;];%4[^;];%4[^;];%51[^;];%15[^;];%21[^;];%52[^;];%1[^;];%1000[^;];",
+    while (fscanf(pont_csv, "%8[^;];%20[^;];%4[^;];%4[^;];%51[^;];%15[^;];%21[^;];%52[^;];%1[^;];%1000[^;];\n",
                   aluguel_existente.data, aluguel_existente.sala, aluguel_existente.horario, aluguel_existente.horarioFim,
                   aluguel_existente.nome, aluguel_existente.cpf, aluguel_existente.celular,
                   aluguel_existente.prof_responsavel, aluguel_existente.monitor_sn,
                   aluguel_existente.evento) == 10) {
 
-        long posicao_p_csv = ftell(pont_csv);
-
     if (compDataHorSala(aluguel_existente.data, data, aluguel_existente.sala, sala, aluguel_existente.horario, horario)) {
+        aluguel_novo = aluguel_existente;
 
-        aluguel_conflito = aluguel_existente;
+        printf(":D Registro encontrado! Insira as novas informacoes ou pressione ENTER para manter os valores atuais:\n");
 
-        printf(":D Registro encontrado! Insira as novas informações ou pressione ENTER para manter os valores atuais:\n");
-
-            printf("Nome do solicitante [%s]: ", aluguel_conflito.nome);
+            printf("Nome do solicitante [%s]: ", aluguel_novo.nome);
             fgets(aluguel_novo.nome, Size_nome, stdin);
             aluguel_novo.nome[strcspn(aluguel_novo.nome, "\n")] = '\0';
             if (strlen(aluguel_novo.nome) == 0) {
-                strcpy(aluguel_novo.nome, aluguel_conflito.nome);
+                strcpy(aluguel_novo.nome, aluguel_existente.nome);
             }
             if (strlen(aluguel_novo.nome) == Size_nome - 1 && aluguel_novo.nome[Size_nome - 2] != '\n'){
                     limparBuffer();}
 
-            printf("CPF [%s]: ", aluguel_conflito.cpf);
+            printf("CPF [%s]: ", aluguel_novo.cpf);
             fgets(aluguel_novo.cpf, Size_cpf, stdin);
             aluguel_novo.cpf[strcspn(aluguel_novo.cpf, "\n")] = '\0';
             if (strlen(aluguel_novo.cpf) == 0) {
-                strcpy(aluguel_novo.cpf, aluguel_conflito.cpf);
+                strcpy(aluguel_novo.cpf, aluguel_existente.cpf);
             }
             if (strlen(aluguel_novo.cpf) == Size_cpf - 1 && aluguel_novo.cpf[Size_cpf - 2] != '\n'){
                     limparBuffer();}
 
-            printf("Celular para contato [%s]: ", aluguel_conflito.celular);
+            printf("Celular para contato [%s]: ", aluguel_novo.celular);
             fgets(aluguel_novo.celular, Size_numero, stdin);
             aluguel_novo.celular[strcspn(aluguel_novo.celular, "\n")] = '\0';
             if (strlen(aluguel_novo.celular) == 0) {
-                strcpy(aluguel_novo.celular, aluguel_conflito.celular);
+                strcpy(aluguel_novo.celular, aluguel_existente.celular);
             }
             if (strlen(aluguel_novo.celular) == Size_numero - 1 && aluguel_novo.celular[Size_numero - 2] != '\n'){
                     limparBuffer();}
 
-            printf("Professor responsável [%s]: ", aluguel_conflito.prof_responsavel);
+            printf("Professor responsavel [%s]: ", aluguel_novo.prof_responsavel);
             fgets(aluguel_novo.prof_responsavel, Size_prof_responsavel, stdin);
             aluguel_novo.prof_responsavel[strcspn(aluguel_novo.prof_responsavel, "\n")] = '\0';
             if (strlen(aluguel_novo.prof_responsavel) == 0) {
-                strcpy(aluguel_novo.prof_responsavel, aluguel_conflito.prof_responsavel);
+                strcpy(aluguel_novo.prof_responsavel, aluguel_existente.prof_responsavel);
             }
             if (strlen(aluguel_novo.prof_responsavel) == Size_prof_responsavel - 1 && aluguel_novo.prof_responsavel[Size_prof_responsavel - 2] != '\n'){
                     limparBuffer();}
 
-            printf("Monitor? (S/N) [%s]: ", aluguel_conflito.monitor_sn);
+            printf("Monitor? (S/N) [%s]: ", aluguel_novo.monitor_sn);
             fgets(aluguel_novo.monitor_sn, Size_monitor_sn, stdin);
             aluguel_novo.monitor_sn[strcspn(aluguel_novo.monitor_sn, "\n")] = '\0';
             if (strlen(aluguel_novo.monitor_sn) == 0) {
-                strcpy(aluguel_novo.monitor_sn, aluguel_conflito.monitor_sn);
+                strcpy(aluguel_novo.monitor_sn, aluguel_existente.monitor_sn);
             }
             if (strlen(aluguel_novo.monitor_sn) == Size_monitor_sn - 1 && aluguel_novo.monitor_sn[Size_monitor_sn - 2] != '\n'){
                     limparBuffer();}
 
-            printf("Ocorrência [%s]: ", aluguel_conflito.evento);
+            printf("Ocorrencia [%s]: ", aluguel_novo.evento);
             fgets(aluguel_novo.evento, Size_evento, stdin);
             aluguel_novo.evento[strcspn(aluguel_novo.evento, "\n")] = '\0';
             if (strlen(aluguel_novo.evento) == 0) {
-                strcpy(aluguel_novo.evento, aluguel_conflito.evento);
+                strcpy(aluguel_novo.evento, aluguel_existente.evento);
             }
             if (strlen(aluguel_novo.evento) == Size_evento - 1 && aluguel_novo.evento[Size_evento - 2] != '\n'){
                     limparBuffer();}
 
             encontrou = 1;
 
-            // Verificação de conflitos com novos dados
-            rewind(pont_csv); // Volta para o início do arquivo para verificar o arquivo inteiro
-            while (fscanf(pont_csv, "%8[^;];%20[^;];%4[^;];%4[^;\n]%*[^\n]",
-                          aluguel_existente.data, aluguel_existente.sala, aluguel_existente.horario, aluguel_existente.horarioFim) == 4) {
-
-                // Verifica se aluguel_existente é igual a aluguel_conflito
-                if (compDataHorSala(aluguel_existente.data, aluguel_conflito.data,
-                                    aluguel_existente.sala, aluguel_conflito.sala,
-                                    aluguel_existente.horario, aluguel_conflito.horario)) {
-                    //Ignorando linha correspondente a aluguel_conflito.\n")
-                    continue;
-                }
-
-                //Verifica possivel conflito com aluguel_novo
-                if (compDataHorSala(aluguel_novo.data, aluguel_existente.data,
-                        aluguel_novo.sala, aluguel_existente.sala,
-                        aluguel_novo.horario, aluguel_existente.horario)) {
-                    printf("O horário e data correspondentes para essa sala já foram reservados. :C\n");
-                    limparAluguel(&aluguel_existente);
-                    limparAluguel(&aluguel_novo);
-                    limparAluguel(&aluguel_conflito);
-                    fclose(pont_csv);
-                    fclose(pont_temp);
-                    remove("temp.csv");
-                    return;
-                }
-            }
-
-            // Se não houver conflito, escreve os novos dados no arquivo temporário
-            fprintf(pont_temp, "%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;\n",
-            aluguel_novo.data, aluguel_novo.sala, aluguel_novo.horario, aluguel_novo.horarioFim, aluguel_novo.nome,
-            aluguel_novo.cpf, aluguel_novo.celular, aluguel_novo.prof_responsavel, aluguel_novo.monitor_sn,
-            aluguel_novo.evento);
-
         } else {
+            if (start_temp == 0){
+            fprintf(pont_temp, "1;2;3;4;5;6;7;8;9;10;");
+            start_temp = 1;}
+
             // Se não for o registro para alterar, copia o registro atual para o arquivo temporário
-            fprintf(pont_temp, "%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;\n",
+            fprintf(pont_temp, "\n%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;",
             aluguel_existente.data, aluguel_existente.sala, aluguel_existente.horario, aluguel_existente.horarioFim, aluguel_existente.nome,
             aluguel_existente.cpf, aluguel_existente.celular, aluguel_existente.prof_responsavel, aluguel_existente.monitor_sn,
             aluguel_existente.evento);
         }
     }
 
-    if (pont_csv != NULL) {
-    fclose(pont_csv);
-    }
-
-    if (pont_temp != NULL) {
-    fclose(pont_temp);
-    }
-
     if (encontrou) {
+        fprintf(pont_temp, "\n%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;",
+            aluguel_novo.data, aluguel_novo.sala, aluguel_novo.horario, aluguel_novo.horarioFim, aluguel_novo.nome,
+            aluguel_novo.cpf, aluguel_novo.celular, aluguel_novo.prof_responsavel, aluguel_novo.monitor_sn,
+            aluguel_novo.evento);
+
+        fclose(pont_csv);
+        fclose(pont_temp);
+
         remove(data_do_csv);
         rename("temp.csv", data_do_csv);
+
         limparAluguel(&aluguel_existente);
         limparAluguel(&aluguel_novo);
-        limparAluguel(&aluguel_conflito);
+
         printf("Registro atualizado! C:\n");
     } else {
+        fclose(pont_csv);
+        fclose(pont_temp);
+
         limparAluguel(&aluguel_existente);
         limparAluguel(&aluguel_novo);
-        printf("Registro não encontrado. :C\n");
+
+        printf("Registro nao encontrado. :C\n");
         remove("temp.csv");
     }
 }
@@ -605,7 +655,7 @@ void attInfos(const char *data_do_csv, const char *data, const char *sala, const
 void removAlug(const char *data_do_csv, const char *data, const char *sala, const char *horario) {
     FILE *pont_csv = fopen(data_do_csv, "r");
     FILE *pont_temp = fopen("temp.csv", "w");
-
+int start_temp = 0;
     struct aluguel aluguel_existente;
     int tudocerto = 0;
 
@@ -624,7 +674,7 @@ void removAlug(const char *data_do_csv, const char *data, const char *sala, cons
 
 	printf("\nhorario:_%s_", horario);
     //Lendo arquivo existente
-    while (fscanf(pont_csv, "%8[^;];%20[^;];%4[^;];%4[^;];%51[^;];%15[^;];%21[^;];%52[^;];%1[^;];%1000[^;];",
+    while (fscanf(pont_csv, "%8[^;];%20[^;];%4[^;];%4[^;];%51[^;];%15[^;];%21[^;];%52[^;];%1[^;];%1000[^;];\n",
                   aluguel_existente.data, aluguel_existente.sala, aluguel_existente.horario, aluguel_existente.horarioFim,
                   aluguel_existente.nome, aluguel_existente.cpf, aluguel_existente.celular,
                   aluguel_existente.prof_responsavel, aluguel_existente.monitor_sn,
@@ -639,7 +689,7 @@ void removAlug(const char *data_do_csv, const char *data, const char *sala, cons
 		
         //Verifica se o registro atual corresponde ao que deve ser removido
         if (compDataHorSala(aluguel_existente.data, data, aluguel_existente.sala, sala, aluguel_existente.horario, horario) == 1) {
-            printf("Registro encontrado! :D\nData: %s, Sala: %s, Horário: %s\n",
+            printf("Registro encontrado! :D\nData: %s, Sala: %s, Horario: %s\n",
                    aluguel_existente.data, aluguel_existente.sala, aluguel_existente.horario);
             //verificacao de validez pra planilha do cagador de cama
 
@@ -667,9 +717,12 @@ void removAlug(const char *data_do_csv, const char *data, const char *sala, cons
             }
 
         }
-
+            if (start_temp == 0){
+            fprintf(pont_temp, "1;2;3;4;5;6;7;8;9;10;");
+            start_temp = 1;
+            }
         //Copia os outros registros existentes para o arquivo temporário
-        fprintf(pont_temp, "%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;\n",
+        fprintf(pont_temp, "\n%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;",
                 aluguel_existente.data, aluguel_existente.sala, aluguel_existente.horario, aluguel_existente.horarioFim,
                 aluguel_existente.nome, aluguel_existente.cpf, aluguel_existente.celular,
                 aluguel_existente.prof_responsavel, aluguel_existente.monitor_sn,
@@ -820,6 +873,7 @@ int registrador() {
 				break;
             case '0':
                 printf("Programa encerrado.\n");
+                Sleep(1000);
                 return 0;
             default:
                 printf("Opçao invalida.\n");
