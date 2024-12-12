@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <windows.h>
 
 // Definindo os tamanhos para cada campo
 #define Size_data 13
@@ -873,7 +872,7 @@ int registrador() {
 				break;
             case '0':
                 printf("Programa encerrado.\n");
-                Sleep(1000);
+                //Sleep(1000);
                 return 0;
             default:
                 printf("Opçao invalida.\n");
