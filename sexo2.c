@@ -7,7 +7,7 @@
 #define Size_sala 21
 #define Size_horario 5
 #define Size_nome 52
-#define Size_cpf 15
+#define Size_cpf 19
 #define Size_numero 21
 #define Size_prof_responsavel 52
 #define Size_monitor_sn 2
@@ -74,7 +74,7 @@ int verifica_disponibilidade(const char *data, const char *sala, char hora_inici
 
     // Ler o arquivo linha a linha usando fscanf
     while (fscanf(arquivo,
-                  "%8[^;];%20[^;];%4[^;];%4[^;];%51[^;];%15[^;];%21[^;];%52[^;];%1[^;];%1000[^;];\n",
+                  "%8[^;];%20[^;];%4[^;];%4[^;];%51[^;];%19[^;];%21[^;];%52[^;];%1[^;];%1000[^;];\n",
                   aluguel_existente.data, aluguel_existente.sala, aluguel_existente.horario,
                   aluguel_existente.horarioFim, aluguel_existente.nome, aluguel_existente.cpf,
                   aluguel_existente.celular, aluguel_existente.prof_responsavel,
@@ -159,14 +159,14 @@ void addAlug(const char *data_do_csv, const char *data) {
         }
 
 
-    printf("Insira o horario (formato 710 para 7:10): ");
+    printf("Insira o horario (formato 0710 para 07:10): ");
         fgets(aluguel.horario, Size_horario, stdin);
         aluguel.horario[strcspn(aluguel.horario, "\n")] = '\0';
         if (strlen(aluguel.horario) == Size_horario - 1 && aluguel.horario[Size_horario - 2] != '\n') {
         limparBuffer();
         }
 
-    printf("Insira o horario final (formato 710 para 7:10): ");
+    printf("Insira o horario final (formato 0710 para 7:10): ");
         fgets(aluguel.horarioFim, Size_horario, stdin);
         aluguel.horarioFim[strcspn(aluguel.horarioFim, "\n")] = '\0';
         if (strlen(aluguel.horarioFim) == Size_horario - 1 && aluguel.horarioFim[Size_horario - 2] != '\n') {
@@ -276,7 +276,7 @@ void addAlug(const char *data_do_csv, const char *data) {
     }
 
     //Lendo arquivo existente
-    while (fscanf(pont_csv_old, "%8[^;];%20[^;];%4[^;];%4[^;];%51[^;];%15[^;];%21[^;];%52[^;];%1[^;];%1000[^;];\n",
+    while (fscanf(pont_csv_old, "%8[^;];%20[^;];%4[^;];%4[^;];%51[^;];%19[^;];%21[^;];%52[^;];%1[^;];%1000[^;];\n",
                   aluguel_existente_old.data, aluguel_existente_old.sala, aluguel_existente_old.horario, aluguel_existente_old.horarioFim,
                   aluguel_existente_old.nome, aluguel_existente_old.cpf, aluguel_existente_old.celular,
                   aluguel_existente_old.prof_responsavel, aluguel_existente_old.monitor_sn,
@@ -390,7 +390,7 @@ void addAlug(const char *data_do_csv, const char *data) {
                 if (pont_csv_new == NULL){
                 perror("Erro ao abrir o arquivo original de nova data. Verifique se as informacoes sao validas :C");
                 fclose(pont_temp_new);
-                
+
                 remove("temp_old.csv");
                 remove("temp_new.csv");
 
@@ -400,7 +400,7 @@ void addAlug(const char *data_do_csv, const char *data) {
                 return;
                 }
 
-            while (fscanf(pont_csv_new, "%8[^;];%20[^;];%4[^;];%4[^;];%51[^;];%15[^;];%21[^;];%52[^;];%1[^;];%1000[^;];\n",
+            while (fscanf(pont_csv_new, "%8[^;];%20[^;];%4[^;];%4[^;];%51[^;];%19[^;];%21[^;];%52[^;];%1[^;];%1000[^;];\n",
                   aluguel_existente_new.data, aluguel_existente_new.sala, aluguel_existente_new.horario, aluguel_existente_new.horarioFim,
                   aluguel_existente_new.nome, aluguel_existente_new.cpf, aluguel_existente_new.celular,
                   aluguel_existente_new.prof_responsavel, aluguel_existente_new.monitor_sn,
@@ -411,7 +411,7 @@ void addAlug(const char *data_do_csv, const char *data) {
                                     aluguel_novo.sala, aluguel_existente_new.sala,
                                     aluguel_novo.horario, aluguel_existente_new.horario)) {
                     printf("O horário e data correspondentes para o novo registro já foram reservados. :C\n");
-                    
+
                     limparAluguel(&aluguel_existente_remov);
                     limparAluguel(&aluguel_existente_old);
                     limparAluguel(&aluguel_novo);
@@ -441,7 +441,7 @@ void addAlug(const char *data_do_csv, const char *data) {
                                     aluguel_novo.horario, aluguel_existente_new.horario) == 0){
                                     fprintf(pont_temp_new, "\n%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;",
                                     aluguel_existente_new.data, aluguel_existente_new.sala, aluguel_existente_new.horario,
-                                    aluguel_existente_new.horarioFim, aluguel_existente_new.nome, aluguel_existente_new.cpf, 
+                                    aluguel_existente_new.horarioFim, aluguel_existente_new.nome, aluguel_existente_new.cpf,
                                     aluguel_existente_new.celular, aluguel_existente_new.prof_responsavel, aluguel_existente_new.monitor_sn,
                                     aluguel_existente_new.evento);
                                     }
@@ -542,7 +542,7 @@ void attInfos(const char *data_do_csv, const char *data, const char *sala, const
         return;
     }
 
-    while (fscanf(pont_csv, "%8[^;];%20[^;];%4[^;];%4[^;];%51[^;];%15[^;];%21[^;];%52[^;];%1[^;];%1000[^;];\n",
+    while (fscanf(pont_csv, "%8[^;];%20[^;];%4[^;];%4[^;];%51[^;];%19[^;];%21[^;];%52[^;];%1[^;];%1000[^;];\n",
                   aluguel_existente.data, aluguel_existente.sala, aluguel_existente.horario, aluguel_existente.horarioFim,
                   aluguel_existente.nome, aluguel_existente.cpf, aluguel_existente.celular,
                   aluguel_existente.prof_responsavel, aluguel_existente.monitor_sn,
@@ -673,7 +673,7 @@ int start_temp = 0;
 
 	printf("\nhorario:_%s_", horario);
     //Lendo arquivo existente
-    while (fscanf(pont_csv, "%8[^;];%20[^;];%4[^;];%4[^;];%51[^;];%15[^;];%21[^;];%52[^;];%1[^;];%1000[^;];\n",
+    while (fscanf(pont_csv, "%8[^;];%20[^;];%4[^;];%4[^;];%51[^;];%19[^;];%21[^;];%52[^;];%1[^;];%1000[^;];\n",
                   aluguel_existente.data, aluguel_existente.sala, aluguel_existente.horario, aluguel_existente.horarioFim,
                   aluguel_existente.nome, aluguel_existente.cpf, aluguel_existente.celular,
                   aluguel_existente.prof_responsavel, aluguel_existente.monitor_sn,
@@ -685,7 +685,7 @@ int start_temp = 0;
 		printf("\nsala:_%s_", sala);
 		printf("\naluguel_existente.horario:_%s_", aluguel_existente.horario);
 		printf("\nhorario:_%s_", horario);
-		
+
         //Verifica se o registro atual corresponde ao que deve ser removido
         if (compDataHorSala(aluguel_existente.data, data, aluguel_existente.sala, sala, aluguel_existente.horario, horario) == 1) {
             printf("Registro encontrado! :D\nData: %s, Sala: %s, Horario: %s\n",
@@ -701,7 +701,7 @@ int start_temp = 0;
             //int check_de_erro = TrocarLouO (dataCheck, salaCheck, horarioCheck); //aluguel_existente.horarioFim // obsoleto
 			int check_de_erro = IeFnoLouO (dataCheck, salaCheck, horarioCheck, aluguel_existente.horarioFim);
 			//printf("\ncheck de erro IeF:_%i_", check_de_erro);
-			
+
             if (check_de_erro == 0){ //faz o check de erro, se der tudo certo, retornando 0, printa no final e usa o L ou O dentro do proprio check de erro
                 printf("Aluguel removido! :)\n");
                 tudocerto = 1;
@@ -798,7 +798,7 @@ int registrador() {
                     limparBuffer();
                 }
 
-                printf("Horario (formato 710 para 7:10): ");
+                printf("Horario (formato 0710 para 7:10): ");
                 fgets(horario, Size_horario, stdin);
                 horario[strcspn(horario, "\n")] = '\0';
                 if (strlen(horario) == Size_horario - 1 && horario[Size_horario - 2] != '\n') {
@@ -825,7 +825,7 @@ int registrador() {
                     limparBuffer();
                 }
 
-                printf("Horario (formato 710 para 7:10): ");
+                printf("Horario (formato 0710 para 7:10): ");
                 fgets(horario, Size_horario, stdin);
                 horario[strcspn(horario, "\n")] = '\0';
                 if (strlen(horario) == Size_horario - 1 && horario[Size_horario - 2] != '\n') {
@@ -854,7 +854,7 @@ int registrador() {
                     limparBuffer();
                 }
 
-                printf("Horario (formato 710 para 7:10): ");
+                printf("Horario (formato 0710 para 7:10): ");
                 fgets(horario, Size_horario, stdin);
                 horario[strcspn(horario, "\n")] = '\0';
 
@@ -895,9 +895,9 @@ int IeFnoLouO (char Data_T[], char Sala_T[], char hora_i[], char hora_f[])
 	int num_minuto_f = (hora_f[2] - '0') * 10 + (hora_f[3] - '0'); //converte char pra int - minutos
 	int bloco_horario_f = (num_hora_f * 60) + num_minuto_f;
 
-    printf("\n_bloco_horario_f:_%i_", bloco_horario_f); //DEBBUG
-    printf("\n_num_hora_f:_%i_", num_hora_f);
-    printf("\n_num_minuto_f", num_minuto_f);
+    //printf("\n_bloco_horario_f:_%i_", bloco_horario_f); //DEBBUG
+    //printf("\n_num_hora_f:_%i_", num_hora_f);
+    //printf("\n_num_minuto_f", num_minuto_f);
 	// Calcular os intervalos de 50 minutos
 	bloco_horario_i = (bloco_horario_i - 430) / 50; // 430 = 710 em minutos
 	bloco_horario_f = (bloco_horario_f - 430) / 50;
@@ -1008,7 +1008,7 @@ int TrocarLouO (char Data_T[], char Sala_T[], int Hora_minutos)
 	int bloco_horario = Hora_minutos;
 	// Calcular os intervalos de 50 minutos
     //bloco_horario = ((bloco_horario - 430) / 50) * 2; // Começa a contar a partir do 0, *2 por conta do ';'
-	printf("_BLOH_%i_\n", bloco_horario);
+	//printf("_BLOH_%i_\n", bloco_horario);
 
     //Verificar se a sala já existe ###################################################
     rewind(Ponteiro_Arquivo); //Ponteiro de leitura retorna ao comeco do arquivo
@@ -1072,7 +1072,7 @@ int TrocarLouO (char Data_T[], char Sala_T[], int Hora_minutos)
         fseek(Ponteiro_Arquivo, Posicao_leitura + bloco_horario, SEEK_SET);  // Seek a mesma posição
         fputc('L', Ponteiro_Arquivo);  // 'O' vira 'L'
         printf("Char na linha %d, Posicao %d, 'O' para 'L'.\n", posicao_horario, bloco_horario);
-		printf("Char atual: _%c_ \n", char_atual);
+		//printf("Char atual: _%c_ \n", char_atual);
     }
 	else if (char_atual == ';') //DEBUG ou se algo de muito errado tiver acontecido
 	{
