@@ -44,6 +44,7 @@ int TrocarLouO (char Data_T[], char Sala_T[], int Hora_minutos);
 void AdicionarSala ();
 void RemoverSala ();
 void PlanilhaDefaultExistinator ();
+void printPlanilha();
 
 int verifica_horarios(char hora_inicial[], char hora_final[], int hora_existente_ini, int hora_existente_fim) {
     // Verifica se os horários não conflitam
